@@ -10,8 +10,7 @@ class RepresentativeNumber implements IRepresentativeNumber {
     public name: string,
     public wikipediaLink: string,
     public description: string,
-  ) {
-  }
+  ) {}
 
   toString(): string {
     return `${this.name}`.trim();
@@ -43,21 +42,21 @@ const MINUS_ONE = new RepresentativeNumber(
 );
 
 const SQRT_TWO = new RepresentativeNumber(
-    '√2',
-    'https://en.wikipedia.org/wiki/Square_root_of_2',
-    'The square root of 2, an irrational number.',
+  '√2',
+  'https://en.wikipedia.org/wiki/Square_root_of_2',
+  'The square root of 2, an irrational number.',
 );
 
 const PI = new RepresentativeNumber(
-    'π',
-    'https://en.wikipedia.org/wiki/Pi',
-    "The ratio of a circle's circumference to its diameter.",
+  'π',
+  'https://en.wikipedia.org/wiki/Pi',
+  "The ratio of a circle's circumference to its diameter.",
 );
 
 const E = new RepresentativeNumber(
-    'e',
-    'https://en.wikipedia.org/wiki/E_(mathematical_constant)',
-    'The base of the natural logarithm, an irrational number.',
+  'e',
+  'https://en.wikipedia.org/wiki/E_(mathematical_constant)',
+  'The base of the natural logarithm, an irrational number.',
 );
 
 const IMAGINARY_UNIT = new RepresentativeNumber(
@@ -81,7 +80,7 @@ const I_PLUS_PI = new RepresentativeNumber(
 const GOLDEN_RATIO = new RepresentativeNumber(
   'φ',
   'https://en.wikipedia.org/wiki/Golden_ratio',
-  'The golden ratio, an algebraic number approximately equal to 1.618, which is the positive solution to the equation x^2 = x + 1.'
+  'The golden ratio, an algebraic number approximately equal to 1.618, which is the positive solution to the equation x^2 = x + 1.',
 );
 
 const CHAITINS_CONSTANT = new RepresentativeNumber(
@@ -89,7 +88,6 @@ const CHAITINS_CONSTANT = new RepresentativeNumber(
   'https://en.wikipedia.org/wiki/Chaitin%27s_constant',
   'A real number representing the halting probability of a universal Chaitin (self-delimiting Turing) machine.',
 );
-
 
 interface INumberSet {
   name: string;
@@ -126,7 +124,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'The set of all positive integers.',
   ['https://en.wikipedia.org/wiki/Natural_number'],
   [ONE],
-  [[]]
+  [[]],
 );
 
 const WHOLE_NUMBERS = new NumberSet(
@@ -136,7 +134,7 @@ const WHOLE_NUMBERS = new NumberSet(
   'The set of all non-negative integers, including zero.',
   ['https://en.wikipedia.org/wiki/Whole_number'],
   [ZERO],
-  [[NATURAL_NUMBERS]]
+  [[NATURAL_NUMBERS]],
 );
 
 const INTEGERS = new NumberSet(
@@ -146,7 +144,7 @@ const INTEGERS = new NumberSet(
   'The set of all whole numbers, including negative numbers, zero, and positive numbers.',
   ['https://en.wikipedia.org/wiki/Integer'],
   [MINUS_ONE],
-  [[WHOLE_NUMBERS]]
+  [[WHOLE_NUMBERS]],
 );
 
 const RATIONAL_NUMBERS = new NumberSet(
@@ -156,27 +154,7 @@ const RATIONAL_NUMBERS = new NumberSet(
   'Numbers that can be expressed as a fraction of two integers.',
   ['https://en.wikipedia.org/wiki/Rational_number'],
   [HALF],
-  [[INTEGERS]]
-);
-
-const TRANSCENDENTAL_NUMBERS = new NumberSet(
-    'Transcendental Numbers',
-    'ℝ \\ ℚ',
-    'ℵ₁',
-    'Numbers that are not roots of any non-zero polynomial equation with rational coefficients.',
-    ['https://en.wikipedia.org/wiki/Transcendental_number'],
-    [PI, E],
-    []
-);
-
-const IRRATIONAL_NUMBERS = new NumberSet(
-  'Irrational Numbers',
-  'ℝ \\ ℚ',
-  'ℵ₀',
-  'Numbers that cannot be expressed as a fraction of two integers.',
-  ['https://en.wikipedia.org/wiki/Irrational_number'],
-  [SQRT_TWO],
-  [[TRANSCENDENTAL_NUMBERS]]
+  [[INTEGERS]],
 );
 
 const CONSTRUCTIBLE_NUMBERS = new NumberSet(
@@ -186,17 +164,37 @@ const CONSTRUCTIBLE_NUMBERS = new NumberSet(
   'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   ['https://en.wikipedia.org/wiki/Constructible_number'],
   [SQRT_TWO],
-  [[RATIONAL_NUMBERS]]
+  [[RATIONAL_NUMBERS]],
 );
 
 const ALGEBRAIC_NUMBERS = new NumberSet(
-    'Algebraic Numbers',
-    'ℚ̅',
-    'ℵ₀',
-    'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
-    ['https://en.wikipedia.org/wiki/Algebraic_number'],
-    [GOLDEN_RATIO, IMAGINARY_UNIT],
-    [[RATIONAL_NUMBERS], [CONSTRUCTIBLE_NUMBERS]]
+  'Algebraic Numbers',
+  'ℚ̅',
+  'ℵ₀',
+  'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
+  ['https://en.wikipedia.org/wiki/Algebraic_number'],
+  [GOLDEN_RATIO],
+  [[RATIONAL_NUMBERS], [CONSTRUCTIBLE_NUMBERS]],
+);
+
+const TRANSCENDENTAL_NUMBERS = new NumberSet(
+  'Transcendental Numbers',
+  'ℝ \\ ℚ̅',
+  'ℵ₁',
+  'Numbers that are not roots of any non-zero polynomial equation with rational coefficients.',
+  ['https://en.wikipedia.org/wiki/Transcendental_number'],
+  [PI, E],
+  [],
+);
+
+const IRRATIONAL_NUMBERS = new NumberSet(
+  'Irrational Numbers',
+  'ℝ \\ ℚ',
+  'ℵ₀',
+  'Numbers that cannot be expressed as a fraction of two integers.',
+  ['https://en.wikipedia.org/wiki/Irrational_number'],
+  [SQRT_TWO],
+  [[TRANSCENDENTAL_NUMBERS]],
 );
 
 const COMPUTABLE_NUMBERS = new NumberSet(
@@ -206,7 +204,7 @@ const COMPUTABLE_NUMBERS = new NumberSet(
   'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm.',
   ['https://en.wikipedia.org/wiki/Computable_number'],
   [E],
-  [[ALGEBRAIC_NUMBERS]]
+  [[ALGEBRAIC_NUMBERS]],
 );
 
 const REAL_NUMBERS = new NumberSet(
@@ -215,8 +213,11 @@ const REAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The set of all rational and irrational numbers.',
   ['https://en.wikipedia.org/wiki/Real_number'],
-  [],
-  [[RATIONAL_NUMBERS, IRRATIONAL_NUMBERS], [TRANSCENDENTAL_NUMBERS, ALGEBRAIC_NUMBERS]]
+  [CHAITINS_CONSTANT],
+  [
+    [RATIONAL_NUMBERS, IRRATIONAL_NUMBERS],
+    [TRANSCENDENTAL_NUMBERS, ALGEBRAIC_NUMBERS],
+  ],
 );
 
 const PURE_IMAGINARY_NUMBERS = new NumberSet(
@@ -225,17 +226,17 @@ const PURE_IMAGINARY_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that are purely imaginary, having no real part.',
   ['https://en.wikipedia.org/wiki/Imaginary_number'],
-  [IMAGINARY_UNIT]
+  [IMAGINARY_UNIT],
 );
 
 const IMAGINARY_NUMBERS = new NumberSet(
-    'Imaginary Numbers',
-    'ℑ',
-    'ℵ₀',
-    'Numbers that can be expressed in the form bi, where b is a real number and i is the imaginary unit.',
-    ['https://en.wikipedia.org/wiki/Imaginary_number'],
-    [E_TIMES_I, I_PLUS_PI],
-    [[PURE_IMAGINARY_NUMBERS]]
+  'Imaginary Numbers',
+  'ℑ',
+  'ℵ₀',
+  'Numbers that can be expressed in the form bi, where b is a real number and i is the imaginary unit.',
+  ['https://en.wikipedia.org/wiki/Imaginary_number'],
+  [E_TIMES_I, I_PLUS_PI],
+  [[PURE_IMAGINARY_NUMBERS]],
 );
 
 const COMPLEX_NUMBERS = new NumberSet(
@@ -245,7 +246,7 @@ const COMPLEX_NUMBERS = new NumberSet(
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
   ['https://en.wikipedia.org/wiki/Complex_number'],
   [],
-  [[REAL_NUMBERS, IMAGINARY_NUMBERS]]
+  [[REAL_NUMBERS, IMAGINARY_NUMBERS]],
 );
 
 // TODO

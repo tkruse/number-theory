@@ -21,20 +21,16 @@ import {
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
   CONSTRUCTIBLE_NUMBERS,
-  IMAGINARY_NUMBERS,
-  PURE_IMAGINARY_NUMBERS,
   GOLDEN_RATIO,
-  RepresentativeNumber,
-  NumberSet,
   IRepresentativeNumber,
   INumberSet,
 } from './numberData';
 
 function getAllIncludedNumbers(set: INumberSet): IRepresentativeNumber[] {
   const numbers = new Set(set.containedElements);
-  set.containedPartitions.forEach(partition => {
-    partition.forEach(subset => {
-      getAllIncludedNumbers(subset).forEach(num => numbers.add(num));
+  set.containedPartitions.forEach((partition) => {
+    partition.forEach((subset) => {
+      getAllIncludedNumbers(subset).forEach((num) => numbers.add(num));
     });
   });
   return Array.from(numbers);
@@ -46,9 +42,12 @@ describe('toString', () => {
   test.each([
     [ONE, '1'],
     [NATURAL_NUMBERS, 'Natural Numbers (ℕ)'],
-  ])('should return correct string representation for %s', (instance, expectedString) => {
-    expect(instance.toString()).toBe(expectedString);
-  });
+  ])(
+    'should return correct string representation for %s',
+    (instance, expectedString) => {
+      expect(instance.toString()).toBe(expectedString);
+    },
+  );
 });
 
 describe('getAllIncludedNumbers', () => {
@@ -59,12 +58,52 @@ describe('getAllIncludedNumbers', () => {
     [RATIONAL_NUMBERS, [HALF, MINUS_ONE, ZERO, ONE]],
     [IRRATIONAL_NUMBERS, [SQRT_TWO, PI, E]],
     [TRANSCENDENTAL_NUMBERS, [PI, E]],
-    [ALGEBRAIC_NUMBERS, [GOLDEN_RATIO, IMAGINARY_UNIT, HALF, SQRT_TWO, MINUS_ONE, ZERO, ONE]],
-    [COMPUTABLE_NUMBERS, [E, GOLDEN_RATIO, IMAGINARY_UNIT, HALF, SQRT_TWO, MINUS_ONE, ZERO, ONE]],
-    [REAL_NUMBERS, [HALF, MINUS_ONE, ZERO, ONE, SQRT_TWO, PI, E, GOLDEN_RATIO, IMAGINARY_UNIT]],
-    [COMPLEX_NUMBERS, [E_TIMES_I, I_PLUS_PI, HALF, MINUS_ONE, ZERO, ONE, SQRT_TWO, PI, E, GOLDEN_RATIO, IMAGINARY_UNIT]],
-  ])('should return all included numbers for %s', (numberSet, expectedNumbers) => {
-    const result = getAllIncludedNumbers(numberSet).map(num => num.name).sort();
-    expect(result).toStrictEqual(expectedNumbers.map(num => num.name).sort());
-  });
+    [ALGEBRAIC_NUMBERS, [GOLDEN_RATIO, HALF, SQRT_TWO, MINUS_ONE, ZERO, ONE]],
+    [
+      COMPUTABLE_NUMBERS,
+      [E, GOLDEN_RATIO, HALF, SQRT_TWO, MINUS_ONE, ZERO, ONE],
+    ],
+    [CONSTRUCTIBLE_NUMBERS, [SQRT_TWO, HALF, MINUS_ONE, ZERO, ONE]],
+    [
+      REAL_NUMBERS,
+      [
+        HALF,
+        MINUS_ONE,
+        ZERO,
+        ONE,
+        SQRT_TWO,
+        PI,
+        E,
+        GOLDEN_RATIO,
+        CHAITINS_CONSTANT,
+      ],
+    ],
+    [
+      COMPLEX_NUMBERS,
+      [
+        E_TIMES_I,
+        I_PLUS_PI,
+        HALF,
+        MINUS_ONE,
+        ZERO,
+        ONE,
+        SQRT_TWO,
+        PI,
+        E,
+        GOLDEN_RATIO,
+        IMAGINARY_UNIT,
+        CHAITINS_CONSTANT,
+      ],
+    ],
+  ])(
+    'should return all included numbers for %s',
+    (numberSet, expectedNumbers) => {
+      const result = getAllIncludedNumbers(numberSet)
+        .map((num) => num.name)
+        .sort();
+      expect(result).toStrictEqual(
+        expectedNumbers.map((num) => num.name).sort(),
+      );
+    },
+  );
 });
