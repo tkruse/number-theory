@@ -1,0 +1,268 @@
+interface IRepresentativeNumber {
+  value: number | string;
+  unicodeSymbol: string;
+  wikipediaLink: string;
+  description: string;
+}
+
+class RepresentativeNumber implements IRepresentativeNumber {
+  constructor(
+    public value: number | string,
+    public unicodeSymbol: string,
+    public wikipediaLink: string,
+    public description: string,
+  ) {}
+}
+
+const ZERO = new RepresentativeNumber(
+  0,
+  '0',
+  'https://en.wikipedia.org/wiki/0',
+  'The integer zero.',
+);
+
+const SQRT_TWO = new RepresentativeNumber(
+  'sqrt(2)',
+  '√2',
+  'https://en.wikipedia.org/wiki/Square_root_of_2',
+  'The square root of 2, an irrational number.',
+);
+
+const PI = new RepresentativeNumber(
+  'pi',
+  'π',
+  'https://en.wikipedia.org/wiki/Pi',
+  "The ratio of a circle's circumference to its diameter.",
+);
+
+const HALF = new RepresentativeNumber(
+  0.5,
+  '1/2',
+  'https://en.wikipedia.org/wiki/0.5',
+  'A rational number representing one half.',
+);
+
+const ONE = new RepresentativeNumber(
+  1,
+  '1',
+  'https://en.wikipedia.org/wiki/1',
+  'The integer one.',
+);
+
+const MINUS_ONE = new RepresentativeNumber(
+  -1,
+  '-1',
+  'https://en.wikipedia.org/wiki/-1',
+  'The integer minus one.',
+);
+
+const IMAGINARY_UNIT = new RepresentativeNumber(
+  'i',
+  'i',
+  'https://en.wikipedia.org/wiki/Imaginary_unit',
+  'The imaginary unit, which satisfies i² = -1.',
+);
+
+const E_TIMES_I = new RepresentativeNumber(
+  'e * i',
+  'e * i',
+  'https://en.wikipedia.org/wiki/Imaginary_unit#Exponential_form',
+  'A complex number representing the product of e and the imaginary unit i.',
+);
+
+const I_PLUS_PI = new RepresentativeNumber(
+  'i + π',
+  'i + π',
+  'https://en.wikipedia.org/wiki/Complex_number',
+  'A complex number representing the sum of the imaginary unit i and π.',
+);
+
+const CHAITINS_CONSTANT = new RepresentativeNumber(
+  'Ω',
+  'Ω',
+  'https://en.wikipedia.org/wiki/Chaitin%27s_constant',
+  'A real number representing the halting probability of a universal Chaitin (self-delimiting Turing) machine.',
+);
+
+const E = new RepresentativeNumber(
+  'e',
+  'e',
+  'https://en.wikipedia.org/wiki/E_(mathematical_constant)',
+  'The base of the natural logarithm, an irrational number.',
+);
+
+interface INumberSet {
+  name: string;
+  unicodeSymbol: string;
+  cardinality: string;
+  description: string;
+  webLinks: string[];
+  containedElements: IRepresentativeNumber[];
+  containedPartitions: INumberSet[][];
+}
+
+class NumberSet implements INumberSet {
+  constructor(
+    public name: string,
+    public unicodeSymbol: string,
+    public cardinality: string,
+    public description: string,
+    public webLinks: string[],
+    public containedElements: IRepresentativeNumber[] = [],
+    public containedPartitions: INumberSet[][] = [],
+  ) {}
+}
+
+const NATURAL_NUMBERS = new NumberSet(
+  'Natural Numbers',
+  'ℕ',
+  'ℵ₀',
+  'The set of all positive integers.',
+  ['https://en.wikipedia.org/wiki/Natural_number'],
+  [],
+  [[]]
+);
+
+const WHOLE_NUMBERS = new NumberSet(
+  'Whole Numbers',
+  'ℕ₀',
+  'ℵ₀',
+  'The set of all non-negative integers, including zero.',
+  ['https://en.wikipedia.org/wiki/Whole_number'],
+  [],
+  [[NATURAL_NUMBERS]]
+);
+
+const INTEGERS = new NumberSet(
+  'Integers',
+  'ℤ',
+  'ℵ₀',
+  'The set of all whole numbers, including negative numbers, zero, and positive numbers.',
+  ['https://en.wikipedia.org/wiki/Integer'],
+  [],
+  [[WHOLE_NUMBERS]]
+);
+
+const RATIONAL_NUMBERS = new NumberSet(
+  'Rational Numbers',
+  'ℚ',
+  'ℵ₀',
+  'Numbers that can be expressed as a fraction of two integers.',
+  ['https://en.wikipedia.org/wiki/Rational_number'],
+  [],
+  [[INTEGERS]]
+);
+
+const TRANSCENDENTAL_NUMBERS = new NumberSet(
+  'Transcendental Numbers',
+  'ℝ \\ ℚ',
+  'ℵ₁',
+  'Numbers that are not roots of any non-zero polynomial equation with rational coefficients.',
+  ['https://en.wikipedia.org/wiki/Transcendental_number'],
+  [],
+  []
+);
+
+const IRRATIONAL_NUMBERS = new NumberSet(
+  'Irrational Numbers',
+  'ℝ \\ ℚ',
+  'ℵ₀',
+  'Numbers that cannot be expressed as a fraction of two integers.',
+  ['https://en.wikipedia.org/wiki/Irrational_number'],
+  []
+);
+
+const CONSTRUCTIBLE_NUMBERS = new NumberSet(
+  'Constructible Numbers',
+  'ℂ',
+  'ℵ₀',
+  'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
+  ['https://en.wikipedia.org/wiki/Constructible_number'],
+  [],
+  [[RATIONAL_NUMBERS]]
+);
+
+const ALGEBRAIC_NUMBERS = new NumberSet(
+    'Algebraic Numbers',
+    'ℚ̅',
+    'ℵ₀',
+    'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
+    ['https://en.wikipedia.org/wiki/Algebraic_number'],
+    [],
+    [[RATIONAL_NUMBERS], [CONSTRUCTIBLE_NUMBERS]]
+);
+
+const COMPUTABLE_NUMBERS = new NumberSet(
+  'Computable Numbers',
+  'ℂ',
+  'ℵ₀',
+  'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm.',
+  ['https://en.wikipedia.org/wiki/Computable_number'],
+  [],
+  [[ALGEBRAIC_NUMBERS]]
+);
+
+const REAL_NUMBERS = new NumberSet(
+  'Real Numbers',
+  'ℝ',
+  'ℵ₁',
+  'The set of all rational and irrational numbers.',
+  ['https://en.wikipedia.org/wiki/Real_number'],
+  [],
+  [[RATIONAL_NUMBERS, IRRATIONAL_NUMBERS], [TRANSCENDENTAL_NUMBERS, ALGEBRAIC_NUMBERS]]
+);
+
+const PURE_IMAGINARY_NUMBERS = new NumberSet(
+  'Pure Imaginary Numbers',
+  'ℑ₀',
+  'ℵ₀',
+  'Numbers that are purely imaginary, having no real part.',
+  ['https://en.wikipedia.org/wiki/Imaginary_number'],
+);
+
+const IMAGINARY_NUMBERS = new NumberSet(
+    'Imaginary Numbers',
+    'ℑ',
+    'ℵ₀',
+    'Numbers that can be expressed in the form bi, where b is a real number and i is the imaginary unit.',
+    ['https://en.wikipedia.org/wiki/Imaginary_number'],
+    [],
+    [[PURE_IMAGINARY_NUMBERS]]
+);
+
+const COMPLEX_NUMBERS = new NumberSet(
+  'Complex Numbers',
+  'ℂ',
+  'ℵ₁',
+  'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
+  ['https://en.wikipedia.org/wiki/Complex_number'],
+  [],
+  [[REAL_NUMBERS, IMAGINARY_NUMBERS]]
+);
+
+export {
+  ZERO,
+  ONE,
+  MINUS_ONE,
+  SQRT_TWO,
+  PI,
+  HALF,
+  E,
+  IMAGINARY_UNIT,
+  E_TIMES_I,
+  I_PLUS_PI,
+  CHAITINS_CONSTANT,
+  NATURAL_NUMBERS,
+  WHOLE_NUMBERS,
+  INTEGERS,
+  RATIONAL_NUMBERS,
+  IRRATIONAL_NUMBERS,
+  TRANSCENDENTAL_NUMBERS,
+  ALGEBRAIC_NUMBERS,
+  COMPUTABLE_NUMBERS,
+  REAL_NUMBERS,
+  COMPLEX_NUMBERS,
+  CONSTRUCTIBLE_NUMBERS,
+  IMAGINARY_NUMBERS,
+  PURE_IMAGINARY_NUMBERS,
+};
