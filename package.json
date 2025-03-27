@@ -1,13 +1,25 @@
 {
   "name": "number-theory-visualizer",
+  "type": "module",
   "version": "1.0.0",
   "scripts": {
     "build": "tsc",
-    "start": "lite-server"
+    "start": "lite-server",
+    "test": "vitest",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "format": "prettier --write 'src/**/*.{ts,tsx,css,html}'"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.5",
     "lite-server": "^2.6.1",
+    "prettier": "^3.5.3",
     "typescript": "^5.8.2",
+    "typescript-eslint": "^8.28.0",
     "vitest": "^3.0.9"
   }
 }

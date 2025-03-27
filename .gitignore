@@ -11,6 +11,12 @@ lerna-debug.log*
 # pnpm
 .pnpm-store/
 
+# ESLint
+.eslintcache
+
+# Prettier
+.prettierignore
+
 # TypeScript
 *.tsbuildinfo
 
