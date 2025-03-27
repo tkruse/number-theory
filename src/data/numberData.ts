@@ -280,8 +280,9 @@ export {
   IMAGINARY_NUMBERS,
   PURE_IMAGINARY_NUMBERS,
   GOLDEN_RATIO,
-  IRepresentativeNumber,
-  INumberSet,
   RepresentativeNumber,
   NumberSet,
 };
+
+export type { IRepresentativeNumber };
+export type { INumberSet };
