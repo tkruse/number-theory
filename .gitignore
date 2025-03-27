@@ -1,1 +1,58 @@
 .aider*
+# Node.js
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs
+*.log
+logs/*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IntelliJ
+.idea/
+*.iws
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# OSX
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# React
+.DS_*
+**/*.backup.*
+**/*.back.*
