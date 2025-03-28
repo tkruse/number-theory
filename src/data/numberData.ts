@@ -124,7 +124,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'The set of all positive integers.',
   ['https://en.wikipedia.org/wiki/Natural_number'],
   [ONE],
-  [[]],
+  [],
 );
 
 const WHOLE_NUMBERS = new NumberSet(
