@@ -43,8 +43,8 @@ describe('Grid', () => {
   it('should render a grid with multiple columns', () => {
     const grid = new Grid();
     const column1 = new Column();
-    column1.addStartingSet(SET_A);
     column1.addStartingSet(SET_B);
+    column1.addStartingSet(SET_A);
     column1.addNumber(ZERO);
     column1.addEndingSet(SET_B);
     grid.addColumn(column1);
