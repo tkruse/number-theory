@@ -251,8 +251,9 @@ const COMPLEX_NUMBERS = new NumberSet(
 
 // TODO
 // * algebraic integers
-// hyperreals
+// hyperreals, infinitesimals, surreal numbers
 // definable
+// IEEE numbers
 
 export {
   ZERO,

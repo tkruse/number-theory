@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { NumberSet } from '../data/numberData';
 import { schemeCategory10 } from 'd3-scale-chromatic';
-import RepresentativeNumberRenderer from "./RepresentativeNumberRenderer";
+import RepresentativeNumberRenderer from './RepresentativeNumberRenderer';
 
 interface NumberSetRendererProps {
   svg: d3.Selection<SVGGElement | null, unknown, null, undefined>;
@@ -18,7 +18,8 @@ const NumberSetRenderer = ({
   y,
   colorIndex,
 }: NumberSetRendererProps) => {
-  const text = svg.append('text')
+  const text = svg
+    .append('text')
     .attr('x', x + 10)
     .attr('y', y + 30)
     .text(numberSet.name)
@@ -41,13 +42,12 @@ const NumberSetRenderer = ({
 
   numberSet.containedElements.forEach((rep, index) => {
     RepresentativeNumberRenderer({
-        svg,
-        repNumber: rep,
-        x: x + 30,
-        y: y + 50 + index * 50,
+      svg,
+      repNumber: rep,
+      x: x + 30,
+      y: y + 50 + index * 50,
     });
   });
-
 };
 
 export default NumberSetRenderer;
