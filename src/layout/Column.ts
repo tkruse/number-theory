@@ -13,7 +13,7 @@ class Column {
   }
 
   addStartingSet(set: INumberSet) {
-    this.startingSets.push(set);
+    this.startingSets.unshift(set);
   }
 
   addEndingSet(set: INumberSet) {
@@ -53,7 +53,6 @@ class Column {
       lines.push(`${getPrefix()}┌─ ${set.name}`);
       updateContext(set, true);
     });
-    console.log(`current prefix after starting columns:`, getPrefix());
 
     // Add lines for numbers in the column, if any
     if (this.numbers.length > 0) {
