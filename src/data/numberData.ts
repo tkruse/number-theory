@@ -47,6 +47,12 @@ const SQRT_TWO = new RepresentativeNumber(
   'The square root of 2, an irrational number.',
 );
 
+const CUBE_ROOT_TWO = new RepresentativeNumber(
+  '∛2',
+  'https://en.wikipedia.org/wiki/Cube_root',
+  'The cube root of 2, an irrational number.',
+);
+
 const PI = new RepresentativeNumber(
   'π',
   'https://en.wikipedia.org/wiki/Pi',
@@ -159,11 +165,11 @@ const RATIONAL_NUMBERS = new NumberSet(
 
 const CONSTRUCTIBLE_NUMBERS = new NumberSet(
   'Constructible Numbers',
-  'ℂ',
+  'C',
   'ℵ₀',
   'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   ['https://en.wikipedia.org/wiki/Constructible_number'],
-  [SQRT_TWO],
+  [SQRT_TWO, GOLDEN_RATIO],
   [[RATIONAL_NUMBERS]],
 );
 
@@ -173,8 +179,8 @@ const ALGEBRAIC_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   ['https://en.wikipedia.org/wiki/Algebraic_number'],
-  [GOLDEN_RATIO],
-  [[RATIONAL_NUMBERS], [CONSTRUCTIBLE_NUMBERS]],
+  [CUBE_ROOT_TWO],
+  [[CONSTRUCTIBLE_NUMBERS]],
 );
 
 const TRANSCENDENTAL_NUMBERS = new NumberSet(
@@ -199,9 +205,9 @@ const IRRATIONAL_NUMBERS = new NumberSet(
 
 const COMPUTABLE_NUMBERS = new NumberSet(
   'Computable Numbers',
-  'ℂ',
+  'REC',
   'ℵ₀',
-  'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm.',
+  'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   ['https://en.wikipedia.org/wiki/Computable_number'],
   [E],
   [[ALGEBRAIC_NUMBERS]],
@@ -215,8 +221,8 @@ const REAL_NUMBERS = new NumberSet(
   ['https://en.wikipedia.org/wiki/Real_number'],
   [CHAITINS_CONSTANT],
   [
+    [ALGEBRAIC_NUMBERS, TRANSCENDENTAL_NUMBERS],
     [RATIONAL_NUMBERS, IRRATIONAL_NUMBERS],
-    [TRANSCENDENTAL_NUMBERS, ALGEBRAIC_NUMBERS],
   ],
 );
 
@@ -260,6 +266,7 @@ export {
   ONE,
   MINUS_ONE,
   SQRT_TWO,
+  CUBE_ROOT_TWO,
   PI,
   HALF,
   E,
