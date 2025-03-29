@@ -13,6 +13,10 @@ class Column {
     this.numbers = [];
   }
 
+  contains(repNumber: IRepresentativeNumber): boolean {
+    return this.numbers.includes(repNumber);
+  }
+
   addStartingSet(set: INumberSet) {
     this.startingSets.unshift(set);
   }

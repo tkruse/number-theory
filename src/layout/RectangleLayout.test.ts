@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import RectangleLayout from './RectangleLayout';
+import createRectangleLayout from './RectangleLayout';
 import {
   NATURAL_NUMBERS,
   ONE,
@@ -15,9 +15,7 @@ import {
 
 describe('RectangleLayout', () => {
   it('should create a layout for NATURAL_NUMBERS', () => {
-    const layout = new RectangleLayout(NATURAL_NUMBERS);
-
-    const grid = layout.layoutGrid;
+    const grid = createRectangleLayout(NATURAL_NUMBERS);
     // Add assertions to test the grid directly
     expect(grid.columns.length).toBe(1);
 
@@ -33,9 +31,7 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for WHOLE_NUMBERS', () => {
-    const layout = new RectangleLayout(WHOLE_NUMBERS);
-
-    const grid = layout.layoutGrid;
+    const grid = createRectangleLayout(WHOLE_NUMBERS);
     expect(grid.columns.length).toBe(2);
 
     const column0 = grid.columns[0];
@@ -50,7 +46,7 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for WHOLE_NUMBERS using grid.toString()', () => {
-    const layout = new RectangleLayout(WHOLE_NUMBERS);
+    const grid = createRectangleLayout(WHOLE_NUMBERS);
 
     const expectedOutput = `
 ┌─ Whole Numbers
@@ -61,11 +57,11 @@ describe('RectangleLayout', () => {
 └─ Whole Numbers
 `.trim();
 
-    expect(layout.layoutGrid.toString()).toBe(expectedOutput);
+    expect(grid.toString()).toBe(expectedOutput);
   });
 
   it('should create a layout for INTEGERS using grid.toString()', () => {
-    const layout = new RectangleLayout(INTEGERS);
+    const grid = createRectangleLayout(INTEGERS);
 
     const expectedOutput = `
 ┌─ Integers
@@ -79,11 +75,11 @@ describe('RectangleLayout', () => {
 └─ Integers
 `.trim();
 
-    expect(layout.layoutGrid.toString()).toBe(expectedOutput);
+    expect(grid.toString()).toBe(expectedOutput);
   });
 
   it('should create a layout for ALGEBRAIC_NUMBERS using grid.toString()', () => {
-    const layout = new RectangleLayout(ALGEBRAIC_NUMBERS);
+    const grid = createRectangleLayout(ALGEBRAIC_NUMBERS);
 
     const expectedOutput = `
 ┌─ Algebraic Numbers
@@ -106,11 +102,11 @@ describe('RectangleLayout', () => {
 └─ Algebraic Numbers
 `.trim();
 
-    expect(layout.layoutGrid.toString()).toBe(expectedOutput);
+    expect(grid.toString()).toBe(expectedOutput);
   });
 
   it('should create a layout for REAL_NUMBERS using grid.toString()', () => {
-    const layout = new RectangleLayout(REAL_NUMBERS);
+    const grid = createRectangleLayout(REAL_NUMBERS);
 
     const expectedOutput = `
 ┌─ Real Numbers
@@ -140,11 +136,11 @@ describe('RectangleLayout', () => {
 └─ Real Numbers
 `.trim();
 
-    expect(layout.layoutGrid.toString()).toBe(expectedOutput);
+    expect(grid.toString()).toBe(expectedOutput);
   });
 
   it('should create a layout for COMPLEX_NUMBERS using grid.toString()', () => {
-    const layout = new RectangleLayout(COMPLEX_NUMBERS);
+    const grid = createRectangleLayout(COMPLEX_NUMBERS);
 
     const expectedOutput = `
 ┌─ Complex Numbers
@@ -182,6 +178,6 @@ describe('RectangleLayout', () => {
 └─ Complex Numbers
 `.trim();
 
-    expect(layout.layoutGrid.toString()).toBe(expectedOutput);
+    expect(grid.toString()).toBe(expectedOutput);
   });
 });

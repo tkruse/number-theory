@@ -29,7 +29,7 @@ import {
   MINUS_THREE,
   ZERO_POINT_ONE,
   INumberSet,
-  IRepresentativeNumber
+  IRepresentativeNumber,
 } from './numberData';
 
 function getAllIncludedNumbers(set: INumberSet): IRepresentativeNumber[] {
