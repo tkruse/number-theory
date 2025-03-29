@@ -1,4 +1,5 @@
 import { IRepresentativeNumber, INumberSet } from '../data/numberData';
+import { elementAt, safeSlice } from '../utils/collectionUtils';
 
 class Column {
   numbers: IRepresentativeNumber[];
@@ -36,7 +37,7 @@ class Column {
     const updateContext = (set: INumberSet, open: boolean) => {
       const index = context.findIndex((entry) => entry.set === set);
       if (index !== -1) {
-        context[index].isOpen = open;
+        elementAt(context, index).isOpen = open;
       } else {
         context.push({ set, isOpen: open });
       }
@@ -64,8 +65,7 @@ class Column {
     // Process ending sets, updating context and adding lines for each
     this.endingSets.forEach((set) => {
       const endIndex = context.findIndex((entry) => entry.set === set);
-      const endPrefix = context
-        .slice(0, endIndex)
+      const endPrefix = safeSlice(context, 0, endIndex)
         .map(({ isOpen }) => (isOpen ? '| ' : '  '))
         .join('');
       updateContext(set, false);

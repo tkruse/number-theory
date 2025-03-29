@@ -2,12 +2,6 @@ import * as d3 from 'd3';
 import * as d3 from 'd3';
 import { RepresentativeNumber } from '../data/numberData';
 
-interface RepresentativeNumberProps {
-  repNumber: RepresentativeNumber;
-  x: number;
-  y: number;
-}
-
 interface RepresentativeNumberRendererProps {
   svg: d3.Selection<SVGGElement | null, unknown, null, undefined>;
   repNumber: RepresentativeNumber;

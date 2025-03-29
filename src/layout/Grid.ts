@@ -15,9 +15,8 @@ class Grid {
   toString(): string {
     const context: Array<{ set: INumberSet; isOpen: boolean }> = [];
     return this.columns
-      .map((column, index) => {
-        const result = column.renderAscii(context);
-        return result;
+      .map((column) => {
+        return column.renderAscii(context);
       })
       .join('\n');
   }

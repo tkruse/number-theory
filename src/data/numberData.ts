@@ -35,10 +35,40 @@ const ONE = new RepresentativeNumber(
   'The integer one.',
 );
 
+const TWO = new RepresentativeNumber(
+  '2',
+  'https://en.wikipedia.org/wiki/2',
+  'The integer two.',
+);
+
+const THREE = new RepresentativeNumber(
+  '3',
+  'https://en.wikipedia.org/wiki/3',
+  'The integer three.',
+);
+
 const MINUS_ONE = new RepresentativeNumber(
   '-1',
   'https://en.wikipedia.org/wiki/-1',
   'The integer minus one.',
+);
+
+const MINUS_TWO = new RepresentativeNumber(
+  '-2',
+  'https://en.wikipedia.org/wiki/-2',
+  'The integer minus two.',
+);
+
+const MINUS_THREE = new RepresentativeNumber(
+  '-3',
+  'https://en.wikipedia.org/wiki/-3',
+  'The integer minus three.',
+);
+
+const ZERO_POINT_ONE = new RepresentativeNumber(
+  '0.1',
+  'https://en.wikipedia.org/wiki/0.1',
+  'A decimal number representing one tenth.',
 );
 
 const SQRT_TWO = new RepresentativeNumber(
@@ -129,7 +159,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'The set of all positive integers.',
   ['https://en.wikipedia.org/wiki/Natural_number'],
-  [ONE],
+  [ONE, TWO, THREE],
   [],
 );
 
@@ -149,7 +179,7 @@ const INTEGERS = new NumberSet(
   'ℵ₀',
   'The set of all whole numbers, including negative numbers, zero, and positive numbers.',
   ['https://en.wikipedia.org/wiki/Integer'],
-  [MINUS_ONE],
+  [MINUS_ONE, TWO, THREE, MINUS_TWO, MINUS_THREE],
   [[WHOLE_NUMBERS]],
 );
 
@@ -159,7 +189,7 @@ const RATIONAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that can be expressed as a fraction of two integers.',
   ['https://en.wikipedia.org/wiki/Rational_number'],
-  [HALF],
+  [HALF, ZERO_POINT_ONE],
   [[INTEGERS]],
 );
 
@@ -199,7 +229,7 @@ const IRRATIONAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that cannot be expressed as a fraction of two integers.',
   ['https://en.wikipedia.org/wiki/Irrational_number'],
-  [SQRT_TWO, GOLDEN_RATIO],
+  [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
   [[TRANSCENDENTAL_NUMBERS]],
 );
 
@@ -256,14 +286,30 @@ const COMPLEX_NUMBERS = new NumberSet(
 );
 
 // TODO
-// * algebraic integers
+// algebraic integers
 // hyperreals, infinitesimals, surreal numbers
 // definable
 // IEEE numbers
+// prime integers
+// Mersenne primes
+// Perfect numbers
+// Fibonacci numbers
+// Bernoulli numbers
+// squares
+// roots
+// trigonometric numbers
+// normal numbers
+// Algebraic Integers
+// Liouville Numbers
 
 export {
   ZERO,
   ONE,
+  TWO,
+  THREE,
+  MINUS_TWO,
+  MINUS_THREE,
+  ZERO_POINT_ONE,
   MINUS_ONE,
   SQRT_TWO,
   CUBE_ROOT_TWO,
