@@ -19,8 +19,9 @@ class RectangleLayout {
 
     const traverse = (set: INumberSet): { start: number; end: number } => {
       // If the set has already been added, return its start and end columns
-      if (addedSets.has(set.name)) {
-        return addedSets.get(set.name)!;
+      const existing = addedSets.get(set.name);
+      if (existing) {
+        return existing;
       }
 
       if (set.containedPartitions.length === 0) {
@@ -53,10 +54,10 @@ class RectangleLayout {
         });
         // Adjust start and end to include columns of already rendered elements
         set.containedElements.forEach((element) => {
-          if (addedNumbers.has(element.name)) {
-            const columnIndex = addedNumbers.get(element.name)!;
-            start = Math.min(start, columnIndex);
-            end = Math.max(end, columnIndex);
+          const previousInsertionColumnIndex = addedNumbers.get(element.name);
+          if (previousInsertionColumnIndex) {
+            start = Math.min(start, previousInsertionColumnIndex);
+            end = Math.max(end, previousInsertionColumnIndex);
           }
         });
 

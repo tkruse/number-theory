@@ -13,7 +13,7 @@ class Grid {
   }
 
   toString(): string {
-    const context: Array<{ set: INumberSet; isOpen: boolean }> = [];
+    const context: { set: INumberSet; isOpen: boolean }[] = [];
     return this.columns
       .map((column) => {
         return column.renderAscii(context);

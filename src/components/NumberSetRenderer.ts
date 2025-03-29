@@ -26,7 +26,7 @@ const NumberSetRenderer = ({
     .attr('font-size', '16px')
     .attr('fill', 'black');
 
-  const textWidth = text.node()?.getBBox().width || 100;
+  const textWidth = text.node()?.getBBox().width ?? 100;
 
   const totalHeight = (numberSet.containedElements.length + 1) * 50; // Calculate total height
 

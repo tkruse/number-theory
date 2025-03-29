@@ -4,8 +4,8 @@
     "lib": ["DOM", "DOM.Iterable", "es2024"],
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "outDir": "./dist/app"
   },
-  "include": ["src"]
+  "include": ["src", "types"]
 }

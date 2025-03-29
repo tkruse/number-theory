@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build --watch",
+    "build": "tsc -b --noEmit && vite build",
+    "build:watch": "tsc -b --noEmit && vite build --watch",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit",
-    "format": "prettier --write 'src/**/*.{ts,tsx,css,html}'"
+    "type-check": "tsc -b --noEmit",
+    "format": "prettier --write 'src/**/*.{ts,tsx,css,html}'",
+    "check": "pnpm run lint && pnpm run type-check && pnpm run build && pnpm run test"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
@@ -34,6 +36,9 @@
     "vite": "^6.2.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.9"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "dependencies": {
     "d3": "^7.9.0",

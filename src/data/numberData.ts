@@ -13,7 +13,7 @@ class RepresentativeNumber implements IRepresentativeNumber {
   ) {}
 
   toString(): string {
-    return `${this.name}`.trim();
+    return this.name.trim();
   }
 }
 

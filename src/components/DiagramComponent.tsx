@@ -15,7 +15,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
     svg.selectAll('*').remove(); // Clear previous content
 
     // Render the NumberSetComponent within this SVG
-    const group = svg.append('g');
+    const group = svg.append<SVGGElement | null>('g');
     // Render the NumberSetComponent within this SVG
     NumberSetRenderer({ svg: group, numberSet, x: 0, y: 0, colorIndex: 0 });
   }, [numberSet]);

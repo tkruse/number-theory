@@ -1,5 +1,3 @@
-import React from 'react';
-
 import DiagramComponent from './components/DiagramComponent';
 import { NATURAL_NUMBERS } from './data/numberData';
 

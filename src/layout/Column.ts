@@ -30,9 +30,7 @@ class Column {
    * This representation is "on the side" left to right, instead of top to bottom
    * as it would be displayed in the browser.
    */
-  renderAscii(
-    context: Array<{ set: INumberSet; isOpen: boolean }> = [],
-  ): string {
+  renderAscii(context: { set: INumberSet; isOpen: boolean }[] = []): string {
     // Helper function to update the context with the current open/close state of a set
     const updateContext = (set: INumberSet, open: boolean) => {
       const index = context.findIndex((entry) => entry.set === set);

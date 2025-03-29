@@ -29,10 +29,11 @@ import {
   MINUS_THREE,
   ZERO_POINT_ONE,
   INumberSet,
+  IRepresentativeNumber
 } from './numberData';
 
 function getAllIncludedNumbers(set: INumberSet): IRepresentativeNumber[] {
-  const numbers = new Set(set.containedElements);
+  const numbers = new Set<IRepresentativeNumber>(set.containedElements);
   set.containedPartitions.forEach((partition) => {
     partition.forEach((subset) => {
       getAllIncludedNumbers(subset).forEach((num) => numbers.add(num));

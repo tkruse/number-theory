@@ -10,7 +10,9 @@ const createSet = (name: string): INumberSet => ({
   webLinks: [],
   containedElements: [],
   containedPartitions: [],
-  toString: () => name,
+  toString: () => {
+    return name;
+  },
 });
 
 const SET_A = createSet('Set A');
@@ -21,10 +23,12 @@ const SET_D = createSet('Set D');
 describe('Column', () => {
   it('should return a comma-separated list of element names', () => {
     const column = new Column();
-    [ZERO, ONE, MINUS_ONE].forEach((num) => column.addNumber(num));
+    [ZERO, ONE, MINUS_ONE].forEach((num) => {
+      column.addNumber(num);
+    });
 
     expect(column.renderAscii([])).toBe('0, 1, -1');
-    const context: Array<{ set: INumberSet; isOpen: boolean }> = [];
+    const context: { set: INumberSet; isOpen: boolean }[] = [];
     column.renderAscii(context);
     expect(context).toEqual([]);
   });
@@ -64,7 +68,7 @@ describe('Column', () => {
 └─ Set A
 `.trim();
 
-    const context: Array<{ set: INumberSet; isOpen: boolean }> = [];
+    const context: { set: INumberSet; isOpen: boolean }[] = [];
     expect(column.renderAscii(context)).toBe(expectedOutput);
     expect(context).toEqual([]);
   });

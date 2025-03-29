@@ -7,6 +7,13 @@ export function elementAt<T>(array: T[], index: number): T {
   return array[index];
 }
 
+export function nonNull<T>(value: T | null): T {
+  if (value === null) {
+    throw new Error('Value cannot be null');
+  }
+  return value;
+}
+
 export function safeSlice<T>(array: T[], start: number, end?: number): T[] {
   if (end === undefined) {
     if (start < 0) {
