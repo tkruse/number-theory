@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import RectangleLayout from './RectangleLayout';
-import { NATURAL_NUMBERS, ONE, WHOLE_NUMBERS, ZERO, INTEGERS, MINUS_ONE, ALGEBRAIC_NUMBERS } from '../data/numberData';
+import { NATURAL_NUMBERS, ONE, WHOLE_NUMBERS, ZERO, INTEGERS, MINUS_ONE, ALGEBRAIC_NUMBERS, REAL_NUMBERS } from '../data/numberData';
 
 describe('RectangleLayout', () => {
   it('should create a layout for NATURAL_NUMBERS', () => {
@@ -58,6 +58,41 @@ describe('RectangleLayout', () => {
 | └─ Natural Numbers
 | 0
 └─ Whole Numbers
+`.trim();
+
+    expect(layout.layoutGrid.toString()).toBe(expectedOutput);
+  });
+
+  it('should create a layout for REAL_NUMBERS using grid.toString()', () => {
+    const layout = new RectangleLayout(REAL_NUMBERS);
+
+    const expectedOutput = `
+┌─ Real Numbers
+| ┌─ Algebraic Numbers
+| | ┌─ Constructible Numbers
+| | | ┌─ Rational Numbers
+| | | | ┌─ Integers
+| | | | | ┌─ Whole Numbers
+| | | | | | ┌─ Natural Numbers
+| | | | | | | 1
+| | | | | | └─ Natural Numbers
+| | | | | | 0
+| | | | | └─ Whole Numbers
+| | | | | -1
+| | | | └─ Integers
+| | | | 1/2
+| | | └─ Rational Numbers
+| | | √2, φ
+| | └─ Constructible Numbers
+| | ∛2
+| └─ Algebraic Numbers
+| ┌─ Irrational Numbers
+| | ┌─ Transcendental Numbers
+| | | π, e, Ω
+| | └─ Transcendental Numbers
+| | √2, φ
+| └─ Irrational Numbers
+└─ Real Numbers
 `.trim();
 
     expect(layout.layoutGrid.toString()).toBe(expectedOutput);

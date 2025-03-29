@@ -86,7 +86,7 @@ const I_PLUS_PI = new RepresentativeNumber(
 const GOLDEN_RATIO = new RepresentativeNumber(
   'φ',
   'https://en.wikipedia.org/wiki/Golden_ratio',
-  'The golden ratio, an algebraic number approximately equal to 1.618, which is the positive solution to the equation x^2 = x + 1.',
+  'The golden ratio, an algebraic number approximately equal to 1.618, which is the positive solution to the equation x^2 = x + 1. Sometimes denoted as τ',
 );
 
 const CHAITINS_CONSTANT = new RepresentativeNumber(
@@ -189,7 +189,7 @@ const TRANSCENDENTAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'Numbers that are not roots of any non-zero polynomial equation with rational coefficients.',
   ['https://en.wikipedia.org/wiki/Transcendental_number'],
-  [PI, E],
+  [PI, E, CHAITINS_CONSTANT],
   [],
 );
 
@@ -199,7 +199,7 @@ const IRRATIONAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that cannot be expressed as a fraction of two integers.',
   ['https://en.wikipedia.org/wiki/Irrational_number'],
-  [SQRT_TWO],
+  [SQRT_TWO, GOLDEN_RATIO],
   [[TRANSCENDENTAL_NUMBERS]],
 );
 
@@ -219,7 +219,7 @@ const REAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The set of all rational and irrational numbers.',
   ['https://en.wikipedia.org/wiki/Real_number'],
-  [CHAITINS_CONSTANT],
+  [],
   [
     [ALGEBRAIC_NUMBERS, TRANSCENDENTAL_NUMBERS],
     [RATIONAL_NUMBERS, IRRATIONAL_NUMBERS],
