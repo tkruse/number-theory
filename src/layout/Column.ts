@@ -1,5 +1,5 @@
 import { IRepresentativeNumber, INumberSet } from '../data/numberData';
-import { elementAt, safeSlice } from '../utils/collectionUtils';
+import { safeSlice } from '../utils/collectionUtils';
 
 class Column {
   numbers: IRepresentativeNumber[];
@@ -29,57 +29,41 @@ class Column {
     this.numbers.push(number);
   }
 
-  /**
-   * Renders the column as a comma-separated list of element names.
-   * This representation is "on the side" left to right, instead of top to bottom
-   * as it would be displayed in the browser.
-   */
-  renderAscii(context: { set: INumberSet; isOpen: boolean }[] = []): string {
-    // Helper function to update the context with the current open/close state of a set
-    const updateContext = (set: INumberSet, open: boolean) => {
-      const index = context.findIndex((entry) => entry.set === set);
-      if (index !== -1) {
-        elementAt(context, index).isOpen = open;
-      } else {
-        context.push({ set, isOpen: open });
-      }
-    };
+  static getPrefix(context: { set: INumberSet; isOpen: boolean }[]): string {
+    return context.map(({ isOpen }) => (isOpen ? '| ' : '  ')).join('');
+  }
 
-    // Helper function to generate the prefix based on the current context
-    const getPrefix = () =>
-      context.map(({ isOpen }) => (isOpen ? '| ' : '  ')).join('');
+  openNumberSet(
+    set: INumberSet,
+    context: { set: INumberSet; isOpen: boolean }[],
+    lines: string[],
+  ) {
+    lines.push(`${Column.getPrefix(context)}┌─ ${set.name}`);
+  }
 
-    const lines: string[] = [];
-
-    // Process starting sets, updating context and adding lines for each
-    this.startingSets.forEach((set) => {
-      lines.push(`${getPrefix()}┌─ ${set.name}`);
-      updateContext(set, true);
-    });
-
+  processElements(
+    numbers: IRepresentativeNumber[],
+    context: { set: INumberSet; isOpen: boolean }[],
+    lines: string[],
+  ) {
     // Add lines for numbers in the column, if any
-    if (this.numbers.length > 0) {
+    if (numbers.length > 0) {
       lines.push(
-        `${getPrefix()}${this.numbers.map((number) => number.name).join(', ')}`,
+        `${Column.getPrefix(context)}${numbers.map((number) => number.name).join(', ')}`,
       );
     }
+  }
 
-    // Process ending sets, updating context and adding lines for each
-    this.endingSets.forEach((set) => {
-      const endIndex = context.findIndex((entry) => entry.set === set);
-      const endPrefix = safeSlice(context, 0, endIndex)
-        .map(({ isOpen }) => (isOpen ? '| ' : '  '))
-        .join('');
-      updateContext(set, false);
-      lines.push(`${endPrefix}└─ ${set.name}`);
-
-      // Remove closed sets from the end of the context
-      while (context.length > 0 && !context[context.length - 1].isOpen) {
-        context.pop();
-      }
-    });
-
-    return lines.join('\n');
+  closeNumberSet(
+    set: INumberSet,
+    context: { set: INumberSet; isOpen: boolean }[],
+    lines: string[],
+  ) {
+    const endIndex = context.findIndex((entry) => entry.set === set);
+    const endPrefix = safeSlice(context, 0, endIndex)
+      .map(({ isOpen }) => (isOpen ? '| ' : '  '))
+      .join('');
+    lines.push(`${endPrefix}└─ ${set.name}`);
   }
 }
 

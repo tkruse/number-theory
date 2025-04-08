@@ -8,6 +8,72 @@ class Grid {
     this.columns = [];
   }
 
+  /**
+   * Iterates over the columns and invokes callbacks for events like opening and closing number sets.
+   * This method helps in computing the max depth of nesting and other operations.
+   *
+   * @param callbacks - An object containing callback functions for different events.
+   */
+  iterateColumns(callbacks: {
+    openNumberSet: (
+      set: INumberSet,
+      context: { set: INumberSet; isOpen: boolean }[],
+    ) => void;
+    processElements: (
+      numbers: IRepresentativeNumber[],
+      context: { set: INumberSet; isOpen: boolean }[],
+    ) => void;
+    closeNumberSet: (
+      set: INumberSet,
+      context: { set: INumberSet; isOpen: boolean }[],
+    ) => void;
+  }) {
+    const context: { set: INumberSet; isOpen: boolean }[] = [];
+
+    this.columns.forEach((column) => {
+      // Open number sets
+      column.startingSets.forEach((set) => {
+        callbacks.openNumberSet(set, context);
+        const index = context.findIndex((entry) => entry.set === set);
+        if (index === -1) {
+          context.push({ set, isOpen: true });
+        } else {
+          context[index].isOpen = true;
+        }
+      });
+
+      // Process elements
+      if (column.numbers.length > 0) {
+        callbacks.processElements(column.numbers, context);
+      }
+
+      // Close number sets
+      column.endingSets.forEach((set) => {
+        callbacks.closeNumberSet(set, context);
+        const index = context.findIndex((entry) => entry.set === set);
+        if (index !== -1) {
+          context[index].isOpen = false;
+        }
+      });
+
+      // Clean up closed sets from the context
+      while (context.length > 0 && !context[context.length - 1].isOpen) {
+        context.pop();
+      }
+    });
+  }
+
+  /**
+   * Computes the vertical offset required to align RepresentativeNumberLabel.
+   * This method will be implemented to calculate the necessary offset.
+   *
+   * @returns The calculated vertical offset.
+   */
+  calculateVerticalOffset(): number {
+    // Implementation will be added here
+    return 0;
+  }
+
   addColumn(column: Column) {
     this.columns.push(column);
   }
@@ -42,18 +108,18 @@ class Grid {
    * @returns The total number of surrounding sets for the column.
    */
   calculateSurroundingSets(columnIndex: number): number {
-    let numberOfSets = 0;
+    const surroundingSets = new Set<INumberSet>();
 
     this.columns.forEach((column, index) => {
       if (index <= columnIndex) {
-        numberOfSets += column.startingSets.length;
+        column.startingSets.forEach((set) => surroundingSets.add(set));
       }
       if (index >= columnIndex) {
-        numberOfSets += column.endingSets.length;
+        column.endingSets.forEach((set) => surroundingSets.add(set));
       }
     });
 
-    return numberOfSets;
+    return surroundingSets.size;
   }
 
   findColumnContainingNumber(
@@ -74,12 +140,34 @@ class Grid {
   }
 
   toString(): string {
-    const context: { set: INumberSet; isOpen: boolean }[] = [];
-    return this.columns
-      .map((column) => {
-        return column.renderAscii(context);
-      })
-      .join('\n');
+    const lines: string[] = [];
+
+    this.iterateColumns({
+      openNumberSet: (set, context) => {
+        const column = this.columns.find((col) =>
+          col.startingSets.includes(set),
+        );
+        if (column) {
+          column.openNumberSet(set, context, lines);
+        }
+      },
+      processElements: (numbers, context) => {
+        const column = this.columns.find((col) =>
+          col.numbers.some((num) => numbers.includes(num)),
+        );
+        if (column) {
+          column.processElements(numbers, context, lines);
+        }
+      },
+      closeNumberSet: (set, context) => {
+        const column = this.columns.find((col) => col.endingSets.includes(set));
+        if (column) {
+          column.closeNumberSet(set, context, lines);
+        }
+      },
+    });
+
+    return lines.join('\n');
   }
 }
 
