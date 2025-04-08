@@ -44,7 +44,8 @@ class NumberSetRectangle {
   }
 
   get x(): number {
-    const { numberCircleRadius, numberCirclePadding } = this.options;
+    const { numberCircleRadius, overlapPadding, numberCirclePadding } =
+      this.options;
     if (!this.leftMostLabel) {
       throw new Error('Left-most label is not set');
     }
@@ -52,13 +53,17 @@ class NumberSetRectangle {
       this.leftMostLabel.x -
       numberCircleRadius -
       numberCirclePadding -
-      this.containedSubsetsAtStartColumn * numberCirclePadding
+      this.containedSubsetsAtStartColumn * overlapPadding
     );
   }
 
   get y(): number {
-    const { numberCircleRadius, numberCirclePadding, textHeight } =
-      this.options;
+    const {
+      numberCircleRadius,
+      overlapPadding,
+      textHeight,
+      numberCirclePadding,
+    } = this.options;
     if (!this.leftMostLabel) {
       throw new Error('Left-most label is not set');
     }
@@ -66,12 +71,13 @@ class NumberSetRectangle {
       this.leftMostLabel.y -
       numberCircleRadius -
       numberCirclePadding -
-      (this.maxContainedSets + 1) * (textHeight + numberCirclePadding)
+      (this.maxContainedSets + 1) * (textHeight + overlapPadding)
     );
   }
 
   get width(): number {
-    const { numberCircleRadius, numberCirclePadding } = this.options;
+    const { numberCircleRadius, overlapPadding, numberCirclePadding } =
+      this.options;
     if (!this.rightMostLabel) {
       throw new Error('Right-most label is not set');
     }
@@ -79,14 +85,17 @@ class NumberSetRectangle {
       this.rightMostLabel.x +
       numberCircleRadius +
       numberCirclePadding +
-      this.containedSubsetsAtEndColumn * numberCirclePadding -
+      this.containedSubsetsAtEndColumn * overlapPadding -
       this.x
     );
   }
 
   get height(): number {
-    const { numberCircleRadius, numberCirclePadding, textHeight } =
-      this.options;
+    const {
+      numberCircleRadius,
+      overlapPadding,
+      numberCirclePadding,
+    } = this.options;
     if (!this.bottomMostLabel) {
       throw new Error('Bottom-most label is not set');
     }
@@ -94,7 +103,7 @@ class NumberSetRectangle {
       this.bottomMostLabel.y +
       numberCircleRadius +
       numberCirclePadding +
-      this.maxContainedSets * (textHeight + numberCirclePadding) -
+      this.maxContainedSets * overlapPadding -
       this.y
     );
   }

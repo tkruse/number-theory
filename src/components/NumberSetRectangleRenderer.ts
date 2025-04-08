@@ -25,7 +25,7 @@ const NumberSetRectangleRenderer = (
   svg
     .append('text')
     .attr('x', rectangle.x + 5) // Slightly offset from the left edge
-    .attr('y', rectangle.y + 15) // Slightly offset from the top edge
+    .attr('y', rectangle.y + options.textHeight) // Slightly offset from the top edge
     .text(rectangle.numberSet.name)
     .style('font-size', `${options.textHeight}px`)
     .style('fill', 'black');

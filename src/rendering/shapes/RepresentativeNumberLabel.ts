@@ -7,8 +7,6 @@ class RepresentativeNumberLabel {
   public grid: Grid;
   private readonly options: DrawingOptions;
 
-  // TODO: instead of calculating x and y based on params, reactively add top/left elements as they are being rendered to move this labels coordinates.
-
   constructor(
     repNumber: RepresentativeNumber,
     grid: Grid,
@@ -38,7 +36,8 @@ class RepresentativeNumberLabel {
     const { columnWidth, columnPadding, overlapPadding } = this.options;
     const extraLeftPadding = this.grid.calculateExtraLeftPadding(columnIndex);
     return (
-      (columnIndex + 1) * (columnWidth / 2 + columnPadding) +
+      columnIndex * (columnWidth / 2 + columnPadding) +
+      columnPadding * 2 +
       extraLeftPadding * overlapPadding
     );
   }
@@ -71,7 +70,8 @@ class RepresentativeNumberLabel {
     const extraVerticalPadding = this.grid.calculateExtraVerticalPadding();
     const extraOffset = extraVerticalPadding * (textHeight + overlapPadding);
     return (
-      (numberIndex + 1) * (2 * numberCircleRadius + numberCirclePadding) +
+      numberIndex * (2 * numberCircleRadius + numberCirclePadding) +
+      2 * numberCirclePadding +
       numberCircleRadius +
       extraOffset
     );

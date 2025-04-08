@@ -23,9 +23,9 @@ const RepresentativeNumberRenderer = (
   group
     .append('text')
     .attr('x', 0)
-    .attr('y', 5)
+    .attr('y', options.textHeight * 0.35) // Adjusted to center vertically
     .text(label.repNumber.name)
-    .style('font-size', `12px`)
+    .style('font-size', `${options.textHeight}px`)
     .style('fill', 'black')
     .style('text-anchor', 'middle');
 };

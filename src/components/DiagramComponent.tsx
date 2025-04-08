@@ -23,17 +23,21 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
   const calculateCanvasWidth = (
     rectangleMap: Map<NumberSet, NumberSetRectangle>,
   ): number => {
-    return Array.from(rectangleMap.values()).reduce((max, rect) => {
-      return Math.max(max, rect.x + rect.width);
-    }, 0);
+    return (
+      Array.from(rectangleMap.values()).reduce((max, rect) => {
+        return Math.max(max, rect.x + rect.width);
+      }, 0) + 3
+    );
   };
 
   const calculateCanvasHeight = (
     rectangleMap: Map<NumberSet, NumberSetRectangle>,
   ): number => {
-    return Array.from(rectangleMap.values()).reduce((max, rect) => {
-      return Math.max(max, rect.y + rect.height);
-    }, 0);
+    return (
+      Array.from(rectangleMap.values()).reduce((max, rect) => {
+        return Math.max(max, rect.y + rect.height);
+      }, 0) + 3
+    );
   };
 
   useEffect(() => {
@@ -55,7 +59,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
     // Phase 1: Create a map of NumberSet to NumberSetRectangle using iterateColumns
     const rectangleMap = new Map<NumberSet, NumberSetRectangle>();
     grid.iterateColumns({
-      openNumberSet: (set, __) => {
+      openNumberSet: (set, _) => {
         const rectangle = new NumberSetRectangle(set, options);
         const allContainedNumbers = Array.from(set.getAllContainedNumbers());
         const leftMostNumber = allContainedNumbers.reduce((min, num) => {
@@ -82,7 +86,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
 
         rectangleMap.set(set, rectangle);
       },
-      processElements: (__, context) => {
+      processElements: (_, context) => {
         context.forEach((entry) => {
           const rectangle = safeGet(rectangleMap, entry.set);
 
@@ -93,7 +97,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
           rectangle.updateMaxContainedSets(containedSetsCount);
         });
       },
-      closeNumberSet: (set, context) => {
+      closeNumberSet: (set, _) => {
         const rectangle = safeGet(rectangleMap, set);
 
         const allContainedNumbers = Array.from(set.getAllContainedNumbers());
@@ -110,11 +114,13 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
         }, allContainedNumbers[0]);
         const bottomMostLabel = safeGet(numberLabelMap, bottomMostNumber);
         rectangle.setBottomMostLabel(bottomMostLabel);
-
-        const containedSubsetsAtEndColumn = context.filter(
-          (entry) => !entry.isOpen,
-        ).length;
-        rectangle.setContainedSubsetsAtEndColumn(containedSubsetsAtEndColumn);
+        grid.columns.forEach((column) => {
+          if (column.endingSets.includes(set)) {
+            const index = column.endingSets.indexOf(set);
+            const containedSubsetsAtEndColumn = index;
+            rectangle.setContainedSubsetsAtEndColumn(containedSubsetsAtEndColumn);
+          }
+        });
       },
     });
 
@@ -127,52 +133,10 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
 
     setSvgWidth(canvasWidth);
     setSvgHeight(canvasHeight);
-    console.log(`Canvas Width: ${canvasWidth}, Canvas Height: ${canvasHeight}`);
 
     svg.selectAll('*').remove(); // Clear previous content
 
     const group = svg.append<SVGGElement | null>('g');
-
-    // Draw origin lines
-    group
-      .append('line')
-      .attr('x1', 1)
-      .attr('y1', 1)
-      .attr('x2', 50)
-      .attr('y2', 1)
-      .style('stroke', 'black')
-      .style('stroke-width', 1);
-
-    group
-      .append('line')
-      .attr('x1', 1)
-      .attr('y1', 1)
-      .attr('x2', 1)
-      .attr('y2', 50)
-      .style('stroke', 'black')
-      .style('stroke-width', 1);
-
-    // Draw bottom-right corner lines
-    const bottomRightX = canvasWidth - 1;
-    const bottomRightY = canvasHeight - 1;
-
-    group
-      .append('line')
-      .attr('x1', bottomRightX)
-      .attr('y1', bottomRightY)
-      .attr('x2', canvasWidth - 50)
-      .attr('y2', bottomRightY)
-      .style('stroke', 'red')
-      .style('stroke-width', 1);
-
-    group
-      .append('line')
-      .attr('x1', bottomRightX)
-      .attr('y1', bottomRightY)
-      .attr('x2', bottomRightX)
-      .attr('y2', canvasHeight - 50)
-      .style('stroke', 'red')
-      .style('stroke-width', 1);
 
     // Phase 2: Render each NumberSetRectangle
     let colorCounter = 0;
@@ -180,7 +144,16 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
       const fillColor =
         schemeCategory10[colorCounter % schemeCategory10.length];
       colorCounter++;
-      NumberSetRectangleRenderer(group, rectangle, options, fillColor);
+      const fillColorWithTransparency = d3.color(fillColor);
+      if (fillColorWithTransparency) {
+        fillColorWithTransparency.opacity = 0.5; // Set transparency level
+      }
+      NumberSetRectangleRenderer(
+        group,
+        rectangle,
+        options,
+        fillColorWithTransparency?.toString() || fillColor,
+      );
     });
 
     // Phase 2: Render each RepresentativeNumberLabel
