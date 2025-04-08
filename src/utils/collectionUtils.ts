@@ -7,6 +7,13 @@ export function elementAt<T>(array: T[], index: number): T {
   return array[index];
 }
 
+export function safeGet<K, V>(map: Map<K, V>, key: K): V {
+  if (!map.has(key)) {
+    throw new Error(`Key ${String(key)} not found in map`);
+  }
+  return map.get(key) as V;
+}
+
 export function nonNull<T>(value: T | null): T {
   if (value === null) {
     throw new Error('Value cannot be null');

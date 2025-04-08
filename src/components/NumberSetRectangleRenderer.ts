@@ -6,8 +6,8 @@ const NumberSetRectangleRenderer = (
   svg: d3.Selection<SVGGElement | null, unknown, null, undefined>,
   rectangle: NumberSetRectangle,
   options: DrawingOptions,
-  fill: string = 'lightblue',
-  opacity: number = 1.0,
+  fill = 'lightblue',
+  opacity = 1.0,
 ) => {
   svg
     .append('rect')

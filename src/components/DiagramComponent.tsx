@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { NumberSet } from '../data/numberData';
+import { IRepresentativeNumber, NumberSet } from '../data/numberData';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import createRectangleLayout from '../layout/RectangleLayout';
+import { safeGet } from '../utils/collectionUtils';
 import RepresentativeNumberRenderer from './RepresentativeNumberRenderer';
 import RepresentativeNumberLabel from '../rendering/shapes/RepresentativeNumberLabel';
 import DrawingOptions from '../rendering/DrawingOptions';
-import Grid from "../layout/Grid";
-import NumberSetRectangle from "../rendering/shapes/NumberSetRectangle";
-import NumberSetRectangleRenderer from "./NumberSetRectangleRenderer";
+import NumberSetRectangle from '../rendering/shapes/NumberSetRectangle';
+import NumberSetRectangleRenderer from './NumberSetRectangleRenderer';
 
 interface DiagramComponentProps {
   numberSet: NumberSet;
@@ -20,60 +20,172 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
   const [svgWidth, setSvgWidth] = useState(900);
   const [svgHeight, setSvgHeight] = useState(900);
 
-  const calculateCanvasWidth = (grid: Grid, options: DrawingOptions): number => {
-    const { columnWidth, columnPadding, overlapPadding } = options;
-    return grid.columns.reduce((totalWidth, _, columnIndex) => {
-      const extraPadding = grid.calculateExtraLeftPadding(columnIndex);
-      return totalWidth + columnWidth + columnPadding + extraPadding * overlapPadding;
+  const calculateCanvasWidth = (
+    rectangleMap: Map<NumberSet, NumberSetRectangle>,
+  ): number => {
+    return Array.from(rectangleMap.values()).reduce((max, rect) => {
+      return Math.max(max, rect.x + rect.width);
     }, 0);
   };
 
-  const calculateCanvasHeight = (grid: Grid, options: DrawingOptions): number => {
-    const { numberCircleRadius, numberCirclePadding, textHeight, overlapPadding } = options;
-    const maxNumbersInColumn = Math.max(
-      ...grid.columns.map((column) => column.numbers.length)
-    );
-    const maxSurroundingSets = Math.max(
-      ...grid.columns.map((_, index) => grid.calculateSurroundingSets(index))
-    );
-    return (
-      maxNumbersInColumn * (2 * numberCircleRadius + numberCirclePadding) +
-      maxSurroundingSets * (2 * overlapPadding + textHeight) +
-      numberCircleRadius
-    );
+  const calculateCanvasHeight = (
+    rectangleMap: Map<NumberSet, NumberSetRectangle>,
+  ): number => {
+    return Array.from(rectangleMap.values()).reduce((max, rect) => {
+      return Math.max(max, rect.y + rect.height);
+    }, 0);
   };
 
   useEffect(() => {
     const grid = createRectangleLayout(numberSet);
     const options = new DrawingOptions();
 
+    // Phase 1: Create a map of RepresentativeNumber to RepresentativeNumberLabel
+    const numberLabelMap = new Map<
+      IRepresentativeNumber,
+      RepresentativeNumberLabel
+    >();
+    grid.columns.forEach((column) => {
+      column.numbers.forEach((number) => {
+        const label = new RepresentativeNumberLabel(number, grid, options);
+        numberLabelMap.set(number, label);
+      });
+    });
+
+    // Phase 1: Create a map of NumberSet to NumberSetRectangle using iterateColumns
+    const rectangleMap = new Map<NumberSet, NumberSetRectangle>();
+    grid.iterateColumns({
+      openNumberSet: (set, __) => {
+        const rectangle = new NumberSetRectangle(set, options);
+        const allContainedNumbers = Array.from(set.getAllContainedNumbers());
+        const leftMostNumber = allContainedNumbers.reduce((min, num) => {
+          const label = safeGet(numberLabelMap, num);
+          const minLabel = safeGet(numberLabelMap, min);
+          return label.x < minLabel.x ||
+            (label.x === minLabel.x && label.y < minLabel.y)
+            ? num
+            : min;
+        }, allContainedNumbers[0]);
+        const leftMostLabel = safeGet(numberLabelMap, leftMostNumber);
+        rectangle.setLeftMostLabel(leftMostLabel);
+
+        grid.columns.forEach((column) => {
+          if (column.startingSets.includes(set)) {
+            const index = column.startingSets.indexOf(set);
+            const containedSubsetsAtStartColumn =
+              column.startingSets.length - index - 1;
+            rectangle.setContainedSubsetsAtStartColumn(
+              containedSubsetsAtStartColumn,
+            );
+          }
+        });
+
+        rectangleMap.set(set, rectangle);
+      },
+      processElements: (__, context) => {
+        context.forEach((entry) => {
+          const rectangle = safeGet(rectangleMap, entry.set);
+
+          const currentIndex = context.findIndex(
+            (ctxEntry) => ctxEntry.set === entry.set,
+          );
+          const containedSetsCount = context.slice(currentIndex + 1).length;
+          rectangle.updateMaxContainedSets(containedSetsCount);
+        });
+      },
+      closeNumberSet: (set, context) => {
+        const rectangle = safeGet(rectangleMap, set);
+
+        const allContainedNumbers = Array.from(set.getAllContainedNumbers());
+        const rightMostNumber = allContainedNumbers.reduce((max, num) => {
+          const label = safeGet(numberLabelMap, num);
+          return label.x > safeGet(numberLabelMap, max).x ? num : max;
+        }, allContainedNumbers[0]);
+        const rightMostLabel = safeGet(numberLabelMap, rightMostNumber);
+        rectangle.setRightMostLabel(rightMostLabel);
+
+        const bottomMostNumber = allContainedNumbers.reduce((max, num) => {
+          const label = safeGet(numberLabelMap, num);
+          return label.y > safeGet(numberLabelMap, max).y ? num : max;
+        }, allContainedNumbers[0]);
+        const bottomMostLabel = safeGet(numberLabelMap, bottomMostNumber);
+        rectangle.setBottomMostLabel(bottomMostLabel);
+
+        const containedSubsetsAtEndColumn = context.filter(
+          (entry) => !entry.isOpen,
+        ).length;
+        rectangle.setContainedSubsetsAtEndColumn(containedSubsetsAtEndColumn);
+      },
+    });
+
+    const canvasWidth = calculateCanvasWidth(rectangleMap);
+    const canvasHeight = calculateCanvasHeight(rectangleMap);
     const svg = d3
       .select(ref.current)
-      .attr('width', calculateCanvasWidth(grid, options))
-      .attr('height', calculateCanvasHeight(grid, options));
+      .attr('width', canvasWidth)
+      .attr('height', canvasHeight);
 
-    setSvgWidth(calculateCanvasWidth(grid, options));
-    setSvgHeight(calculateCanvasHeight(grid, options));
+    setSvgWidth(canvasWidth);
+    setSvgHeight(canvasHeight);
+    console.log(`Canvas Width: ${canvasWidth}, Canvas Height: ${canvasHeight}`);
 
     svg.selectAll('*').remove(); // Clear previous content
 
     const group = svg.append<SVGGElement | null>('g');
 
-    // Draw the number set rectangles
-    grid.columns.forEach((column, columnIndex) => {
-      column.startingSets.forEach((numberSet, setIndex) => {
-        const rectangle = new NumberSetRectangle(numberSet, grid, options);
-        const fillColor = schemeCategory10[(columnIndex + setIndex) % schemeCategory10.length];
-        NumberSetRectangleRenderer(group, rectangle, options, fillColor);
-      });
+    // Draw origin lines
+    group
+      .append('line')
+      .attr('x1', 1)
+      .attr('y1', 1)
+      .attr('x2', 50)
+      .attr('y2', 1)
+      .style('stroke', 'black')
+      .style('stroke-width', 1);
+
+    group
+      .append('line')
+      .attr('x1', 1)
+      .attr('y1', 1)
+      .attr('x2', 1)
+      .attr('y2', 50)
+      .style('stroke', 'black')
+      .style('stroke-width', 1);
+
+    // Draw bottom-right corner lines
+    const bottomRightX = canvasWidth - 1;
+    const bottomRightY = canvasHeight - 1;
+
+    group
+      .append('line')
+      .attr('x1', bottomRightX)
+      .attr('y1', bottomRightY)
+      .attr('x2', canvasWidth - 50)
+      .attr('y2', bottomRightY)
+      .style('stroke', 'red')
+      .style('stroke-width', 1);
+
+    group
+      .append('line')
+      .attr('x1', bottomRightX)
+      .attr('y1', bottomRightY)
+      .attr('x2', bottomRightX)
+      .attr('y2', canvasHeight - 50)
+      .style('stroke', 'red')
+      .style('stroke-width', 1);
+
+    // Phase 2: Render each NumberSetRectangle
+    let colorCounter = 0;
+    rectangleMap.forEach((rectangle) => {
+      const fillColor =
+        schemeCategory10[colorCounter % schemeCategory10.length];
+      colorCounter++;
+      NumberSetRectangleRenderer(group, rectangle, options, fillColor);
     });
 
-    // Draw the number labels
-    grid.columns.forEach((column) => {
-      column.numbers.forEach((number) => {
-        const label = new RepresentativeNumberLabel(number, grid, options);
-        RepresentativeNumberRenderer(group, label, options);
-      });
+    // Phase 2: Render each RepresentativeNumberLabel
+    numberLabelMap.forEach((label) => {
+      RepresentativeNumberRenderer(group, label, options);
     });
   }, [numberSet]);
 

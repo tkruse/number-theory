@@ -1,99 +1,102 @@
 import { NumberSet } from '../../data/numberData';
 import DrawingOptions from '../DrawingOptions';
-import Grid from '../../layout/Grid';
+import RepresentativeNumberLabel from './RepresentativeNumberLabel';
 
 class NumberSetRectangle {
   public numberSet: NumberSet;
-  private grid: Grid;
-  private options: DrawingOptions;
+  private readonly options: DrawingOptions;
+  private leftMostLabel: RepresentativeNumberLabel | null = null;
+  private rightMostLabel: RepresentativeNumberLabel | null = null;
+  private bottomMostLabel: RepresentativeNumberLabel | null = null;
+  private maxContainedSets = 0;
+  private containedSubsetsAtStartColumn = 0;
+  private containedSubsetsAtEndColumn = 0;
 
-  constructor(numberSet: NumberSet, grid: Grid, options: DrawingOptions) {
+  constructor(numberSet: NumberSet, options: DrawingOptions) {
     this.numberSet = numberSet;
-    this.grid = grid;
     this.options = options;
   }
 
-  /**
-   * Calculates the x-coordinate for the top-left corner of the number set rectangle.
-   * The x-coordinate is determined by the starting column index of the number set,
-   * the column width, column padding, and any extra left padding due to overlapping sets.
-   *
-   * @returns The calculated x-coordinate.
-   */
+  setLeftMostLabel(label: RepresentativeNumberLabel) {
+    this.leftMostLabel = label;
+  }
+
+  setRightMostLabel(label: RepresentativeNumberLabel) {
+    this.rightMostLabel = label;
+  }
+
+  setBottomMostLabel(label: RepresentativeNumberLabel) {
+    this.bottomMostLabel = label;
+  }
+
+  updateMaxContainedSets(count: number) {
+    if (count > this.maxContainedSets) {
+      this.maxContainedSets = count;
+    }
+  }
+
+  setContainedSubsetsAtStartColumn(count: number) {
+    this.containedSubsetsAtStartColumn = count;
+  }
+
+  setContainedSubsetsAtEndColumn(count: number) {
+    this.containedSubsetsAtEndColumn = count;
+  }
+
   get x(): number {
-    const startingColumnIndex = this.grid.columns.findIndex((column) =>
-      column.startingSets.includes(this.numberSet)
-    );
-    if (startingColumnIndex === -1) {
-      throw new Error('Starting column not found for the number set');
+    const { numberCircleRadius, numberCirclePadding } = this.options;
+    if (!this.leftMostLabel) {
+      throw new Error('Left-most label is not set');
     }
-    const { columnWidth, columnPadding, overlapPadding } = this.options;
-    const extraLeftPadding = this.grid.calculateExtraLeftPadding(startingColumnIndex);
     return (
-      startingColumnIndex * (columnWidth + columnPadding) +
-      extraLeftPadding * overlapPadding
+      this.leftMostLabel.x -
+      numberCircleRadius -
+      numberCirclePadding -
+      this.containedSubsetsAtStartColumn * numberCirclePadding
     );
   }
 
-  /**
-   * Calculates the y-coordinate for the top-left corner of the number set rectangle.
-   * The y-coordinate is determined by the number of surrounding sets and the drawing options.
-   *
-   * @returns The calculated y-coordinate.
-   */
   get y(): number {
-    const startingColumnIndex = this.grid.columns.findIndex((column) =>
-      column.startingSets.includes(this.numberSet)
-    );
-    if (startingColumnIndex === -1) {
-      throw new Error('Starting column not found for the number set');
+    const { numberCircleRadius, numberCirclePadding, textHeight } =
+      this.options;
+    if (!this.leftMostLabel) {
+      throw new Error('Left-most label is not set');
     }
-    const { textHeight, overlapPadding } = this.options;
-    const surroundingSetsCount = this.grid.calculateSurroundingSets(startingColumnIndex);
-    return surroundingSetsCount * (textHeight + overlapPadding);
+    return (
+      this.leftMostLabel.y -
+      numberCircleRadius -
+      numberCirclePadding -
+      (this.maxContainedSets + 1) * (textHeight + numberCirclePadding)
+    );
   }
 
-  /**
-   * Calculates the width of the number set rectangle.
-   * The width is determined by the difference between the x-coordinates of the
-   * bottom-right and top-left corners of the rectangle.
-   *
-   * @returns The calculated width.
-   */
   get width(): number {
-    const endingColumnIndex = this.grid.columns.findIndex((column) =>
-      column.endingSets.includes(this.numberSet)
-    );
-    if (endingColumnIndex === -1) {
-      throw new Error('Ending column not found for the number set');
+    const { numberCircleRadius, numberCirclePadding } = this.options;
+    if (!this.rightMostLabel) {
+      throw new Error('Right-most label is not set');
     }
-    const { columnWidth, columnPadding, overlapPadding } = this.options;
-    const extraLeftPadding = this.grid.calculateExtraLeftPadding(endingColumnIndex);
-    const bottomRightX =
-      endingColumnIndex * (columnWidth + columnPadding) +
-      extraLeftPadding * overlapPadding +
-      columnWidth;
-    return bottomRightX - this.x;
+    return (
+      this.rightMostLabel.x +
+      numberCircleRadius +
+      numberCirclePadding +
+      this.containedSubsetsAtEndColumn * numberCirclePadding -
+      this.x
+    );
   }
 
-  /**
-   * Calculates the height of the number set rectangle.
-   * The height is determined by the difference between the y-coordinates of the
-   * bottom-right and top-left corners of the rectangle.
-   *
-   * @returns The calculated height.
-   */
   get height(): number {
-    const endingColumnIndex = this.grid.columns.findIndex((column) =>
-      column.endingSets.includes(this.numberSet)
-    );
-    if (endingColumnIndex === -1) {
-      throw new Error('Ending column not found for the number set');
+    const { numberCircleRadius, numberCirclePadding, textHeight } =
+      this.options;
+    if (!this.bottomMostLabel) {
+      throw new Error('Bottom-most label is not set');
     }
-    const { textHeight, overlapPadding } = this.options;
-    const surroundingSetsCount = this.grid.calculateSurroundingSets(endingColumnIndex);
-    const bottomRightY = surroundingSetsCount * (textHeight + overlapPadding) + textHeight;
-    return bottomRightY - this.y;
+    return (
+      this.bottomMostLabel.y +
+      numberCircleRadius +
+      numberCirclePadding +
+      this.maxContainedSets * (textHeight + numberCirclePadding) -
+      this.y
+    );
   }
 }
 

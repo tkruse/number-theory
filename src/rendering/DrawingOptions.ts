@@ -13,7 +13,7 @@ class DrawingOptions {
   textHeight;
 
   constructor(
-    columnWidth = 50,
+    columnWidth = 100,
     columnPadding = 10,
     overlapPadding = 10,
     numberCircleRadius = 20,

@@ -136,6 +136,7 @@ interface INumberSet {
   // Partitions of subsets that are mutually exclusive and collectively exhaustive within this set
   containedPartitions: INumberSet[][];
   toString(): string;
+  getAllContainedNumbers(): Set<IRepresentativeNumber>;
 }
 
 class NumberSet implements INumberSet {
@@ -148,8 +149,19 @@ class NumberSet implements INumberSet {
     public containedElements: IRepresentativeNumber[] = [],
     public containedPartitions: INumberSet[][] = [],
   ) {}
+
   toString(): string {
     return `${this.name} (${this.unicodeSymbol})`;
+  }
+
+  getAllContainedNumbers(): Set<IRepresentativeNumber> {
+    const numbers = new Set<IRepresentativeNumber>(this.containedElements);
+    this.containedPartitions.forEach((partition) => {
+      partition.forEach((subset) => {
+        subset.getAllContainedNumbers().forEach((num) => numbers.add(num));
+      });
+    });
+    return numbers;
   }
 }
 

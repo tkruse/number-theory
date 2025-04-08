@@ -67,11 +67,24 @@ class Grid {
    * Computes the vertical offset required to align RepresentativeNumberLabel.
    * This method will be implemented to calculate the necessary offset.
    *
-   * @returns The calculated vertical offset.
+   * @returns How many surrounding sets layers maximally exist in the grid
    */
-  calculateVerticalOffset(): number {
-    // Implementation will be added here
-    return 0;
+  calculateExtraVerticalPadding(): number {
+    let maxSurroundingSets = 0;
+
+    this.iterateColumns({
+      openNumberSet: () => {
+        // This is an intentional no-op
+      },
+      processElements: (_, context) => {
+        maxSurroundingSets = Math.max(maxSurroundingSets, context.length);
+      },
+      closeNumberSet: () => {
+        // This is an intentional no-op
+      },
+    });
+
+    return maxSurroundingSets;
   }
 
   addColumn(column: Column) {

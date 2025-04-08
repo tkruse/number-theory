@@ -12,6 +12,7 @@ const createSet = (name: string): INumberSet => ({
   containedElements: [],
   containedPartitions: [],
   toString: () => name,
+  getAllContainedNumbers: () => new Set(),
 });
 
 const SET_A = createSet('Set A');

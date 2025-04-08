@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { elementAt, safeSlice } from './collectionUtils';
+import { elementAt, safeSlice, safeGet } from './collectionUtils';
 
 describe('elementAt', () => {
   it('should return the correct element for a valid index', () => {
@@ -19,6 +19,24 @@ describe('elementAt', () => {
     expect(() => elementAt(array, -1)).toThrow(
       'Index -1 is out of bounds for array of length 4',
     );
+  });
+});
+
+describe('safeGet', () => {
+  it('should return the correct value for an existing key', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    expect(safeGet(map, 'a')).toBe(1);
+  });
+
+  it('should throw an error for a non-existing key', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    expect(() => safeGet(map, 'c')).toThrow('Key c not found in map');
   });
 });
 
