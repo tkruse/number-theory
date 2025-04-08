@@ -1,11 +1,35 @@
 import { Column } from './Column';
 import { INumberSet, IRepresentativeNumber } from '../data/numberData';
+import DrawingOptions from '../rendering/DrawingOptions';
 
 class Grid {
   columns: Column[];
 
   constructor() {
     this.columns = [];
+  }
+
+  /**
+   * Calculates the extra width required for a given column.
+   * This is determined by the maximum width of any set that is both in the starting
+   * and ending sets of the column, taking into account the set's name and the text height.
+   *
+   * @param columnIndex - The index of the column for which to calculate extra width.
+   * @param options - The drawing options containing text height and circle radius.
+   * @returns The extra width required for the column.
+   */
+  calculateExtraWidth(columnIndex: number, options: DrawingOptions): number {
+    const column = this.columns[columnIndex];
+    let maxWidth = 0;
+
+    column.startingSets.forEach((set) => {
+      if (column.endingSets.includes(set)) {
+        const setWidth = set.toString().length * options.textHeight * 0.45;
+        maxWidth = Math.max(maxWidth, setWidth);
+      }
+    });
+
+    return Math.max(0, maxWidth - 2 * options.numberCircleRadius);
   }
 
   /**

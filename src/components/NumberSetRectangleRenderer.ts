@@ -26,7 +26,7 @@ const NumberSetRectangleRenderer = (
     .append('text')
     .attr('x', rectangle.x + 5) // Slightly offset from the left edge
     .attr('y', rectangle.y + options.textHeight) // Slightly offset from the top edge
-    .text(rectangle.numberSet.name)
+    .text(rectangle.numberSet.toString())
     .style('font-size', `${options.textHeight}px`)
     .style('fill', 'black');
 };

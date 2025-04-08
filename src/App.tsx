@@ -1,10 +1,10 @@
 import DiagramComponent from './components/DiagramComponent';
-import { REAL_NUMBERS } from './data/numberData';
+import { COMPLEX_NUMBERS } from './data/numberData';
 
 function App() {
   return (
     <div>
-      <DiagramComponent numberSet={REAL_NUMBERS} />
+      <DiagramComponent numberSet={COMPLEX_NUMBERS} />
     </div>
   );
 }

@@ -49,12 +49,12 @@ describe('RectangleLayout', () => {
     const grid = createRectangleLayout(WHOLE_NUMBERS);
 
     const expectedOutput = `
-┌─ Whole Numbers
-| ┌─ Natural Numbers
+┌─ Whole
+| ┌─ Natural
 | | 1, 2, 3
-| └─ Natural Numbers
+| └─ Natural
 | 0
-└─ Whole Numbers
+└─ Whole
 `.trim();
 
     expect(grid.toString()).toBe(expectedOutput);
@@ -65,12 +65,12 @@ describe('RectangleLayout', () => {
 
     const expectedOutput = `
 ┌─ Integers
-| ┌─ Whole Numbers
-| | ┌─ Natural Numbers
+| ┌─ Whole
+| | ┌─ Natural
 | | | 1, 2, 3
-| | └─ Natural Numbers
+| | └─ Natural
 | | 0
-| └─ Whole Numbers
+| └─ Whole
 | -1, -2, -3
 └─ Integers
 `.trim();
@@ -82,24 +82,24 @@ describe('RectangleLayout', () => {
     const grid = createRectangleLayout(ALGEBRAIC_NUMBERS);
 
     const expectedOutput = `
-┌─ Algebraic Numbers
-| ┌─ Constructible Numbers
-| | ┌─ Rational Numbers
+┌─ Algebraic
+| ┌─ Constructible
+| | ┌─ Rational
 | | | ┌─ Integers
-| | | | ┌─ Whole Numbers
-| | | | | ┌─ Natural Numbers
+| | | | ┌─ Whole
+| | | | | ┌─ Natural
 | | | | | | 1, 2, 3
-| | | | | └─ Natural Numbers
+| | | | | └─ Natural
 | | | | | 0
-| | | | └─ Whole Numbers
+| | | | └─ Whole
 | | | | -1, -2, -3
 | | | └─ Integers
 | | | 1/2, 0.1
-| | └─ Rational Numbers
+| | └─ Rational
 | | √2, φ
-| └─ Constructible Numbers
+| └─ Constructible
 | ∛2
-└─ Algebraic Numbers
+└─ Algebraic
 `.trim();
 
     expect(grid.toString()).toBe(expectedOutput);
@@ -109,31 +109,31 @@ describe('RectangleLayout', () => {
     const grid = createRectangleLayout(REAL_NUMBERS);
 
     const expectedOutput = `
-┌─ Real Numbers
-| ┌─ Algebraic Numbers
-| | ┌─ Constructible Numbers
-| | | ┌─ Rational Numbers
+┌─ Real
+| ┌─ Algebraic
+| | ┌─ Constructible
+| | | ┌─ Rational
 | | | | ┌─ Integers
-| | | | | ┌─ Whole Numbers
-| | | | | | ┌─ Natural Numbers
+| | | | | ┌─ Whole
+| | | | | | ┌─ Natural
 | | | | | | | 1, 2, 3
-| | | | | | └─ Natural Numbers
+| | | | | | └─ Natural
 | | | | | | 0
-| | | | | └─ Whole Numbers
+| | | | | └─ Whole
 | | | | | -1, -2, -3
 | | | | └─ Integers
 | | | | 1/2, 0.1
-| | | └─ Rational Numbers
-| | | ┌─ Irrational Numbers
+| | | └─ Rational
+| | | ┌─ Irrational
 | | | | √2, φ
-| | └─ Constructible Numbers
+| | └─ Constructible
 | |   | ∛2
-| └─ Algebraic Numbers
-|     | ┌─ Transcendental Numbers
+| └─ Algebraic
+|     | ┌─ Transcendental
 |     | | π, e, Ω
-|     | └─ Transcendental Numbers
-|     └─ Irrational Numbers
-└─ Real Numbers
+|     | └─ Transcendental
+|     └─ Irrational
+└─ Real
 `.trim();
 
     expect(grid.toString()).toBe(expectedOutput);
@@ -143,39 +143,39 @@ describe('RectangleLayout', () => {
     const grid = createRectangleLayout(COMPLEX_NUMBERS);
 
     const expectedOutput = `
-┌─ Complex Numbers
-| ┌─ Real Numbers
-| | ┌─ Algebraic Numbers
-| | | ┌─ Constructible Numbers
-| | | | ┌─ Rational Numbers
+┌─ Complex
+| ┌─ Real
+| | ┌─ Algebraic
+| | | ┌─ Constructible
+| | | | ┌─ Rational
 | | | | | ┌─ Integers
-| | | | | | ┌─ Whole Numbers
-| | | | | | | ┌─ Natural Numbers
+| | | | | | ┌─ Whole
+| | | | | | | ┌─ Natural
 | | | | | | | | 1, 2, 3
-| | | | | | | └─ Natural Numbers
+| | | | | | | └─ Natural
 | | | | | | | 0
-| | | | | | └─ Whole Numbers
+| | | | | | └─ Whole
 | | | | | | -1, -2, -3
 | | | | | └─ Integers
 | | | | | 1/2, 0.1
-| | | | └─ Rational Numbers
-| | | | ┌─ Irrational Numbers
+| | | | └─ Rational
+| | | | ┌─ Irrational
 | | | | | √2, φ
-| | | └─ Constructible Numbers
+| | | └─ Constructible
 | | |   | ∛2
-| | └─ Algebraic Numbers
-| |     | ┌─ Transcendental Numbers
+| | └─ Algebraic
+| |     | ┌─ Transcendental
 | |     | | π, e, Ω
-| |     | └─ Transcendental Numbers
-| |     └─ Irrational Numbers
-| └─ Real Numbers
-| ┌─ Imaginary Numbers
-| | ┌─ Pure Imaginary Numbers
+| |     | └─ Transcendental
+| |     └─ Irrational
+| └─ Real
+| ┌─ Imaginary
+| | ┌─ Pure Imaginary
 | | | i
-| | └─ Pure Imaginary Numbers
-| | e * i, i + π
-| └─ Imaginary Numbers
-└─ Complex Numbers
+| | └─ Pure Imaginary
+| | e*i, i+π
+| └─ Imaginary
+└─ Complex
 `.trim();
 
     expect(grid.toString()).toBe(expectedOutput);

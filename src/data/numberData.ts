@@ -102,13 +102,13 @@ const IMAGINARY_UNIT = new RepresentativeNumber(
 );
 
 const E_TIMES_I = new RepresentativeNumber(
-  'e * i',
+  'e*i',
   'https://en.wikipedia.org/wiki/Imaginary_unit#Exponential_form',
   'A complex number representing the product of e and the imaginary unit i.',
 );
 
 const I_PLUS_PI = new RepresentativeNumber(
-  'i + π',
+  'i+π',
   'https://en.wikipedia.org/wiki/Complex_number',
   'A complex number representing the sum of the imaginary unit i and π.',
 );
@@ -166,7 +166,7 @@ class NumberSet implements INumberSet {
 }
 
 const NATURAL_NUMBERS = new NumberSet(
-  'Natural Numbers',
+  'Natural',
   'ℕ',
   'ℵ₀',
   'The set of all positive integers.',
@@ -176,7 +176,7 @@ const NATURAL_NUMBERS = new NumberSet(
 );
 
 const WHOLE_NUMBERS = new NumberSet(
-  'Whole Numbers',
+  'Whole',
   'ℕ₀',
   'ℵ₀',
   'The set of all non-negative integers, including zero.',
@@ -196,7 +196,7 @@ const INTEGERS = new NumberSet(
 );
 
 const RATIONAL_NUMBERS = new NumberSet(
-  'Rational Numbers',
+  'Rational',
   'ℚ',
   'ℵ₀',
   'Numbers that can be expressed as a fraction of two integers.',
@@ -206,7 +206,7 @@ const RATIONAL_NUMBERS = new NumberSet(
 );
 
 const CONSTRUCTIBLE_NUMBERS = new NumberSet(
-  'Constructible Numbers',
+  'Constructible',
   'C',
   'ℵ₀',
   'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
@@ -216,7 +216,7 @@ const CONSTRUCTIBLE_NUMBERS = new NumberSet(
 );
 
 const ALGEBRAIC_NUMBERS = new NumberSet(
-  'Algebraic Numbers',
+  'Algebraic',
   'ℚ̅',
   'ℵ₀',
   'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
@@ -226,7 +226,7 @@ const ALGEBRAIC_NUMBERS = new NumberSet(
 );
 
 const TRANSCENDENTAL_NUMBERS = new NumberSet(
-  'Transcendental Numbers',
+  'Transcendental',
   'ℝ \\ ℚ̅',
   'ℵ₁',
   'Numbers that are not roots of any non-zero polynomial equation with rational coefficients.',
@@ -236,7 +236,7 @@ const TRANSCENDENTAL_NUMBERS = new NumberSet(
 );
 
 const IRRATIONAL_NUMBERS = new NumberSet(
-  'Irrational Numbers',
+  'Irrational',
   'ℝ \\ ℚ',
   'ℵ₀',
   'Numbers that cannot be expressed as a fraction of two integers.',
@@ -246,7 +246,7 @@ const IRRATIONAL_NUMBERS = new NumberSet(
 );
 
 const COMPUTABLE_NUMBERS = new NumberSet(
-  'Computable Numbers',
+  'Computable',
   'REC',
   'ℵ₀',
   'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
@@ -256,7 +256,7 @@ const COMPUTABLE_NUMBERS = new NumberSet(
 );
 
 const REAL_NUMBERS = new NumberSet(
-  'Real Numbers',
+  'Real',
   'ℝ',
   'ℵ₁',
   'The set of all rational and irrational numbers.',
@@ -269,7 +269,7 @@ const REAL_NUMBERS = new NumberSet(
 );
 
 const PURE_IMAGINARY_NUMBERS = new NumberSet(
-  'Pure Imaginary Numbers',
+  'Pure Imaginary',
   'ℑ₀',
   'ℵ₀',
   'Numbers that are purely imaginary, having no real part.',
@@ -278,7 +278,7 @@ const PURE_IMAGINARY_NUMBERS = new NumberSet(
 );
 
 const IMAGINARY_NUMBERS = new NumberSet(
-  'Imaginary Numbers',
+  'Imaginary',
   'ℑ',
   'ℵ₀',
   'Numbers that can be expressed in the form bi, where b is a real number and i is the imaginary unit.',
@@ -288,7 +288,7 @@ const IMAGINARY_NUMBERS = new NumberSet(
 );
 
 const COMPLEX_NUMBERS = new NumberSet(
-  'Complex Numbers',
+  'Complex',
   'ℂ',
   'ℵ₁',
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',

@@ -35,10 +35,18 @@ class RepresentativeNumberLabel {
     const columnIndex = this.grid.columns.indexOf(column);
     const { columnWidth, columnPadding, overlapPadding } = this.options;
     const extraLeftPadding = this.grid.calculateExtraLeftPadding(columnIndex);
+    const extraColumnWidth = this.grid.columns
+      .slice(0, columnIndex)
+      .reduce(
+        (sum, _, index) =>
+          sum + this.grid.calculateExtraWidth(index, this.options),
+        0,
+      );
     return (
       columnIndex * (columnWidth / 2 + columnPadding) +
       columnPadding * 2 +
-      extraLeftPadding * overlapPadding
+      extraLeftPadding * overlapPadding +
+      extraColumnWidth
     );
   }
 

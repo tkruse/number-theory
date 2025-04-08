@@ -47,7 +47,7 @@ import { describe, expect, test } from 'vitest';
 describe('toString', () => {
   test.each([
     [ONE, '1'],
-    [NATURAL_NUMBERS, 'Natural Numbers (ℕ)'],
+    [NATURAL_NUMBERS, 'Natural (ℕ)'],
   ])(
     'should return correct string representation for %s',
     (instance, expectedString) => {

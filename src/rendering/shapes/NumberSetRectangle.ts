@@ -1,10 +1,12 @@
 import { NumberSet } from '../../data/numberData';
 import DrawingOptions from '../DrawingOptions';
 import RepresentativeNumberLabel from './RepresentativeNumberLabel';
+import Grid from '../../layout/Grid';
 
 class NumberSetRectangle {
   public numberSet: NumberSet;
   private readonly options: DrawingOptions;
+  private readonly grid: Grid;
   private leftMostLabel: RepresentativeNumberLabel | null = null;
   private rightMostLabel: RepresentativeNumberLabel | null = null;
   private bottomMostLabel: RepresentativeNumberLabel | null = null;
@@ -12,9 +14,10 @@ class NumberSetRectangle {
   private containedSubsetsAtStartColumn = 0;
   private containedSubsetsAtEndColumn = 0;
 
-  constructor(numberSet: NumberSet, options: DrawingOptions) {
+  constructor(numberSet: NumberSet, options: DrawingOptions, grid: Grid) {
     this.numberSet = numberSet;
     this.options = options;
+    this.grid = grid;
   }
 
   setLeftMostLabel(label: RepresentativeNumberLabel) {
@@ -81,21 +84,29 @@ class NumberSetRectangle {
     if (!this.rightMostLabel) {
       throw new Error('Right-most label is not set');
     }
+    const column = this.grid.findColumnContainingNumber(
+      this.rightMostLabel.repNumber,
+    );
+    const extraWidth = column
+      ? this.grid.calculateExtraWidth(
+          this.grid.columns.indexOf(column),
+          this.options,
+        )
+      : 0;
+
     return (
       this.rightMostLabel.x +
       numberCircleRadius +
       numberCirclePadding +
-      this.containedSubsetsAtEndColumn * overlapPadding -
+      this.containedSubsetsAtEndColumn * overlapPadding +
+      extraWidth -
       this.x
     );
   }
 
   get height(): number {
-    const {
-      numberCircleRadius,
-      overlapPadding,
-      numberCirclePadding,
-    } = this.options;
+    const { numberCircleRadius, overlapPadding, numberCirclePadding } =
+      this.options;
     if (!this.bottomMostLabel) {
       throw new Error('Bottom-most label is not set');
     }

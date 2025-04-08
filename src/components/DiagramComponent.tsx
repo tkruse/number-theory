@@ -59,8 +59,15 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
     // Phase 1: Create a map of NumberSet to NumberSetRectangle using iterateColumns
     const rectangleMap = new Map<NumberSet, NumberSetRectangle>();
     grid.iterateColumns({
+      /**
+       * Handles the opening of a number set.
+       * - Creates a new NumberSetRectangle for the set.
+       * - Determines the left-most label by finding the number with the smallest x (and y if tied).
+       * - Calculates the number of contained subsets at the start column.
+       * - Adds the rectangle to the rectangleMap.
+       */
       openNumberSet: (set, _) => {
-        const rectangle = new NumberSetRectangle(set, options);
+        const rectangle = new NumberSetRectangle(set, options, grid);
         const allContainedNumbers = Array.from(set.getAllContainedNumbers());
         const leftMostNumber = allContainedNumbers.reduce((min, num) => {
           const label = safeGet(numberLabelMap, num);
@@ -86,6 +93,12 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
 
         rectangleMap.set(set, rectangle);
       },
+      /**
+       * Processes elements within the current context.
+       * - Iterates over each set in the context.
+       * - Updates the maxContainedSets for each rectangle based on the number of sets
+       *   that come after the current set in the context.
+       */
       processElements: (_, context) => {
         context.forEach((entry) => {
           const rectangle = safeGet(rectangleMap, entry.set);
@@ -97,6 +110,13 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
           rectangle.updateMaxContainedSets(containedSetsCount);
         });
       },
+      /**
+       * Handles the closing of a number set.
+       * - Determines the right-most label by finding the number with the largest x.
+       * - Determines the bottom-most label by finding the number with the largest y.
+       * - Calculates the number of contained subsets at the end column.
+       * - Updates the rectangle in the rectangleMap.
+       */
       closeNumberSet: (set, _) => {
         const rectangle = safeGet(rectangleMap, set);
 
@@ -116,9 +136,10 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
         rectangle.setBottomMostLabel(bottomMostLabel);
         grid.columns.forEach((column) => {
           if (column.endingSets.includes(set)) {
-            const index = column.endingSets.indexOf(set);
-            const containedSubsetsAtEndColumn = index;
-            rectangle.setContainedSubsetsAtEndColumn(containedSubsetsAtEndColumn);
+            const containedSubsetsAtEndColumn = column.endingSets.indexOf(set);
+            rectangle.setContainedSubsetsAtEndColumn(
+              containedSubsetsAtEndColumn,
+            );
           }
         });
       },
@@ -152,7 +173,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
         group,
         rectangle,
         options,
-        fillColorWithTransparency?.toString() || fillColor,
+        fillColorWithTransparency?.toString() ?? fillColor,
       );
     });
 
