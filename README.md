@@ -2,6 +2,12 @@
 
 Number Theory Visualizer is a project aimed at providing visualizations of relations of sets in number theory. The project is hosted on GitHub Pages and is licensed under the MIT License.
 
+Also see:
+
+* https://math.stackexchange.com/questions/4042219
+* https://www.science4all.org/article/numbers-and-constructibility/
+* https://www.reddit.com/r/mathpics/comments/15s1dfo/complete_number_chart/
+
 ## Features
 
 - Visualize various number theory concepts and relations.
