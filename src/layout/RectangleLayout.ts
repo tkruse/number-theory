@@ -18,20 +18,36 @@ function createRectangleLayout(numberSet: NumberSet): Grid {
     }
 
     if (set.containedPartitions.length === 0) {
-      // Leaf node: create a column that starts and ends with the same set
-      const column = new Column();
-      grid.addColumn(column);
-      const newColumnIndex = grid.columns.length - 1;
-      column.addStartingSet(set);
-      column.addEndingSet(set);
-      // Add contained elements to the column, ensuring no duplicates
+      // Leaf node: determine the range of columns that contain elements of the set
+      let start = Infinity;
+      let end = -Infinity;
       set.containedElements.forEach((element) => {
-        if (!addedNumbers.has(element.name)) {
-          column.addNumber(element);
-          addedNumbers.set(element.name, newColumnIndex);
+        const columnIndex = addedNumbers.get(element.name);
+        if (columnIndex !== undefined) {
+          start = Math.min(start, columnIndex);
+          end = Math.max(end, columnIndex);
         }
       });
-      const range = { start: newColumnIndex, end: newColumnIndex };
+
+      // Add new columns if needed for elements not yet added
+      const newElements = set.containedElements.filter(
+        (element) => !addedNumbers.has(element.name),
+      );
+      if (newElements.length > 0) {
+        const column = new Column();
+        grid.addColumn(column);
+        const newColumnIndex = grid.columns.length - 1;
+        newElements.forEach((element) => {
+          column.addNumber(element);
+          addedNumbers.set(element.name, newColumnIndex);
+        });
+        start = Math.min(start, newColumnIndex);
+        end = Math.max(end, newColumnIndex);
+      }
+
+      elementAt(grid.columns, start).addStartingSet(set);
+      elementAt(grid.columns, end).addEndingSet(set);
+      const range = { start, end };
       addedSets.set(set.name, range);
       return range;
     } else {
@@ -58,7 +74,6 @@ function createRectangleLayout(numberSet: NumberSet): Grid {
       const newElements = set.containedElements.filter(
         (element) => !addedNumbers.has(element.name),
       );
-
       if (newElements.length > 0) {
         const column = new Column();
         grid.addColumn(column);

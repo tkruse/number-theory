@@ -22,10 +22,17 @@ class Grid {
     const column = this.columns[columnIndex];
     let maxWidth = 0;
 
-    column.startingSets.forEach((set) => {
-      if (column.endingSets.includes(set)) {
-        const setWidth = set.toString().length * options.textHeight * 0.45;
+    column.endingSets.forEach((set) => {
+      const setWidth = set.toString().length * options.textHeight * 0.45;
+      if (column.startingSets.includes(set)) {
         maxWidth = Math.max(maxWidth, setWidth);
+      } else if (columnIndex > 0) {
+        const previousColumn = this.columns[columnIndex - 1];
+        if (previousColumn.startingSets.includes(set)) {
+          const adjustedWidth =
+            setWidth - options.numberCircleRadius * 2 - options.columnPadding;
+          maxWidth = Math.max(maxWidth, adjustedWidth);
+        }
       }
     });
 
