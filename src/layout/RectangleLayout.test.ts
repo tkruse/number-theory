@@ -11,11 +11,15 @@ import {
   THREE,
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
+  DEFINABLE_NUMBERS,
+  COMPUTABLE_NUMBERS,
 } from '../data/numberData';
 
 describe('RectangleLayout', () => {
   it('should create a layout for NATURAL_NUMBERS', () => {
-    const grid = createRectangleLayout(NATURAL_NUMBERS);
+    const grid = createRectangleLayout([
+      { numberSet: NATURAL_NUMBERS, render: true },
+    ]);
     // Add assertions to test the grid directly
     expect(grid.columns.length).toBe(1);
 
@@ -31,7 +35,9 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for WHOLE_NUMBERS', () => {
-    const grid = createRectangleLayout(WHOLE_NUMBERS);
+    const grid = createRectangleLayout([
+      { numberSet: WHOLE_NUMBERS, render: true },
+    ]);
     expect(grid.columns.length).toBe(2);
 
     const column0 = grid.columns[0];
@@ -46,7 +52,9 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for WHOLE_NUMBERS using grid.toString()', () => {
-    const grid = createRectangleLayout(WHOLE_NUMBERS);
+    const grid = createRectangleLayout([
+      { numberSet: WHOLE_NUMBERS, render: true },
+    ]);
 
     const expectedOutput = `
 ┌─ Whole
@@ -61,7 +69,7 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for INTEGERS using grid.toString()', () => {
-    const grid = createRectangleLayout(INTEGERS);
+    const grid = createRectangleLayout([{ numberSet: INTEGERS, render: true }]);
 
     const expectedOutput = `
 ┌─ Integers
@@ -79,7 +87,9 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for ALGEBRAIC_NUMBERS using grid.toString()', () => {
-    const grid = createRectangleLayout(ALGEBRAIC_NUMBERS);
+    const grid = createRectangleLayout([
+      { numberSet: ALGEBRAIC_NUMBERS, render: true },
+    ]);
 
     const expectedOutput = `
 ┌─ Algebraic
@@ -106,7 +116,11 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for REAL_NUMBERS using grid.toString()', () => {
-    const grid = createRectangleLayout(REAL_NUMBERS);
+    const grid = createRectangleLayout([
+      { numberSet: REAL_NUMBERS, render: true },
+      { numberSet: DEFINABLE_NUMBERS, render: false },
+      { numberSet: COMPUTABLE_NUMBERS, render: false },
+    ]);
 
     const expectedOutput = `
 ┌─ Real
@@ -140,7 +154,11 @@ describe('RectangleLayout', () => {
   });
 
   it('should create a layout for COMPLEX_NUMBERS using grid.toString()', () => {
-    const grid = createRectangleLayout(COMPLEX_NUMBERS);
+    const grid = createRectangleLayout([
+      { numberSet: COMPLEX_NUMBERS, render: true },
+      { numberSet: DEFINABLE_NUMBERS, render: false },
+      { numberSet: COMPUTABLE_NUMBERS, render: false },
+    ]);
 
     const expectedOutput = `
 ┌─ Complex

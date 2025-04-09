@@ -26,7 +26,10 @@ const NumberSetRectangleRenderer = (
 
   const textGroup = svg
     .append('g')
-    .attr('transform', `translate(${rectangle.x + 5}, ${rectangle.y + options.textHeight})`);
+    .attr(
+      'transform',
+      `translate(${rectangle.x + 5}, ${rectangle.y + options.textHeight})`,
+    );
 
   if (rectangle.numberSet.webLink) {
     textGroup

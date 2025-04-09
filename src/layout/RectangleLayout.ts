@@ -3,12 +3,17 @@ import Grid from './Grid';
 import { elementAt } from '../utils/collectionUtils';
 import { Column } from './Column';
 
+export interface RenderInputs {
+  numberSet: NumberSet;
+  render: boolean;
+}
+
 /**
  * Creates a rectangle layout for a given number set.
  * The current implementation is a bit of a hack making assumptions about the order of the sets.
  * It also arranges all numbers in a single line instead of seeking a two-dimensional order.
  */
-function createRectangleLayout(numberSet: NumberSet): Grid {
+function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
   const grid = new Grid();
   // Map to track sets that have been added to avoid duplicates
   const addedSets = new Map<string, { start: number; end: number }>();
@@ -16,16 +21,19 @@ function createRectangleLayout(numberSet: NumberSet): Grid {
   const addedNumbers = new Map<string, number>();
 
   const traverse = (set: INumberSet): { start: number; end: number } => {
-    // If the set has already been added, return its start and end columns
     const existing = addedSets.get(set.name);
     if (existing) {
       return existing;
     }
+    const renderControl = renderInputs.find(
+      (control) => control.numberSet.name === set.name,
+    ) || { numberSet: set, render: true };
 
     if (set.containedPartitions.length === 0) {
       // Leaf node: determine the range of columns that contain elements of the set
       let start = Infinity;
       let end = -Infinity;
+
       set.containedElements.forEach((element) => {
         const columnIndex = addedNumbers.get(element.name);
         if (columnIndex !== undefined) {
@@ -39,19 +47,32 @@ function createRectangleLayout(numberSet: NumberSet): Grid {
         (element) => !addedNumbers.has(element.name),
       );
       if (newElements.length > 0) {
-        const column = new Column();
-        grid.addColumn(column);
-        const newColumnIndex = grid.columns.length - 1;
-        newElements.forEach((element) => {
-          column.addNumber(element);
-          addedNumbers.set(element.name, newColumnIndex);
-        });
-        start = Math.min(start, newColumnIndex);
-        end = Math.max(end, newColumnIndex);
+        if (renderControl && !renderControl.render) {
+          const lastColumn = grid.columns[grid.columns.length - 1];
+          newElements.forEach((element) => {
+            lastColumn.addNumber(element);
+            addedNumbers.set(element.name, grid.columns.length - 1);
+          });
+          const lastColumnIndex = grid.columns.length - 1;
+          start = Math.min(start, lastColumnIndex);
+          end = Math.max(end, lastColumnIndex);
+        } else {
+          const column = new Column();
+          grid.addColumn(column);
+          const newColumnIndex = grid.columns.length - 1;
+          newElements.forEach((element) => {
+            column.addNumber(element);
+            addedNumbers.set(element.name, newColumnIndex);
+          });
+          start = Math.min(start, newColumnIndex);
+          end = Math.max(end, newColumnIndex);
+        }
       }
 
-      elementAt(grid.columns, start).addStartingSet(set);
-      elementAt(grid.columns, end).addEndingSet(set);
+      if (renderControl && renderControl.render) {
+        elementAt(grid.columns, start).addStartingSet(set);
+        elementAt(grid.columns, end).addEndingSet(set);
+      }
       const range = { start, end };
       addedSets.set(set.name, range);
       return range;
@@ -80,24 +101,75 @@ function createRectangleLayout(numberSet: NumberSet): Grid {
         (element) => !addedNumbers.has(element.name),
       );
       if (newElements.length > 0) {
-        const column = new Column();
-        grid.addColumn(column);
-        const newColumnIndex = grid.columns.length - 1;
-        newElements.forEach((element) => {
-          column.addNumber(element);
-          addedNumbers.set(element.name, newColumnIndex);
-        });
-        end = grid.columns.length - 1;
+        const renderControl = renderInputs.find(
+          (control) => control.numberSet.name === set.name,
+        );
+        if (renderControl && !renderControl.render) {
+          const lastColumn = grid.columns[grid.columns.length - 1];
+          newElements.forEach((element) => {
+            lastColumn.addNumber(element);
+            addedNumbers.set(element.name, grid.columns.length - 1);
+          });
+          const lastColumnIndex = grid.columns.length - 1;
+          end = Math.max(end, lastColumnIndex);
+        } else {
+          const column = new Column();
+          grid.addColumn(column);
+          const newColumnIndex = grid.columns.length - 1;
+          newElements.forEach((element) => {
+            column.addNumber(element);
+            addedNumbers.set(element.name, newColumnIndex);
+          });
+          end = grid.columns.length - 1;
+        }
       }
-      elementAt(grid.columns, start).addStartingSet(set);
-      elementAt(grid.columns, end).addEndingSet(set);
+      if (renderControl && renderControl.render) {
+        elementAt(grid.columns, start).addStartingSet(set);
+        elementAt(grid.columns, end).addEndingSet(set);
+      }
       const range = { start, end };
       addedSets.set(set.name, range);
       return range;
     }
   };
 
-  traverse(numberSet);
+  const collectSetsToRender = (): Set<INumberSet> => {
+    const setsToRender = new Set<INumberSet>();
+    renderInputs.forEach(({ numberSet, render }) => {
+      if (render) {
+        setsToRender.add(numberSet);
+      }
+    });
+    return setsToRender;
+  };
+
+  const collectIncludedSets = (
+    set: INumberSet,
+    includedSets: Set<INumberSet>,
+  ) => {
+    set.containedPartitions.forEach((partition) => {
+      partition.forEach((subset) => {
+        if (!includedSets.has(subset)) {
+          includedSets.add(subset);
+          collectIncludedSets(subset, includedSets);
+        }
+      });
+    });
+  };
+
+  const setsToRender = collectSetsToRender();
+  const includedSets = new Set<INumberSet>();
+  setsToRender.forEach((set) => {
+    collectIncludedSets(set, includedSets);
+  });
+
+  const finalSetsToTraverse = new Set<INumberSet>(
+    Array.from(setsToRender).filter((set) => !includedSets.has(set)),
+  );
+
+  finalSetsToTraverse.forEach((set) => {
+    traverse(set);
+  });
   return grid;
 }
 

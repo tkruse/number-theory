@@ -29,7 +29,8 @@ import {
   MINUS_THREE,
   ZERO_POINT_ONE,
   INumberSet,
-  IRepresentativeNumber, UNDEFINABLE_NUMBER,
+  IRepresentativeNumber,
+  UNDEFINABLE_NUMBER,
 } from './numberData';
 
 function getAllIncludedNumbers(set: INumberSet): IRepresentativeNumber[] {
@@ -77,7 +78,15 @@ describe('getAllIncludedNumbers', () => {
     ],
     [
       IRRATIONAL_NUMBERS,
-      [UNDEFINABLE_NUMBER, SQRT_TWO, PI, E, GOLDEN_RATIO, CHAITINS_CONSTANT, CUBE_ROOT_TWO],
+      [
+        UNDEFINABLE_NUMBER,
+        SQRT_TWO,
+        PI,
+        E,
+        GOLDEN_RATIO,
+        CHAITINS_CONSTANT,
+        CUBE_ROOT_TWO,
+      ],
     ],
     [TRANSCENDENTAL_NUMBERS, [UNDEFINABLE_NUMBER, PI, E, CHAITINS_CONSTANT]],
     [

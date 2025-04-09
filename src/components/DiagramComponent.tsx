@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { IRepresentativeNumber, NumberSet } from '../data/numberData';
 import { schemeCategory10 } from 'd3-scale-chromatic';
-import createRectangleLayout from '../layout/RectangleLayout';
+import createRectangleLayout, { RenderInputs } from '../layout/RectangleLayout';
 import { safeGet } from '../utils/collectionUtils';
 import RepresentativeNumberRenderer from './RepresentativeNumberRenderer';
 import RepresentativeNumberLabel from '../rendering/shapes/RepresentativeNumberLabel';
@@ -11,10 +11,12 @@ import NumberSetRectangle from '../rendering/shapes/NumberSetRectangle';
 import NumberSetRectangleRenderer from './NumberSetRectangleRenderer';
 
 interface DiagramComponentProps {
-  numberSet: NumberSet;
+  renderInputs: RenderInputs[];
 }
 
-const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
+const DiagramComponent: React.FC<DiagramComponentProps> = ({
+  renderInputs,
+}) => {
   const ref = useRef<SVGSVGElement>(null);
 
   const [svgWidth, setSvgWidth] = useState(900);
@@ -41,7 +43,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
   };
 
   useEffect(() => {
-    const grid = createRectangleLayout(numberSet);
+    const grid = createRectangleLayout(renderInputs);
     const options = new DrawingOptions();
 
     // Phase 1: Create a map of RepresentativeNumber to RepresentativeNumberLabel
@@ -181,7 +183,7 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({ numberSet }) => {
     numberLabelMap.forEach((label) => {
       RepresentativeNumberRenderer(group, label, options);
     });
-  }, [numberSet]);
+  }, [renderInputs]);
 
   return <svg ref={ref} width={svgWidth} height={svgHeight} />;
 };

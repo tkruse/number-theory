@@ -31,7 +31,7 @@ class Grid {
           const previousColumn = this.columns[columnIndex - 1];
           if (previousColumn.startingSets.includes(set)) {
             const adjustedWidth =
-                setWidth - options.numberCircleRadius * 2 - options.columnPadding;
+              setWidth - options.numberCircleRadius * 2 - options.columnPadding;
             maxWidth = Math.max(maxWidth, adjustedWidth);
           }
         }
@@ -39,7 +39,9 @@ class Grid {
           const twoColumnsBack = this.columns[columnIndex - 2];
           if (twoColumnsBack.startingSets.includes(set)) {
             const adjustedWidth =
-                setWidth - options.numberCircleRadius * 4 - options.columnPadding * 6;
+              setWidth -
+              options.numberCircleRadius * 4 -
+              options.columnPadding * 6;
             maxWidth = Math.max(maxWidth, adjustedWidth);
           }
         }

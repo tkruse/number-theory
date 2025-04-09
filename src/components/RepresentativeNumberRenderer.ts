@@ -23,7 +23,8 @@ const RepresentativeNumberRenderer = (
     .text(label.repNumber.description);
 
   if (label.repNumber.wikipediaLink) {
-    group.append('a')
+    group
+      .append('a')
       .attr('xlink:href', label.repNumber.wikipediaLink)
       .attr('target', '_blank')
       .append('text')
@@ -36,7 +37,8 @@ const RepresentativeNumberRenderer = (
       .append('title')
       .text(label.repNumber.description);
   } else {
-    group.append('text')
+    group
+      .append('text')
       .attr('x', 0)
       .attr('y', options.textHeight * 0.35) // Adjusted to center vertically
       .text(label.repNumber.name)
@@ -46,7 +48,6 @@ const RepresentativeNumberRenderer = (
       .append('title')
       .text(label.repNumber.description);
   }
-
 };
 
 export default RepresentativeNumberRenderer;

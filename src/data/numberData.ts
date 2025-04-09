@@ -53,11 +53,7 @@ const MINUS_ONE = new RepresentativeNumber(
   'The integer minus one.',
 );
 
-const MINUS_TWO = new RepresentativeNumber(
-  '-2',
-  '',
-  'The integer minus two.',
-);
+const MINUS_TWO = new RepresentativeNumber('-2', '', 'The integer minus two.');
 
 const MINUS_THREE = new RepresentativeNumber(
   '-3',
@@ -122,7 +118,7 @@ const GOLDEN_RATIO = new RepresentativeNumber(
 const CHAITINS_CONSTANT = new RepresentativeNumber(
   'Ω',
   'https://en.wikipedia.org/wiki/Chaitin%27s_constant',
-  'A real number representing the halting probability of a universal Chaitin (self-delimiting Turing) machine.',
+  'A real number representing the halting probability of a universal Chaitin (self-delimiting Turing) machine. It has a definition but is not computable.',
 );
 
 const UNDEFINABLE_NUMBER = new RepresentativeNumber(
@@ -160,7 +156,6 @@ class NumberSet implements INumberSet {
   toString(): string {
     return `${this.name} (${this.unicodeSymbol})`;
   }
-
 
   toFullDescription(): string {
     return `Cardinality: ${this.cardinality} ${this.description}`;
@@ -268,13 +263,13 @@ const COMPUTABLE_NUMBERS = new NumberSet(
 );
 
 const DEFINABLE_NUMBERS = new NumberSet(
-    'Definable',
-    'D',
-    'ℵ₀',
-    'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
-    'https://en.wikipedia.org/wiki/Definable_real_number',
-    [CHAITINS_CONSTANT],
-    [[COMPUTABLE_NUMBERS]],
+  'Definable',
+  'D',
+  'ℵ₀',
+  'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
+  'https://en.wikipedia.org/wiki/Definable_real_number',
+  [CHAITINS_CONSTANT],
+  [[COMPUTABLE_NUMBERS]],
 );
 
 const REAL_NUMBERS = new NumberSet(
