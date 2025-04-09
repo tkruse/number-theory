@@ -55,13 +55,13 @@ const MINUS_ONE = new RepresentativeNumber(
 
 const MINUS_TWO = new RepresentativeNumber(
   '-2',
-  'https://en.wikipedia.org/wiki/-2',
+  '',
   'The integer minus two.',
 );
 
 const MINUS_THREE = new RepresentativeNumber(
   '-3',
-  'https://en.wikipedia.org/wiki/-3',
+  '',
   'The integer minus three.',
 );
 
@@ -109,7 +109,7 @@ const E_TIMES_I = new RepresentativeNumber(
 
 const I_PLUS_PI = new RepresentativeNumber(
   'i+π',
-  'https://en.wikipedia.org/wiki/Complex_number',
+  '',
   'A complex number representing the sum of the imaginary unit i and π.',
 );
 
@@ -125,17 +125,24 @@ const CHAITINS_CONSTANT = new RepresentativeNumber(
   'A real number representing the halting probability of a universal Chaitin (self-delimiting Turing) machine.',
 );
 
+const UNDEFINABLE_NUMBER = new RepresentativeNumber(
+  '?',
+  '',
+  'In Maths, no undefinable number can be defined, though most reals are undefinable. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
+);
+
 interface INumberSet {
   name: string;
   unicodeSymbol: string;
   cardinality: string;
   description: string;
-  webLinks: string[];
+  webLink: string;
   // Elements directly contained in this set, not part of any subpartition
   containedElements: IRepresentativeNumber[];
   // Partitions of subsets that are mutually exclusive and collectively exhaustive within this set
   containedPartitions: INumberSet[][];
   toString(): string;
+  toFullDescription(): string;
   getAllContainedNumbers(): Set<IRepresentativeNumber>;
 }
 
@@ -145,13 +152,18 @@ class NumberSet implements INumberSet {
     public unicodeSymbol: string,
     public cardinality: string,
     public description: string,
-    public webLinks: string[],
+    public webLink: string,
     public containedElements: IRepresentativeNumber[] = [],
     public containedPartitions: INumberSet[][] = [],
   ) {}
 
   toString(): string {
     return `${this.name} (${this.unicodeSymbol})`;
+  }
+
+
+  toFullDescription(): string {
+    return `Cardinality: ${this.cardinality} ${this.description}`;
   }
 
   getAllContainedNumbers(): Set<IRepresentativeNumber> {
@@ -170,7 +182,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'ℕ',
   'ℵ₀',
   'The set of all positive integers.',
-  ['https://en.wikipedia.org/wiki/Natural_number'],
+  'https://en.wikipedia.org/wiki/Natural_number',
   [ONE, TWO, THREE],
   [],
 );
@@ -180,7 +192,7 @@ const WHOLE_NUMBERS = new NumberSet(
   'ℕ₀',
   'ℵ₀',
   'The set of all non-negative integers, including zero.',
-  ['https://en.wikipedia.org/wiki/Whole_number'],
+  'https://en.wikipedia.org/wiki/Whole_number',
   [ZERO],
   [[NATURAL_NUMBERS]],
 );
@@ -190,7 +202,7 @@ const INTEGERS = new NumberSet(
   'ℤ',
   'ℵ₀',
   'The set of all whole numbers, including negative numbers, zero, and positive numbers.',
-  ['https://en.wikipedia.org/wiki/Integer'],
+  'https://en.wikipedia.org/wiki/Integer',
   [MINUS_ONE, TWO, THREE, MINUS_TWO, MINUS_THREE],
   [[WHOLE_NUMBERS]],
 );
@@ -200,7 +212,7 @@ const RATIONAL_NUMBERS = new NumberSet(
   'ℚ',
   'ℵ₀',
   'Numbers that can be expressed as a fraction of two integers.',
-  ['https://en.wikipedia.org/wiki/Rational_number'],
+  'https://en.wikipedia.org/wiki/Rational_number',
   [HALF, ZERO_POINT_ONE],
   [[INTEGERS]],
 );
@@ -210,7 +222,7 @@ const CONSTRUCTIBLE_NUMBERS = new NumberSet(
   'C',
   'ℵ₀',
   'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
-  ['https://en.wikipedia.org/wiki/Constructible_number'],
+  'https://en.wikipedia.org/wiki/Constructible_number',
   [SQRT_TWO, GOLDEN_RATIO],
   [[RATIONAL_NUMBERS]],
 );
@@ -220,7 +232,7 @@ const ALGEBRAIC_NUMBERS = new NumberSet(
   'ℚ̅',
   'ℵ₀',
   'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
-  ['https://en.wikipedia.org/wiki/Algebraic_number'],
+  'https://en.wikipedia.org/wiki/Algebraic_number',
   [CUBE_ROOT_TWO],
   [[CONSTRUCTIBLE_NUMBERS]],
 );
@@ -229,18 +241,18 @@ const TRANSCENDENTAL_NUMBERS = new NumberSet(
   'Transcendental',
   'ℝ \\ ℚ̅',
   'ℵ₁',
-  'Numbers that are not roots of any non-zero polynomial equation with rational coefficients.',
-  ['https://en.wikipedia.org/wiki/Transcendental_number'],
-  [PI, E, CHAITINS_CONSTANT],
+  'The Complement of algebraic numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
+  'https://en.wikipedia.org/wiki/Transcendental_number',
+  [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER],
   [],
 );
 
 const IRRATIONAL_NUMBERS = new NumberSet(
   'Irrational',
   'ℝ \\ ℚ',
-  'ℵ₀',
-  'Numbers that cannot be expressed as a fraction of two integers.',
-  ['https://en.wikipedia.org/wiki/Irrational_number'],
+  'ℵ₁',
+  'Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
+  'https://en.wikipedia.org/wiki/Irrational_number',
   [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
   [[TRANSCENDENTAL_NUMBERS]],
 );
@@ -250,9 +262,19 @@ const COMPUTABLE_NUMBERS = new NumberSet(
   'REC',
   'ℵ₀',
   'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
-  ['https://en.wikipedia.org/wiki/Computable_number'],
-  [E],
+  'https://en.wikipedia.org/wiki/Computable_number',
+  [E, GOLDEN_RATIO, PI],
   [[ALGEBRAIC_NUMBERS]],
+);
+
+const DEFINABLE_NUMBERS = new NumberSet(
+    'Definable',
+    'D',
+    'ℵ₀',
+    'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
+    'https://en.wikipedia.org/wiki/Definable_real_number',
+    [CHAITINS_CONSTANT],
+    [[COMPUTABLE_NUMBERS]],
 );
 
 const REAL_NUMBERS = new NumberSet(
@@ -260,9 +282,10 @@ const REAL_NUMBERS = new NumberSet(
   'ℝ',
   'ℵ₁',
   'The set of all rational and irrational numbers.',
-  ['https://en.wikipedia.org/wiki/Real_number'],
+  'https://en.wikipedia.org/wiki/Real_number',
   [],
   [
+    [DEFINABLE_NUMBERS],
     [ALGEBRAIC_NUMBERS, TRANSCENDENTAL_NUMBERS],
     [RATIONAL_NUMBERS, IRRATIONAL_NUMBERS],
   ],
@@ -271,18 +294,18 @@ const REAL_NUMBERS = new NumberSet(
 const PURE_IMAGINARY_NUMBERS = new NumberSet(
   'Pure Imaginary',
   'ℑ₀',
-  'ℵ₀',
-  'Numbers that are purely imaginary, having no real part.',
-  ['https://en.wikipedia.org/wiki/Imaginary_number'],
+  'ℵ₁',
+  'Complex Numbers that are purely imaginary a * i, having no real part.',
+  'https://en.wikipedia.org/wiki/Imaginary_number',
   [IMAGINARY_UNIT],
 );
 
 const IMAGINARY_NUMBERS = new NumberSet(
   'Imaginary',
   'ℑ',
-  'ℵ₀',
-  'Numbers that can be expressed in the form bi, where b is a real number and i is the imaginary unit.',
-  ['https://en.wikipedia.org/wiki/Imaginary_number'],
+  'ℵ₁',
+  'Numbers that can be expressed in the form a + bi, where a ≠ 0, b ≠ 0, where i is the imaginary unit.',
+  'https://en.wikipedia.org/wiki/Imaginary_number',
   [E_TIMES_I, I_PLUS_PI],
   [[PURE_IMAGINARY_NUMBERS]],
 );
@@ -292,15 +315,17 @@ const COMPLEX_NUMBERS = new NumberSet(
   'ℂ',
   'ℵ₁',
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
-  ['https://en.wikipedia.org/wiki/Complex_number'],
+  'https://en.wikipedia.org/wiki/Complex_number',
   [],
   [[REAL_NUMBERS, IMAGINARY_NUMBERS]],
 );
 
 // TODO
-// algebraic integers
-// hyperreals, infinitesimals, surreal numbers
-// definable
+// render partitions correctly without empty space
+// better font
+// fix algebraic / transcendental complex numbers partition, add algebraic reals? algebraic integers
+// hyperreals, infinitesimals, surreal, surcomplex, transfinite, hypercomplex
+// non-definable numbers
 // IEEE numbers
 // prime integers
 // Mersenne primes
@@ -313,6 +338,8 @@ const COMPLEX_NUMBERS = new NumberSet(
 // normal numbers
 // Algebraic Integers
 // Liouville Numbers
+// infinity, nullity
+// epsilon
 
 export {
   ZERO,
@@ -332,6 +359,7 @@ export {
   E_TIMES_I,
   I_PLUS_PI,
   CHAITINS_CONSTANT,
+  UNDEFINABLE_NUMBER,
   NATURAL_NUMBERS,
   WHOLE_NUMBERS,
   INTEGERS,
@@ -340,6 +368,7 @@ export {
   TRANSCENDENTAL_NUMBERS,
   ALGEBRAIC_NUMBERS,
   COMPUTABLE_NUMBERS,
+  DEFINABLE_NUMBERS,
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
   CONSTRUCTIBLE_NUMBERS,

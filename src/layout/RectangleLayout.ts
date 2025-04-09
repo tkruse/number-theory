@@ -3,6 +3,11 @@ import Grid from './Grid';
 import { elementAt } from '../utils/collectionUtils';
 import { Column } from './Column';
 
+/**
+ * Creates a rectangle layout for a given number set.
+ * The current implementation is a bit of a hack making assumptions about the order of the sets.
+ * It also arranges all numbers in a single line instead of seeking a two-dimensional order.
+ */
 function createRectangleLayout(numberSet: NumberSet): Grid {
   const grid = new Grid();
   // Map to track sets that have been added to avoid duplicates

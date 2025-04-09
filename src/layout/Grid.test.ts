@@ -8,10 +8,11 @@ const createSet = (name: string): INumberSet => ({
   unicodeSymbol: '',
   cardinality: '',
   description: '',
-  webLinks: [],
+  webLink: '',
   containedElements: [],
   containedPartitions: [],
   toString: () => name,
+  toFullDescription: () => '',
   getAllContainedNumbers: () => new Set(),
 });
 

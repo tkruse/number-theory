@@ -26,12 +26,22 @@ class Grid {
       const setWidth = set.toString().length * options.textHeight * 0.45;
       if (column.startingSets.includes(set)) {
         maxWidth = Math.max(maxWidth, setWidth);
-      } else if (columnIndex > 0) {
-        const previousColumn = this.columns[columnIndex - 1];
-        if (previousColumn.startingSets.includes(set)) {
-          const adjustedWidth =
-            setWidth - options.numberCircleRadius * 2 - options.columnPadding;
-          maxWidth = Math.max(maxWidth, adjustedWidth);
+      } else {
+        if (columnIndex > 0) {
+          const previousColumn = this.columns[columnIndex - 1];
+          if (previousColumn.startingSets.includes(set)) {
+            const adjustedWidth =
+                setWidth - options.numberCircleRadius * 2 - options.columnPadding;
+            maxWidth = Math.max(maxWidth, adjustedWidth);
+          }
+        }
+        if (columnIndex > 1) {
+          const twoColumnsBack = this.columns[columnIndex - 2];
+          if (twoColumnsBack.startingSets.includes(set)) {
+            const adjustedWidth =
+                setWidth - options.numberCircleRadius * 4 - options.columnPadding * 6;
+            maxWidth = Math.max(maxWidth, adjustedWidth);
+          }
         }
       }
     });

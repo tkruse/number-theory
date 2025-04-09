@@ -18,16 +18,35 @@ const RepresentativeNumberRenderer = (
     .attr('r', options.numberCircleRadius)
     .style('fill', 'lightgreen')
     .style('stroke', 'black')
-    .style('stroke-width', 2);
+    .style('stroke-width', 2)
+    .append('title')
+    .text(label.repNumber.description);
 
-  group
-    .append('text')
-    .attr('x', 0)
-    .attr('y', options.textHeight * 0.35) // Adjusted to center vertically
-    .text(label.repNumber.name)
-    .style('font-size', `${options.textHeight}px`)
-    .style('fill', 'black')
-    .style('text-anchor', 'middle');
+  if (label.repNumber.wikipediaLink) {
+    group.append('a')
+      .attr('xlink:href', label.repNumber.wikipediaLink)
+      .attr('target', '_blank')
+      .append('text')
+      .attr('x', 0)
+      .attr('y', options.textHeight * 0.35) // Adjusted to center vertically
+      .text(label.repNumber.name)
+      .style('font-size', `${options.textHeight}px`)
+      .style('fill', 'black')
+      .style('text-anchor', 'middle')
+      .append('title')
+      .text(label.repNumber.description);
+  } else {
+    group.append('text')
+      .attr('x', 0)
+      .attr('y', options.textHeight * 0.35) // Adjusted to center vertically
+      .text(label.repNumber.name)
+      .style('font-size', `${options.textHeight}px`)
+      .style('fill', 'black')
+      .style('text-anchor', 'middle')
+      .append('title')
+      .text(label.repNumber.description);
+  }
+
 };
 
 export default RepresentativeNumberRenderer;

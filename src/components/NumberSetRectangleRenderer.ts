@@ -20,15 +20,34 @@ const NumberSetRectangleRenderer = (
     .style('fill', fill)
     .style('opacity', opacity)
     .style('stroke', 'black')
-    .style('stroke-width', 2);
+    .style('stroke-width', 2)
+    .append('title')
+    .text(rectangle.numberSet.toFullDescription());
 
-  svg
-    .append('text')
-    .attr('x', rectangle.x + 5) // Slightly offset from the left edge
-    .attr('y', rectangle.y + options.textHeight) // Slightly offset from the top edge
-    .text(rectangle.numberSet.toString())
-    .style('font-size', `${options.textHeight}px`)
-    .style('fill', 'black');
+  const textGroup = svg
+    .append('g')
+    .attr('transform', `translate(${rectangle.x + 5}, ${rectangle.y + options.textHeight})`);
+
+  if (rectangle.numberSet.webLink) {
+    textGroup
+      .append('a')
+      .attr('xlink:href', rectangle.numberSet.webLink)
+      .attr('target', '_blank')
+      .append('text')
+      .text(rectangle.numberSet.toString())
+      .style('font-size', `${options.textHeight}px`)
+      .style('fill', 'black')
+      .append('title')
+      .text(rectangle.numberSet.toFullDescription());
+  } else {
+    textGroup
+      .append('text')
+      .text(rectangle.numberSet.toString())
+      .style('font-size', `${options.textHeight}px`)
+      .style('fill', 'black')
+      .append('title')
+      .text(rectangle.numberSet.toFullDescription());
+  }
 };
 
 export default NumberSetRectangleRenderer;
