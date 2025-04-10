@@ -1,5 +1,4 @@
 import DiagramComponent from './components/DiagramComponent';
-import githubMark from './assets/github-mark.svg'; // Import the local image
 import { COMPLEX_NUMBERS, REAL_NUMBERS } from './data/numberData';
 import { RenderInputs } from './layout/RectangleLayout';
 
@@ -24,7 +23,7 @@ function App() {
       </div>
       <footer className="footer">
         <a href="https://github.com/tkruse/number-theory" target="_blank" rel="noopener noreferrer">
-          <img src={githubMark} alt="GitHub" className="github-icon" />
+          <img src="/github-mark.svg" alt="GitHub" className="github-icon" />
         </a>
       </footer>
     </div>
