@@ -9,8 +9,18 @@ function App() {
     // Add more sets as needed
   ];
   return (
-    <div>
-      <DiagramComponent renderInputs={renderInputs} />
+    <div className="app-container">
+      <div className="title-legend-container">
+        <h1>Numbers Chart</h1>
+        <p>
+          This diagram illustrates various number sets. Each area is empty unless
+          the diagram shows any representative number. You can click on a label to
+          open its Wikipedia page, and hover over elements to see descriptions.
+        </p>
+      </div>
+      <div className="diagram-container">
+        <DiagramComponent renderInputs={renderInputs} />
+      </div>
     </div>
   );
 }
