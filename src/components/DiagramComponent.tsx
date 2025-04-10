@@ -185,7 +185,16 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({
     });
   }, [renderInputs]);
 
-  return <svg ref={ref} width={svgWidth} height={svgHeight} />;
+  return (
+    <div>
+      <svg
+        ref={ref}
+        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+        preserveAspectRatio="xMidYMid meet"
+        style={{ width: '100%', height: 'auto' }}
+      />
+    </div>
+  );
 };
 
 export default DiagramComponent;

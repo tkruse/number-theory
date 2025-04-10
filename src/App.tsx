@@ -23,7 +23,7 @@ function App() {
       </div>
       <footer className="footer">
         <a href="https://github.com/tkruse/number-theory" target="_blank" rel="noopener noreferrer">
-          <img src="/github-mark.svg" alt="GitHub" className="github-icon" />
+          <img src="./github-mark.svg" alt="GitHub" className="github-icon" />
         </a>
       </footer>
     </div>
