@@ -1,0 +1,2 @@
+# Enable strict engine checks to ensure compatibility with the specified Node.js version
+engine-strict=true
