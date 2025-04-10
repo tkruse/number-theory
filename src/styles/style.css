@@ -9,6 +9,17 @@ body {
   background-color: #f0f0f0;
 }
 
+.footer {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+}
+
+.github-icon {
+  width: 30px;
+  height: 30px;
+}
+
 .diagram-container {
   width: 100%;
   max-width: 100%;
