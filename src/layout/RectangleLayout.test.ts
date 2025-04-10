@@ -189,9 +189,9 @@ describe('RectangleLayout', () => {
 | └─ Real
 | ┌─ Imaginary
 | | ┌─ Pure Imaginary
-| | | i
+| | | i, e*i
 | | └─ Pure Imaginary
-| | e*i, i+π
+| | i+π
 | └─ Imaginary
 └─ Complex
 `.trim();

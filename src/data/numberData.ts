@@ -70,7 +70,7 @@ const ZERO_POINT_ONE = new RepresentativeNumber(
 const SQRT_TWO = new RepresentativeNumber(
   '√2',
   'https://en.wikipedia.org/wiki/Square_root_of_2',
-  'The square root of 2, an irrational number.',
+  'The square root of 2, an irrational number. Approximately 1.41421.',
 );
 
 const CUBE_ROOT_TWO = new RepresentativeNumber(
@@ -82,13 +82,13 @@ const CUBE_ROOT_TWO = new RepresentativeNumber(
 const PI = new RepresentativeNumber(
   'π',
   'https://en.wikipedia.org/wiki/Pi',
-  "The ratio of a circle's circumference to its diameter.",
+  "Pi, approximately 3.14159. The ratio of a circle's circumference to its diameter.",
 );
 
 const E = new RepresentativeNumber(
   'e',
   'https://en.wikipedia.org/wiki/E_(mathematical_constant)',
-  'The base of the natural logarithm, an irrational number.',
+  "Euler's number, approximately 2.71828. The base of the natural logarithm, an irrational number.",
 );
 
 const IMAGINARY_UNIT = new RepresentativeNumber(
@@ -246,7 +246,7 @@ const IRRATIONAL_NUMBERS = new NumberSet(
   'Irrational',
   'ℝ \\ ℚ',
   'ℵ₁',
-  'Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
+  'The complement of rational numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
   'https://en.wikipedia.org/wiki/Irrational_number',
   [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
   [[TRANSCENDENTAL_NUMBERS]],
@@ -292,7 +292,7 @@ const PURE_IMAGINARY_NUMBERS = new NumberSet(
   'ℵ₁',
   'Complex Numbers that are purely imaginary a * i, having no real part.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
-  [IMAGINARY_UNIT],
+  [IMAGINARY_UNIT, E_TIMES_I],
 );
 
 const IMAGINARY_NUMBERS = new NumberSet(
@@ -301,7 +301,7 @@ const IMAGINARY_NUMBERS = new NumberSet(
   'ℵ₁',
   'Numbers that can be expressed in the form a + bi, where a ≠ 0, b ≠ 0, where i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
-  [E_TIMES_I, I_PLUS_PI],
+  [I_PLUS_PI],
   [[PURE_IMAGINARY_NUMBERS]],
 );
 
@@ -316,7 +316,11 @@ const COMPLEX_NUMBERS = new NumberSet(
 );
 
 // TODO
+// controls for set visibility
+// model all sets explicitly as either partitions or non-partitions with extra elements
 // render partitions correctly without empty space
+// improve rendering proportions and symmetry
+// do not render representatives unless their set is rendered, add all representatives to every set to which they are pertinent
 // better font
 // fix algebraic / transcendental complex numbers partition, add algebraic reals? algebraic integers
 // hyperreals, infinitesimals, surreal, surcomplex, transfinite, hypercomplex
@@ -327,14 +331,13 @@ const COMPLEX_NUMBERS = new NumberSet(
 // Perfect numbers
 // Fibonacci numbers
 // Bernoulli numbers
-// squares
-// roots
 // trigonometric numbers
 // normal numbers
 // Algebraic Integers
 // Liouville Numbers
 // infinity, nullity
 // epsilon
+// Apery's constant, Catalan's constant, Euler-Mascheroni constant, Feigenbaum constants, Gelfond–Schneider constant, Khinchin's constant, plastic number, twin prime constant
 
 export {
   ZERO,

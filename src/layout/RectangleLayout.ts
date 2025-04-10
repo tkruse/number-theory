@@ -27,7 +27,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
     }
     const renderControl = renderInputs.find(
       (control) => control.numberSet.name === set.name,
-    ) || { numberSet: set, render: true };
+    ) ?? { numberSet: set, render: true };
 
     if (set.containedPartitions.length === 0) {
       // Leaf node: determine the range of columns that contain elements of the set
@@ -47,7 +47,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         (element) => !addedNumbers.has(element.name),
       );
       if (newElements.length > 0) {
-        if (renderControl && !renderControl.render) {
+        if (!renderControl.render) {
           const lastColumn = grid.columns[grid.columns.length - 1];
           newElements.forEach((element) => {
             lastColumn.addNumber(element);
@@ -69,7 +69,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         }
       }
 
-      if (renderControl && renderControl.render) {
+      if (renderControl.render) {
         elementAt(grid.columns, start).addStartingSet(set);
         elementAt(grid.columns, end).addEndingSet(set);
       }
@@ -101,10 +101,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         (element) => !addedNumbers.has(element.name),
       );
       if (newElements.length > 0) {
-        const renderControl = renderInputs.find(
-          (control) => control.numberSet.name === set.name,
-        );
-        if (renderControl && !renderControl.render) {
+        if (!renderControl.render) {
           const lastColumn = grid.columns[grid.columns.length - 1];
           newElements.forEach((element) => {
             lastColumn.addNumber(element);
@@ -123,7 +120,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
           end = grid.columns.length - 1;
         }
       }
-      if (renderControl && renderControl.render) {
+      if (renderControl.render) {
         elementAt(grid.columns, start).addStartingSet(set);
         elementAt(grid.columns, end).addEndingSet(set);
       }
