@@ -128,7 +128,11 @@ const UNDEFINABLE_NUMBER = new RepresentativeNumber(
 );
 
 enum AlgebraicStructure {
-  SemiRing = '+*',
+  Ordered = '<',
+  OrderedSemiRing = '+*<',
+  WellOrderedSemiRing = '+*<<',
+  OrderedRing = '+*-<',
+  OrderedField = '+*-/<',
   Ring = '+*-',
   Field = '+*-/',
 }
@@ -187,7 +191,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'The set of all positive integers.',
   'https://en.wikipedia.org/wiki/Natural_number',
-  AlgebraicStructure.SemiRing,
+  AlgebraicStructure.WellOrderedSemiRing,
   [ONE, TWO, THREE],
   [],
 );
@@ -198,7 +202,7 @@ const WHOLE_NUMBERS = new NumberSet(
   'ℵ₀',
   'The set of all non-negative integers, including zero.',
   'https://en.wikipedia.org/wiki/Whole_number',
-  AlgebraicStructure.SemiRing,
+  AlgebraicStructure.OrderedSemiRing,
   [ZERO],
   [[NATURAL_NUMBERS]],
 );
@@ -209,7 +213,7 @@ const INTEGERS = new NumberSet(
   'ℵ₀',
   'The set of positive and negative integer numbers and zero.',
   'https://en.wikipedia.org/wiki/Integer',
-  AlgebraicStructure.Ring,
+  AlgebraicStructure.OrderedRing,
   [MINUS_ONE, TWO, THREE, MINUS_TWO, MINUS_THREE],
   [[WHOLE_NUMBERS]],
 );
@@ -220,7 +224,7 @@ const RATIONAL_REAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Real numbers that can be expressed as a fraction of two integers.',
   'https://en.wikipedia.org/wiki/Rational_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.OrderedField,
   [HALF, ZERO_POINT_ONE],
   [[INTEGERS]],
 );
@@ -231,7 +235,7 @@ const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Real numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   'https://en.wikipedia.org/wiki/Constructible_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.OrderedField,
   [SQRT_TWO, GOLDEN_RATIO],
   [[RATIONAL_REAL_NUMBERS]],
 );
@@ -242,7 +246,7 @@ const ALGEBRAIC_REAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Real Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   'https://en.wikipedia.org/wiki/Algebraic_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.OrderedField,
   [CUBE_ROOT_TWO],
   [[CONSTRUCTIBLE_REAL_NUMBERS]],
 );
@@ -253,7 +257,7 @@ const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The Complement of algebraic real numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
   'https://en.wikipedia.org/wiki/Transcendental_number',
-  undefined,
+  AlgebraicStructure.Ordered,
   [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER],
   [],
 );
@@ -264,7 +268,7 @@ const IRRATIONAL_REAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The complement of rational real numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
   'https://en.wikipedia.org/wiki/Irrational_number',
-  undefined,
+  AlgebraicStructure.Ordered,
   [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
   [[TRANSCENDENTAL_REAL_NUMBERS]],
 );
@@ -275,7 +279,7 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.OrderedField,
   [E, GOLDEN_RATIO, PI],
   [[ALGEBRAIC_REAL_NUMBERS]],
 );
@@ -286,7 +290,7 @@ const DEFINABLE_REAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
   'https://en.wikipedia.org/wiki/Definable_real_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.OrderedField,
   [CHAITINS_CONSTANT],
   [[COMPUTABLE_REAL_NUMBERS]],
 );
@@ -297,7 +301,7 @@ const REAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The set of all rational and irrational numbers.',
   'https://en.wikipedia.org/wiki/Real_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.OrderedField,
   [],
   [
     [DEFINABLE_REAL_NUMBERS],
