@@ -127,6 +127,12 @@ const UNDEFINABLE_NUMBER = new RepresentativeNumber(
   'In Maths, no undefinable number can be defined, though most reals are undefinable. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
 );
 
+enum AlgebraicStructure {
+  SemiRing = '+*',
+  Ring = '+*-',
+  Field = '+*-/',
+}
+
 interface INumberSet {
   name: string;
   unicodeSymbol: string;
@@ -135,6 +141,8 @@ interface INumberSet {
   webLink: string;
   // Elements directly contained in this set, not part of any subpartition
   containedElements: IRepresentativeNumber[];
+  // The algebraic structure of the number set (e.g., SemiRing, Ring, Field)
+  algebraicStructure?: AlgebraicStructure;
   // Partitions of subsets that are mutually exclusive and collectively exhaustive within this set
   containedPartitions: INumberSet[][];
   toString(): string;
@@ -149,6 +157,7 @@ class NumberSet implements INumberSet {
     public cardinality: string,
     public description: string,
     public webLink: string,
+    public algebraicStructure?: AlgebraicStructure,
     public containedElements: IRepresentativeNumber[] = [],
     public containedPartitions: INumberSet[][] = [],
   ) {}
@@ -158,7 +167,7 @@ class NumberSet implements INumberSet {
   }
 
   toFullDescription(): string {
-    return `Cardinality: ${this.cardinality} ${this.description}`;
+    return `${this.name} (${this.unicodeSymbol}${this.algebraicStructure ? ', ' + this.algebraicStructure : ''}). Cardinality: ${this.cardinality} ${this.description}`;
   }
 
   getAllContainedNumbers(): Set<IRepresentativeNumber> {
@@ -178,6 +187,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'The set of all positive integers.',
   'https://en.wikipedia.org/wiki/Natural_number',
+  AlgebraicStructure.SemiRing,
   [ONE, TWO, THREE],
   [],
 );
@@ -188,6 +198,7 @@ const WHOLE_NUMBERS = new NumberSet(
   'ℵ₀',
   'The set of all non-negative integers, including zero.',
   'https://en.wikipedia.org/wiki/Whole_number',
+  AlgebraicStructure.SemiRing,
   [ZERO],
   [[NATURAL_NUMBERS]],
 );
@@ -198,6 +209,7 @@ const INTEGERS = new NumberSet(
   'ℵ₀',
   'The set of all whole numbers, including negative numbers, zero, and positive numbers.',
   'https://en.wikipedia.org/wiki/Integer',
+  AlgebraicStructure.Ring,
   [MINUS_ONE, TWO, THREE, MINUS_TWO, MINUS_THREE],
   [[WHOLE_NUMBERS]],
 );
@@ -208,6 +220,7 @@ const RATIONAL_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that can be expressed as a fraction of two integers.',
   'https://en.wikipedia.org/wiki/Rational_number',
+  AlgebraicStructure.Field,
   [HALF, ZERO_POINT_ONE],
   [[INTEGERS]],
 );
@@ -218,6 +231,7 @@ const CONSTRUCTIBLE_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   'https://en.wikipedia.org/wiki/Constructible_number',
+  AlgebraicStructure.Field,
   [SQRT_TWO, GOLDEN_RATIO],
   [[RATIONAL_NUMBERS]],
 );
@@ -228,6 +242,7 @@ const ALGEBRAIC_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   'https://en.wikipedia.org/wiki/Algebraic_number',
+  AlgebraicStructure.Field,
   [CUBE_ROOT_TWO],
   [[CONSTRUCTIBLE_NUMBERS]],
 );
@@ -238,6 +253,7 @@ const TRANSCENDENTAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The Complement of algebraic numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
   'https://en.wikipedia.org/wiki/Transcendental_number',
+  undefined,
   [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER],
   [],
 );
@@ -248,6 +264,7 @@ const IRRATIONAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The complement of rational numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
   'https://en.wikipedia.org/wiki/Irrational_number',
+  undefined,
   [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
   [[TRANSCENDENTAL_NUMBERS]],
 );
@@ -258,6 +275,7 @@ const COMPUTABLE_NUMBERS = new NumberSet(
   'ℵ₀',
   'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
+  AlgebraicStructure.Field,
   [E, GOLDEN_RATIO, PI],
   [[ALGEBRAIC_NUMBERS]],
 );
@@ -268,6 +286,7 @@ const DEFINABLE_NUMBERS = new NumberSet(
   'ℵ₀',
   'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
   'https://en.wikipedia.org/wiki/Definable_real_number',
+  AlgebraicStructure.Field,
   [CHAITINS_CONSTANT],
   [[COMPUTABLE_NUMBERS]],
 );
@@ -278,6 +297,7 @@ const REAL_NUMBERS = new NumberSet(
   'ℵ₁',
   'The set of all rational and irrational numbers.',
   'https://en.wikipedia.org/wiki/Real_number',
+  AlgebraicStructure.Field,
   [],
   [
     [DEFINABLE_NUMBERS],
@@ -292,6 +312,7 @@ const PURE_IMAGINARY_NUMBERS = new NumberSet(
   'ℵ₁',
   'Complex Numbers that are purely imaginary a * i, having no real part.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
+  undefined,
   [IMAGINARY_UNIT, E_TIMES_I],
 );
 
@@ -301,6 +322,7 @@ const IMAGINARY_NUMBERS = new NumberSet(
   'ℵ₁',
   'Numbers that can be expressed in the form a + bi, where a ≠ 0, b ≠ 0, where i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
+  undefined,
   [I_PLUS_PI],
   [[PURE_IMAGINARY_NUMBERS]],
 );
@@ -311,6 +333,7 @@ const COMPLEX_NUMBERS = new NumberSet(
   'ℵ₁',
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Complex_number',
+  AlgebraicStructure.Field,
   [],
   [[REAL_NUMBERS, IMAGINARY_NUMBERS]],
 );
@@ -326,7 +349,8 @@ const COMPLEX_NUMBERS = new NumberSet(
 // hyperreals, infinitesimals, surreal, surcomplex, transfinite, hypercomplex
 // non-definable numbers
 // IEEE numbers
-// prime integers
+// prime integers / composite numbers
+// Dyadic rational
 // Mersenne primes
 // Perfect numbers
 // Fibonacci numbers
