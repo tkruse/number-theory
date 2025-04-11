@@ -14,14 +14,14 @@ import {
   NATURAL_NUMBERS,
   WHOLE_NUMBERS,
   INTEGERS,
-  RATIONAL_NUMBERS,
-  IRRATIONAL_NUMBERS,
-  TRANSCENDENTAL_NUMBERS,
-  ALGEBRAIC_NUMBERS,
-  COMPUTABLE_NUMBERS,
+  RATIONAL_REAL_NUMBERS,
+  IRRATIONAL_REAL_NUMBERS,
+  TRANSCENDENTAL_REAL_NUMBERS,
+  ALGEBRAIC_REAL_NUMBERS,
+  COMPUTABLE_REAL_NUMBERS,
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
-  CONSTRUCTIBLE_NUMBERS,
+  CONSTRUCTIBLE_REAL_NUMBERS,
   GOLDEN_RATIO,
   TWO,
   THREE,
@@ -63,7 +63,7 @@ describe('getAllIncludedNumbers', () => {
     [WHOLE_NUMBERS, [ZERO, ONE, TWO, THREE]],
     [INTEGERS, [MINUS_THREE, MINUS_TWO, MINUS_ONE, ZERO, ONE, TWO, THREE]],
     [
-      RATIONAL_NUMBERS,
+      RATIONAL_REAL_NUMBERS,
       [
         HALF,
         ZERO_POINT_ONE,
@@ -77,7 +77,7 @@ describe('getAllIncludedNumbers', () => {
       ],
     ],
     [
-      IRRATIONAL_NUMBERS,
+      IRRATIONAL_REAL_NUMBERS,
       [
         UNDEFINABLE_NUMBER,
         SQRT_TWO,
@@ -88,9 +88,12 @@ describe('getAllIncludedNumbers', () => {
         CUBE_ROOT_TWO,
       ],
     ],
-    [TRANSCENDENTAL_NUMBERS, [UNDEFINABLE_NUMBER, PI, E, CHAITINS_CONSTANT]],
     [
-      ALGEBRAIC_NUMBERS,
+      TRANSCENDENTAL_REAL_NUMBERS,
+      [UNDEFINABLE_NUMBER, PI, E, CHAITINS_CONSTANT],
+    ],
+    [
+      ALGEBRAIC_REAL_NUMBERS,
       [
         GOLDEN_RATIO,
         HALF,
@@ -107,7 +110,7 @@ describe('getAllIncludedNumbers', () => {
       ],
     ],
     [
-      COMPUTABLE_NUMBERS,
+      COMPUTABLE_REAL_NUMBERS,
       [
         E,
         GOLDEN_RATIO,
@@ -126,7 +129,7 @@ describe('getAllIncludedNumbers', () => {
       ],
     ],
     [
-      CONSTRUCTIBLE_NUMBERS,
+      CONSTRUCTIBLE_REAL_NUMBERS,
       [
         SQRT_TWO,
         HALF,

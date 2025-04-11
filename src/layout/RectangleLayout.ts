@@ -47,26 +47,15 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         (element) => !addedNumbers.has(element.name),
       );
       if (newElements.length > 0) {
-        if (!renderControl.render) {
-          const lastColumn = grid.columns[grid.columns.length - 1];
-          newElements.forEach((element) => {
-            lastColumn.addNumber(element);
-            addedNumbers.set(element.name, grid.columns.length - 1);
-          });
-          const lastColumnIndex = grid.columns.length - 1;
-          start = Math.min(start, lastColumnIndex);
-          end = Math.max(end, lastColumnIndex);
-        } else {
-          const column = new Column();
-          grid.addColumn(column);
-          const newColumnIndex = grid.columns.length - 1;
-          newElements.forEach((element) => {
-            column.addNumber(element);
-            addedNumbers.set(element.name, newColumnIndex);
-          });
-          start = Math.min(start, newColumnIndex);
-          end = Math.max(end, newColumnIndex);
-        }
+        const column = new Column();
+        grid.addColumn(column);
+        const newColumnIndex = grid.columns.length - 1;
+        newElements.forEach((element) => {
+          column.addNumber(element);
+          addedNumbers.set(element.name, newColumnIndex);
+        });
+        start = Math.min(start, newColumnIndex);
+        end = Math.max(end, newColumnIndex);
       }
 
       if (renderControl.render) {
@@ -101,24 +90,14 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         (element) => !addedNumbers.has(element.name),
       );
       if (newElements.length > 0) {
-        if (!renderControl.render) {
-          const lastColumn = grid.columns[grid.columns.length - 1];
-          newElements.forEach((element) => {
-            lastColumn.addNumber(element);
-            addedNumbers.set(element.name, grid.columns.length - 1);
-          });
-          const lastColumnIndex = grid.columns.length - 1;
-          end = Math.max(end, lastColumnIndex);
-        } else {
-          const column = new Column();
-          grid.addColumn(column);
-          const newColumnIndex = grid.columns.length - 1;
-          newElements.forEach((element) => {
-            column.addNumber(element);
-            addedNumbers.set(element.name, newColumnIndex);
-          });
-          end = grid.columns.length - 1;
-        }
+        const column = new Column();
+        grid.addColumn(column);
+        const newColumnIndex = grid.columns.length - 1;
+        newElements.forEach((element) => {
+          column.addNumber(element);
+          addedNumbers.set(element.name, newColumnIndex);
+        });
+        end = grid.columns.length - 1;
       }
       if (renderControl.render) {
         elementAt(grid.columns, start).addStartingSet(set);

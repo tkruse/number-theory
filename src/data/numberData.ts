@@ -207,80 +207,80 @@ const INTEGERS = new NumberSet(
   'Integers',
   'ℤ',
   'ℵ₀',
-  'The set of all whole numbers, including negative numbers, zero, and positive numbers.',
+  'The set of positive and negative integer numbers and zero.',
   'https://en.wikipedia.org/wiki/Integer',
   AlgebraicStructure.Ring,
   [MINUS_ONE, TWO, THREE, MINUS_TWO, MINUS_THREE],
   [[WHOLE_NUMBERS]],
 );
 
-const RATIONAL_NUMBERS = new NumberSet(
+const RATIONAL_REAL_NUMBERS = new NumberSet(
   'Rational',
   'ℚ',
   'ℵ₀',
-  'Numbers that can be expressed as a fraction of two integers.',
+  'Real numbers that can be expressed as a fraction of two integers.',
   'https://en.wikipedia.org/wiki/Rational_number',
   AlgebraicStructure.Field,
   [HALF, ZERO_POINT_ONE],
   [[INTEGERS]],
 );
 
-const CONSTRUCTIBLE_NUMBERS = new NumberSet(
+const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSet(
   'Constructible',
   'C',
   'ℵ₀',
-  'Numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
+  'Real numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   'https://en.wikipedia.org/wiki/Constructible_number',
   AlgebraicStructure.Field,
   [SQRT_TWO, GOLDEN_RATIO],
-  [[RATIONAL_NUMBERS]],
+  [[RATIONAL_REAL_NUMBERS]],
 );
 
-const ALGEBRAIC_NUMBERS = new NumberSet(
+const ALGEBRAIC_REAL_NUMBERS = new NumberSet(
   'Algebraic',
   'ℚ̅',
   'ℵ₀',
-  'Numbers that are roots of non-zero polynomial equations with rational coefficients.',
+  'Real Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   'https://en.wikipedia.org/wiki/Algebraic_number',
   AlgebraicStructure.Field,
   [CUBE_ROOT_TWO],
-  [[CONSTRUCTIBLE_NUMBERS]],
+  [[CONSTRUCTIBLE_REAL_NUMBERS]],
 );
 
-const TRANSCENDENTAL_NUMBERS = new NumberSet(
+const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
   'Transcendental',
   'ℝ \\ ℚ̅',
   'ℵ₁',
-  'The Complement of algebraic numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
+  'The Complement of algebraic real numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
   'https://en.wikipedia.org/wiki/Transcendental_number',
   undefined,
   [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER],
   [],
 );
 
-const IRRATIONAL_NUMBERS = new NumberSet(
+const IRRATIONAL_REAL_NUMBERS = new NumberSet(
   'Irrational',
   'ℝ \\ ℚ',
   'ℵ₁',
-  'The complement of rational numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
+  'The complement of rational real numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
   'https://en.wikipedia.org/wiki/Irrational_number',
   undefined,
   [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
-  [[TRANSCENDENTAL_NUMBERS]],
+  [[TRANSCENDENTAL_REAL_NUMBERS]],
 );
 
-const COMPUTABLE_NUMBERS = new NumberSet(
+const COMPUTABLE_REAL_NUMBERS = new NumberSet(
   'Computable',
   'REC',
   'ℵ₀',
-  'Numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
+  'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
   AlgebraicStructure.Field,
   [E, GOLDEN_RATIO, PI],
-  [[ALGEBRAIC_NUMBERS]],
+  [[ALGEBRAIC_REAL_NUMBERS]],
 );
 
-const DEFINABLE_NUMBERS = new NumberSet(
+const DEFINABLE_REAL_NUMBERS = new NumberSet(
   'Definable',
   'D',
   'ℵ₀',
@@ -288,7 +288,7 @@ const DEFINABLE_NUMBERS = new NumberSet(
   'https://en.wikipedia.org/wiki/Definable_real_number',
   AlgebraicStructure.Field,
   [CHAITINS_CONSTANT],
-  [[COMPUTABLE_NUMBERS]],
+  [[COMPUTABLE_REAL_NUMBERS]],
 );
 
 const REAL_NUMBERS = new NumberSet(
@@ -300,9 +300,9 @@ const REAL_NUMBERS = new NumberSet(
   AlgebraicStructure.Field,
   [],
   [
-    [DEFINABLE_NUMBERS],
-    [ALGEBRAIC_NUMBERS, TRANSCENDENTAL_NUMBERS],
-    [RATIONAL_NUMBERS, IRRATIONAL_NUMBERS],
+    [DEFINABLE_REAL_NUMBERS],
+    [ALGEBRAIC_REAL_NUMBERS, TRANSCENDENTAL_REAL_NUMBERS],
+    [RATIONAL_REAL_NUMBERS, IRRATIONAL_REAL_NUMBERS],
   ],
 );
 
@@ -339,13 +339,19 @@ const COMPLEX_NUMBERS = new NumberSet(
 );
 
 // TODO
-// controls for set visibility
-// model all sets explicitly as either partitions or non-partitions with extra elements
-// render partitions correctly without empty space
+// a set/partition can have default visibility
+// controls for set/partition visibility
+// all sets are added to a collection on construction
+// where possible, render partitions with same vertical height (unless it breaks containment)
+// mark subsets as constituting (their representative numbers must be rendered when rendering the parent) vs informative (only render their numbers when that set is rendered)
+// rearrange sets: display as nested rectangle with layered title bars
+// 1st level: [algebraic, transcendent]
+// 2st level: [imaginary, real, imaginary]
+// 3nd level: [algebraic imaginaries, algebraic reals, transcendental reals, transcendental imaginaries]
+// arrange representative numbers more smartly
+// display whether totally and / or well ordered '<', '<<'
 // improve rendering proportions and symmetry
-// do not render representatives unless their set is rendered, add all representatives to every set to which they are pertinent
 // better font
-// fix algebraic / transcendental complex numbers partition, add algebraic reals? algebraic integers
 // hyperreals, infinitesimals, surreal, surcomplex, transfinite, hypercomplex
 // non-definable numbers
 // IEEE numbers
@@ -385,15 +391,15 @@ export {
   NATURAL_NUMBERS,
   WHOLE_NUMBERS,
   INTEGERS,
-  RATIONAL_NUMBERS,
-  IRRATIONAL_NUMBERS,
-  TRANSCENDENTAL_NUMBERS,
-  ALGEBRAIC_NUMBERS,
-  COMPUTABLE_NUMBERS,
-  DEFINABLE_NUMBERS,
+  RATIONAL_REAL_NUMBERS,
+  IRRATIONAL_REAL_NUMBERS,
+  TRANSCENDENTAL_REAL_NUMBERS,
+  ALGEBRAIC_REAL_NUMBERS,
+  COMPUTABLE_REAL_NUMBERS,
+  DEFINABLE_REAL_NUMBERS,
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
-  CONSTRUCTIBLE_NUMBERS,
+  CONSTRUCTIBLE_REAL_NUMBERS,
   IMAGINARY_NUMBERS,
   PURE_IMAGINARY_NUMBERS,
   GOLDEN_RATIO,

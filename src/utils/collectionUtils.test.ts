@@ -1,5 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { elementAt, safeSlice, safeGet } from './collectionUtils';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  elementAt,
+  elementAtOrFallback,
+  getOrFallback,
+  safeSlice,
+  safeGet,
+} from './collectionUtils';
 
 describe('elementAt', () => {
   it('should return the correct element for a valid index', () => {
@@ -22,6 +28,23 @@ describe('elementAt', () => {
   });
 });
 
+describe('elementAtOrFallback', () => {
+  it('should return the correct element for a valid index', () => {
+    const array = [10, 20, 30, 40];
+    expect(elementAtOrFallback(array, 2, () => 99)).toBe(30);
+  });
+
+  it('should return the fallback for an out-of-bounds index', () => {
+    const array = [10, 20, 30, 40];
+    expect(elementAtOrFallback(array, 5, () => 99)).toBe(99);
+  });
+
+  it('should return the fallback for a negative index', () => {
+    const array = [10, 20, 30, 40];
+    expect(elementAtOrFallback(array, -1, () => 99)).toBe(99);
+  });
+});
+
 describe('safeGet', () => {
   it('should return the correct value for an existing key', () => {
     const map = new Map<string, number>([
@@ -37,6 +60,36 @@ describe('safeGet', () => {
       ['b', 2],
     ]);
     expect(() => safeGet(map, 'c')).toThrow('Key c not found in map');
+  });
+});
+
+describe('getOrFallback', () => {
+  it('should return the correct value for an existing key', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    expect(getOrFallback(map, 'a', () => 99)).toBe(1);
+  });
+
+  it('should return the fallback for a non-existing key', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    expect(getOrFallback(map, 'c', () => 99)).toBe(99);
+  });
+
+  it('should call the fallback function only when the key is not found', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    const fallback = vi.fn(() => 99);
+    getOrFallback(map, 'a', fallback);
+    expect(fallback).not.toHaveBeenCalled();
+    getOrFallback(map, 'c', fallback);
+    expect(fallback).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -6,13 +6,14 @@ import {
   WHOLE_NUMBERS,
   ZERO,
   INTEGERS,
-  ALGEBRAIC_NUMBERS,
+  ALGEBRAIC_REAL_NUMBERS,
   TWO,
   THREE,
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
-  DEFINABLE_NUMBERS,
-  COMPUTABLE_NUMBERS,
+  DEFINABLE_REAL_NUMBERS,
+  COMPUTABLE_REAL_NUMBERS,
+  RATIONAL_REAL_NUMBERS,
 } from '../data/numberData';
 
 describe('RectangleLayout', () => {
@@ -88,7 +89,7 @@ describe('RectangleLayout', () => {
 
   it('should create a layout for ALGEBRAIC_NUMBERS using grid.toString()', () => {
     const grid = createRectangleLayout([
-      { numberSet: ALGEBRAIC_NUMBERS, render: true },
+      { numberSet: ALGEBRAIC_REAL_NUMBERS, render: true },
     ]);
 
     const expectedOutput = `
@@ -118,33 +119,31 @@ describe('RectangleLayout', () => {
   it('should create a layout for REAL_NUMBERS using grid.toString()', () => {
     const grid = createRectangleLayout([
       { numberSet: REAL_NUMBERS, render: true },
-      { numberSet: DEFINABLE_NUMBERS, render: false },
-      { numberSet: COMPUTABLE_NUMBERS, render: false },
+      { numberSet: DEFINABLE_REAL_NUMBERS, render: false },
+      { numberSet: COMPUTABLE_REAL_NUMBERS, render: false },
+      { numberSet: RATIONAL_REAL_NUMBERS, render: false },
+      { numberSet: INTEGERS, render: false },
+      { numberSet: WHOLE_NUMBERS, render: false },
+      { numberSet: NATURAL_NUMBERS, render: false },
     ]);
 
     const expectedOutput = `
 ┌─ Real
 | ┌─ Algebraic
 | | ┌─ Constructible
-| | | ┌─ Rational
-| | | | ┌─ Integers
-| | | | | ┌─ Whole
-| | | | | | ┌─ Natural
-| | | | | | | 1, 2, 3
-| | | | | | └─ Natural
-| | | | | | 0
-| | | | | └─ Whole
-| | | | | -1, -2, -3
-| | | | └─ Integers
-| | | | 1/2, 0.1
-| | | └─ Rational
+| | | 1, 2, 3
+| | | 0
+| | | -1, -2, -3
+| | | 1/2, 0.1
 | | | ┌─ Irrational
 | | | | √2, φ
 | | └─ Constructible
 | |   | ∛2
 | └─ Algebraic
 |     | ┌─ Transcendental
-|     | | π, e, Ω
+|     | | e, π
+|     | | Ω
+|     | | ?
 |     | └─ Transcendental
 |     └─ Irrational
 └─ Real
@@ -156,8 +155,8 @@ describe('RectangleLayout', () => {
   it('should create a layout for COMPLEX_NUMBERS using grid.toString()', () => {
     const grid = createRectangleLayout([
       { numberSet: COMPLEX_NUMBERS, render: true },
-      { numberSet: DEFINABLE_NUMBERS, render: false },
-      { numberSet: COMPUTABLE_NUMBERS, render: false },
+      { numberSet: DEFINABLE_REAL_NUMBERS, render: false },
+      { numberSet: COMPUTABLE_REAL_NUMBERS, render: false },
     ]);
 
     const expectedOutput = `
@@ -183,7 +182,9 @@ describe('RectangleLayout', () => {
 | | |   | ∛2
 | | └─ Algebraic
 | |     | ┌─ Transcendental
-| |     | | π, e, Ω
+| |     | | e, π
+| |     | | Ω
+| |     | | ?
 | |     | └─ Transcendental
 | |     └─ Irrational
 | └─ Real

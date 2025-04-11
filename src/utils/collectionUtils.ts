@@ -7,6 +7,28 @@ export function elementAt<T>(array: T[], index: number): T {
   return array[index];
 }
 
+export function elementAtOrFallback<T>(
+  array: T[],
+  index: number,
+  fallback: () => T,
+): T {
+  if (index < 0 || index >= array.length) {
+    return fallback();
+  }
+  return array[index];
+}
+
+export function getOrFallback<K, V>(
+  map: Map<K, V>,
+  key: K,
+  fallback: () => V,
+): V {
+  if (!map.has(key)) {
+    return fallback();
+  }
+  return map.get(key) as V;
+}
+
 export function safeGet<K, V>(map: Map<K, V>, key: K): V {
   if (!map.has(key)) {
     throw new Error(`Key ${String(key)} not found in map`);
