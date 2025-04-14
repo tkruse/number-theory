@@ -87,19 +87,6 @@ function App() {
           </li>
           <li>
             <a
-              href="https://en.wikipedia.org/wiki/Split-complex_number"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Split-complex Numbers
-            </a>{' '}
-            (hyperbolic numbers): Also known as hyperbolic numbers, these extend
-            complex numbers by using a different multiplication rule, where the
-            square of the imaginary unit is +1 instead of -1. They are used in
-            various applications, including special relativity.
-          </li>
-          <li>
-            <a
               href="https://en.wikipedia.org/wiki/Hypercomplex_number"
               target="_blank"
               rel="noopener noreferrer"
@@ -111,6 +98,19 @@ function App() {
             basis elements that extend beyond the real and imaginary units.
           </li>
           <ul>
+            <li>
+              <a
+                href="https://en.wikipedia.org/wiki/Split-complex_number"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Split-complex Numbers
+              </a>{' '}
+              (hyperbolic numbers): Also known as hyperbolic numbers, these
+              extend complex numbers by using a different multiplication rule,
+              where the square of the imaginary unit is +1 instead of -1. They
+              are used in various applications, including special relativity.
+            </li>
             <li>
               <a
                 href="https://en.wikipedia.org/wiki/Quaternion"
@@ -231,7 +231,6 @@ function App() {
               <li>Supersilver Ratio</li>
             </ul>
           </li>
-
         </ul>
       </section>
     </div>
