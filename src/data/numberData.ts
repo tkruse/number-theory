@@ -164,12 +164,14 @@ const I_PLUS_PI = new RepresentativeNumber(
 
 enum AlgebraicStructure {
   Ordered = '<',
-  OrderedSemiRing = '+*<',
   WellOrderedSemiRing = '+*<<',
   OrderedRing = '+*-<',
   OrderedField = '+*-/<',
+  OrderedFieldSquareRoot = '+*-/√<',
+  OrderedFieldNthRoot = '+*-/∛<',
   Ring = '+*-',
   Field = '+*-/',
+  FieldNthRoot = '+*-/∛',
 }
 
 interface INumberSet {
@@ -243,7 +245,7 @@ const WHOLE_NUMBERS = new NumberSet(
   '0',
   'The set of all non-negative integers, including zero.',
   'https://en.wikipedia.org/wiki/Whole_number',
-  AlgebraicStructure.OrderedSemiRing,
+  AlgebraicStructure.WellOrderedSemiRing,
   [ZERO],
   [[NATURAL_NUMBERS]],
 );
@@ -279,7 +281,7 @@ const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSet(
   '0',
   'Real numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   'https://en.wikipedia.org/wiki/Constructible_number',
-  AlgebraicStructure.OrderedField,
+  AlgebraicStructure.OrderedFieldSquareRoot,
   [SQRT_TWO, GOLDEN_RATIO],
   [[RATIONAL_REAL_NUMBERS]],
 );
@@ -291,7 +293,7 @@ const ALGEBRAIC_REAL_NUMBERS = new NumberSet(
   '0',
   'Real Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   'https://en.wikipedia.org/wiki/Algebraic_number',
-  AlgebraicStructure.OrderedField,
+  AlgebraicStructure.OrderedFieldNthRoot,
   [CUBE_ROOT_TWO],
   [[CONSTRUCTIBLE_REAL_NUMBERS]],
 );
@@ -327,7 +329,7 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSet(
   '0',
   'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
-  AlgebraicStructure.OrderedField,
+  AlgebraicStructure.OrderedFieldNthRoot,
   [E, GOLDEN_RATIO, PI, LIOUVILLE_CONSTANT, LOGARITHM_TWO, CHAMPERNOWNE_CONSTANT],
   [[ALGEBRAIC_REAL_NUMBERS]],
 );
@@ -339,7 +341,7 @@ const DEFINABLE_REAL_NUMBERS = new NumberSet(
   '0',
   'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
   'https://en.wikipedia.org/wiki/Definable_real_number',
-  AlgebraicStructure.OrderedField,
+  AlgebraicStructure.OrderedFieldNthRoot,
   [CHAITINS_CONSTANT, UNCOMPUTABLE_LIOUVILLE_NUMBERS],
   [[COMPUTABLE_REAL_NUMBERS]],
 );
@@ -351,7 +353,7 @@ const REAL_NUMBERS = new NumberSet(
   'infinite',
   'The set of all rational and irrational numbers.',
   'https://en.wikipedia.org/wiki/Real_number',
-  AlgebraicStructure.OrderedField,
+  AlgebraicStructure.OrderedFieldNthRoot,
   [],
   [
     [DEFINABLE_REAL_NUMBERS],
@@ -390,7 +392,7 @@ const COMPLEX_NUMBERS = new NumberSet(
   'infinite',
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Complex_number',
-  AlgebraicStructure.Field,
+  AlgebraicStructure.FieldNthRoot,
   [],
   [[REAL_NUMBERS, IMAGINARY_NUMBERS]],
 );
