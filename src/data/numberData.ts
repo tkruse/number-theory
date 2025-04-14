@@ -2,7 +2,10 @@ enum NumberCategory {
   Hypercomplex,
   Imaginary,
   Real,
+  // real irrational numbers conjectured to be absolutelyNormal
   Normal,
+  // numbers that are part of liouville numbers, a historically important subset of transcendent numbers
+  Liouville,
 }
 
 interface IRepresentativeNumber {
@@ -190,10 +193,17 @@ interface INumberSet {
   algebraicStructure?: AlgebraicStructure;
   // Partitions of subsets that are mutually exclusive and collectively exhaustive within this set
   containedPartitions: INumberSet[][];
+  containedSubSets: INumberSet[];
+  partitionComplement?: INumberSet;
+  parents?: INumberSet[];
+  sortKey: string;
   toString(): string;
   toFullDescription(): string;
+  getContainedSets(): INumberSet[];
   getAllContainedNumbers(): Set<IRepresentativeNumber>;
 }
+
+const allNumberSets: INumberSet[] = [];
 
 class NumberSet implements INumberSet {
   constructor(
@@ -206,7 +216,28 @@ class NumberSet implements INumberSet {
     public algebraicStructure?: AlgebraicStructure,
     public containedElements: IRepresentativeNumber[] = [],
     public containedPartitions: INumberSet[][] = [],
-  ) {}
+    public containedSubSets: INumberSet[] = [],
+    public sortKey = '',
+    public partitionComplement?: INumberSet,
+    public parents?: INumberSet[],
+  ) {
+    allNumberSets.push(this);
+
+    // Set the complement for each member of the partition assuming size 2
+    this.containedPartitions.forEach((partition) => {
+      if (partition.length === 2) {
+        partition[0].partitionComplement = partition[1];
+        partition[1].partitionComplement = partition[0];
+      }
+    });
+
+    this.getContainedSets().forEach((containedSet) => {
+      if (!containedSet.parents) {
+        containedSet.parents = [];
+      }
+      containedSet.parents.push(this);
+    });
+  }
 
   toString(): string {
     return `${this.name} (${this.unicodeSymbol})`;
@@ -216,6 +247,14 @@ class NumberSet implements INumberSet {
     return `${this.name} (${this.unicodeSymbol}${this.algebraicStructure ? ', ' + this.algebraicStructure : ''}). Cardinality: ${this.cardinality} ${this.description}`;
   }
 
+  getContainedSets(): INumberSet[] {
+    const sets = [...this.containedSubSets];
+    this.containedPartitions.forEach((partition) => {
+      sets.push(...partition);
+    });
+    return sets;
+  }
+
   getAllContainedNumbers(): Set<IRepresentativeNumber> {
     const numbers = new Set<IRepresentativeNumber>(this.containedElements);
     this.containedPartitions.forEach((partition) => {
@@ -223,11 +262,74 @@ class NumberSet implements INumberSet {
         subset.getAllContainedNumbers().forEach((num) => numbers.add(num));
       });
     });
+    this.containedSubSets.forEach((subset) => {
+      subset.getAllContainedNumbers().forEach((num) => numbers.add(num));
+    });
     return numbers;
   }
 }
 
-const NATURAL_NUMBERS = new NumberSet(
+class NumberSetBuilder {
+  public name: string;
+  public unicodeSymbol: string;
+  public cardinality: string;
+  public lebesgueMeasure: string;
+  public description: string;
+  public webLink: string;
+  public algebraicStructure?: AlgebraicStructure;
+  public containedPartitions: INumberSet[][] = [];
+  public containedSubSets: INumberSet[] = [];
+  public containedElements: IRepresentativeNumber[] = [];
+
+  constructor(
+    name: string,
+    unicodeSymbol: string,
+    cardinality: string,
+    lebesgueMeasure: string,
+    description: string,
+    webLink: string,
+    algebraicStructure?: AlgebraicStructure,
+  ) {
+    this.name = name;
+    this.unicodeSymbol = unicodeSymbol;
+    this.cardinality = cardinality;
+    this.lebesgueMeasure = lebesgueMeasure;
+    this.description = description;
+    this.webLink = webLink;
+    this.algebraicStructure = algebraicStructure;
+  }
+
+  addPartition(...partition: INumberSet[]) {
+    this.containedPartitions.push(partition);
+    return this;
+  }
+
+  addSubsetsAndElements(
+    subsets: INumberSet[],
+    ...elements: IRepresentativeNumber[]
+  ) {
+    this.containedSubSets.push(...subsets);
+    this.containedElements.push(...elements);
+    return this;
+  }
+
+  build(): INumberSet {
+    return new NumberSet(
+      this.name,
+      this.unicodeSymbol,
+      this.cardinality,
+      this.lebesgueMeasure,
+      this.description,
+      this.webLink,
+      this.algebraicStructure,
+      this.containedElements,
+      this.containedPartitions,
+      this.containedSubSets,
+    );
+  }
+}
+
+const NATURAL_NUMBERS = new NumberSetBuilder(
   'Natural',
   'ℕ',
   'ℵ₀',
@@ -235,11 +337,11 @@ const NATURAL_NUMBERS = new NumberSet(
   'The set of all positive integers.',
   'https://en.wikipedia.org/wiki/Natural_number',
   AlgebraicStructure.WellOrderedSemiRing,
-  [ONE, TWO, THREE],
-  [],
-);
+)
+  .addSubsetsAndElements([], ONE, TWO, THREE)
+  .build();
 
-const WHOLE_NUMBERS = new NumberSet(
+const WHOLE_NUMBERS = new NumberSetBuilder(
   'Whole',
   'ℕ₀',
   'ℵ₀',
@@ -247,11 +349,11 @@ const WHOLE_NUMBERS = new NumberSet(
   'The set of all non-negative integers, including zero.',
   'https://en.wikipedia.org/wiki/Whole_number',
   AlgebraicStructure.WellOrderedSemiRing,
-  [ZERO],
-  [[NATURAL_NUMBERS]],
-);
+)
+  .addSubsetsAndElements([NATURAL_NUMBERS], ZERO)
+  .build();
 
-const INTEGERS = new NumberSet(
+const INTEGERS = new NumberSetBuilder(
   'Integers',
   'ℤ',
   'ℵ₀',
@@ -259,11 +361,18 @@ const INTEGERS = new NumberSet(
   'The set of positive and negative integer numbers and zero.',
   'https://en.wikipedia.org/wiki/Integer',
   AlgebraicStructure.OrderedRing,
-  [MINUS_ONE, TWO, THREE, MINUS_TWO, MINUS_THREE],
-  [[WHOLE_NUMBERS]],
-);
+)
+  .addSubsetsAndElements(
+    [WHOLE_NUMBERS],
+    MINUS_ONE,
+    TWO,
+    THREE,
+    MINUS_TWO,
+    MINUS_THREE,
+  )
+  .build();
 
-const RATIONAL_REAL_NUMBERS = new NumberSet(
+const RATIONAL_REAL_NUMBERS = new NumberSetBuilder(
   'Rational',
   'ℚ',
   'ℵ₀',
@@ -271,11 +380,11 @@ const RATIONAL_REAL_NUMBERS = new NumberSet(
   'Real numbers that can be expressed as a fraction of two integers.',
   'https://en.wikipedia.org/wiki/Rational_number',
   AlgebraicStructure.OrderedField,
-  [HALF, ZERO_POINT_ONE],
-  [[INTEGERS]],
-);
+)
+  .addSubsetsAndElements([INTEGERS], HALF, ZERO_POINT_ONE)
+  .build();
 
-const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSet(
+const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSetBuilder(
   'Constructible',
   'C',
   'ℵ₀',
@@ -283,11 +392,11 @@ const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSet(
   'Real numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   'https://en.wikipedia.org/wiki/Constructible_number',
   AlgebraicStructure.OrderedFieldSquareRoot,
-  [SQRT_TWO, GOLDEN_RATIO],
-  [[RATIONAL_REAL_NUMBERS]],
-);
+)
+  .addSubsetsAndElements([RATIONAL_REAL_NUMBERS], SQRT_TWO, GOLDEN_RATIO)
+  .build();
 
-const ALGEBRAIC_REAL_NUMBERS = new NumberSet(
+const ALGEBRAIC_REAL_NUMBERS = new NumberSetBuilder(
   'Algebraic',
   'ℚ̅',
   'ℵ₀',
@@ -295,11 +404,11 @@ const ALGEBRAIC_REAL_NUMBERS = new NumberSet(
   'Real Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   'https://en.wikipedia.org/wiki/Algebraic_number',
   AlgebraicStructure.OrderedFieldNthRoot,
-  [CUBE_ROOT_TWO],
-  [[CONSTRUCTIBLE_REAL_NUMBERS]],
-);
+)
+  .addSubsetsAndElements([CONSTRUCTIBLE_REAL_NUMBERS], CUBE_ROOT_TWO)
+  .build();
 
-const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
+const TRANSCENDENTAL_REAL_NUMBERS = new NumberSetBuilder(
   'Transcendental',
   'ℝ \\ ℚ̅',
   'ℵ₁',
@@ -307,7 +416,9 @@ const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
   'The Complement of algebraic real numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
   'https://en.wikipedia.org/wiki/Transcendental_number',
   AlgebraicStructure.Ordered,
-  [
+)
+  .addSubsetsAndElements(
+    [],
     PI,
     E,
     CHAITINS_CONSTANT,
@@ -316,11 +427,10 @@ const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
     UNCOMPUTABLE_LIOUVILLE_NUMBERS,
     LOGARITHM_TWO,
     CHAMPERNOWNE_CONSTANT,
-  ],
-  [],
-);
+  )
+  .build();
 
-const IRRATIONAL_REAL_NUMBERS = new NumberSet(
+const IRRATIONAL_REAL_NUMBERS = new NumberSetBuilder(
   'Irrational',
   'ℝ \\ ℚ',
   'ℵ₁',
@@ -328,11 +438,16 @@ const IRRATIONAL_REAL_NUMBERS = new NumberSet(
   'The complement of rational real numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
   'https://en.wikipedia.org/wiki/Irrational_number',
   AlgebraicStructure.Ordered,
-  [SQRT_TWO, GOLDEN_RATIO, CUBE_ROOT_TWO],
-  [[TRANSCENDENTAL_REAL_NUMBERS]],
-);
+)
+  .addSubsetsAndElements(
+    [TRANSCENDENTAL_REAL_NUMBERS],
+    SQRT_TWO,
+    GOLDEN_RATIO,
+    CUBE_ROOT_TWO,
+  )
+  .build();
 
-const COMPUTABLE_REAL_NUMBERS = new NumberSet(
+const COMPUTABLE_REAL_NUMBERS = new NumberSetBuilder(
   'Computable',
   'REC',
   'ℵ₀',
@@ -340,18 +455,19 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSet(
   'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
   AlgebraicStructure.OrderedFieldNthRoot,
-  [
+)
+  .addSubsetsAndElements(
+    [ALGEBRAIC_REAL_NUMBERS],
     E,
     GOLDEN_RATIO,
     PI,
     LIOUVILLE_CONSTANT,
     LOGARITHM_TWO,
     CHAMPERNOWNE_CONSTANT,
-  ],
-  [[ALGEBRAIC_REAL_NUMBERS]],
-);
+  )
+  .build();
 
-const DEFINABLE_REAL_NUMBERS = new NumberSet(
+const DEFINABLE_REAL_NUMBERS = new NumberSetBuilder(
   'Definable',
   'D',
   'ℵ₀',
@@ -359,11 +475,15 @@ const DEFINABLE_REAL_NUMBERS = new NumberSet(
   'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
   'https://en.wikipedia.org/wiki/Definable_real_number',
   AlgebraicStructure.OrderedFieldNthRoot,
-  [CHAITINS_CONSTANT, UNCOMPUTABLE_LIOUVILLE_NUMBERS],
-  [[COMPUTABLE_REAL_NUMBERS]],
-);
+)
+  .addSubsetsAndElements(
+    [COMPUTABLE_REAL_NUMBERS],
+    CHAITINS_CONSTANT,
+    UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+  )
+  .build();
 
-const REAL_NUMBERS = new NumberSet(
+const REAL_NUMBERS = new NumberSetBuilder(
   'Real',
   'ℝ',
   'ℵ₁',
@@ -371,38 +491,35 @@ const REAL_NUMBERS = new NumberSet(
   'The set of all rational and irrational numbers.',
   'https://en.wikipedia.org/wiki/Real_number',
   AlgebraicStructure.OrderedFieldNthRoot,
-  [],
-  [
-    [DEFINABLE_REAL_NUMBERS],
-    [ALGEBRAIC_REAL_NUMBERS, TRANSCENDENTAL_REAL_NUMBERS],
-    [RATIONAL_REAL_NUMBERS, IRRATIONAL_REAL_NUMBERS],
-  ],
-);
+)
+  .addSubsetsAndElements([DEFINABLE_REAL_NUMBERS])
+  .addPartition(ALGEBRAIC_REAL_NUMBERS, TRANSCENDENTAL_REAL_NUMBERS)
+  .addPartition(RATIONAL_REAL_NUMBERS, IRRATIONAL_REAL_NUMBERS)
+  .build();
 
-const PURE_IMAGINARY_NUMBERS = new NumberSet(
+const PURE_IMAGINARY_NUMBERS = new NumberSetBuilder(
   'Pure Imaginary',
   'ℑ₀',
   'ℵ₁',
   '0',
   'Complex Numbers that are purely imaginary a * i, having no real part.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
-  undefined,
-  [IMAGINARY_UNIT, E_TIMES_I],
-);
+)
+  .addSubsetsAndElements([], IMAGINARY_UNIT, E_TIMES_I)
+  .build();
 
-const IMAGINARY_NUMBERS = new NumberSet(
+const IMAGINARY_NUMBERS = new NumberSetBuilder(
   'Imaginary',
   'ℑ',
   'ℵ₁',
   '0',
   'Numbers that can be expressed in the form a + bi, where a ≠ 0, b ≠ 0, where i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
-  undefined,
-  [I_PLUS_PI],
-  [[PURE_IMAGINARY_NUMBERS]],
-);
+)
+  .addSubsetsAndElements([PURE_IMAGINARY_NUMBERS], I_PLUS_PI)
+  .build();
 
-const COMPLEX_NUMBERS = new NumberSet(
+const COMPLEX_NUMBERS = new NumberSetBuilder(
   'Complex',
   'ℂ',
   'ℵ₁',
@@ -410,8 +527,34 @@ const COMPLEX_NUMBERS = new NumberSet(
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Complex_number',
   AlgebraicStructure.FieldNthRoot,
-  [],
-  [[REAL_NUMBERS, IMAGINARY_NUMBERS]],
+)
+  .addPartition(REAL_NUMBERS, IMAGINARY_NUMBERS)
+  .build();
+
+const ALL_NUMBERS = new NumberSetBuilder(
+  'All Numbers',
+  '',
+  'ℵ₁',
+  'infinite',
+  'A set containing all number sets in this application.',
+  '',
+)
+  .addPartition(COMPLEX_NUMBERS)
+  .build();
+
+function assignSortKey(allNumberSets: INumberSet[]) {
+  allNumberSets.forEach((set, index) => {
+    set.sortKey =
+      set.getAllContainedNumbers().size.toString().padStart(3, '0') +
+      '-' +
+      index.toString().padStart(3, '0');
+  });
+}
+
+assignSortKey(allNumberSets);
+
+const NUMBER_SETS = allNumberSets.sort((a, b) =>
+  b.sortKey.localeCompare(a.sortKey),
 );
 
 // TODO
@@ -493,6 +636,8 @@ export {
   GOLDEN_RATIO,
   RepresentativeNumber,
   NumberSet,
+  ALL_NUMBERS,
+  NUMBER_SETS,
 };
 
 export type { IRepresentativeNumber };

@@ -1,21 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import Grid from './Grid';
 import { Column } from './Column';
-import { ZERO, ONE, INumberSet } from '../data/numberData';
+import { ZERO, ONE, INumberSet, NumberSet } from '../data/numberData';
 
-const createSet = (name: string): INumberSet => ({
-  name,
-  unicodeSymbol: '',
-  cardinality: '',
-  lebesgueMeasure: '',
-  description: '',
-  webLink: '',
-  containedElements: [],
-  containedPartitions: [],
-  toString: () => name,
-  toFullDescription: () => '',
-  getAllContainedNumbers: () => new Set(),
-});
+const createSet = (name: string): INumberSet =>
+  new NumberSet(name, '', '', '', '', '', undefined, [], []);
 
 const SET_A = createSet('Set A');
 const SET_B = createSet('Set B');

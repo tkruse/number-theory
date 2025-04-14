@@ -28,24 +28,17 @@ import {
   MINUS_TWO,
   MINUS_THREE,
   ZERO_POINT_ONE,
-  INumberSet,
-  IRepresentativeNumber,
   UNDEFINABLE_NUMBER,
   CHAMPERNOWNE_CONSTANT,
   LIOUVILLE_CONSTANT,
   UNCOMPUTABLE_LIOUVILLE_NUMBERS,
   LOGARITHM_TWO,
+  NUMBER_SETS,
+  ALL_NUMBERS,
+  DEFINABLE_REAL_NUMBERS,
+  IMAGINARY_NUMBERS,
+  PURE_IMAGINARY_NUMBERS,
 } from './numberData';
-
-function getAllIncludedNumbers(set: INumberSet): IRepresentativeNumber[] {
-  const numbers = new Set<IRepresentativeNumber>(set.containedElements);
-  set.containedPartitions.forEach((partition) => {
-    partition.forEach((subset) => {
-      getAllIncludedNumbers(subset).forEach((num) => numbers.add(num));
-    });
-  });
-  return Array.from(numbers);
-}
 
 import { describe, expect, test } from 'vitest';
 
@@ -59,6 +52,32 @@ describe('toString', () => {
       expect(instance.toString()).toBe(expectedString);
     },
   );
+});
+
+describe('NUMBER_SETS sort order', () => {
+  test('should contain the expected number sets in order', () => {
+    const expectedNumberSets = [
+      ALL_NUMBERS,
+      COMPLEX_NUMBERS,
+      REAL_NUMBERS,
+      DEFINABLE_REAL_NUMBERS,
+      COMPUTABLE_REAL_NUMBERS,
+      ALGEBRAIC_REAL_NUMBERS,
+      IRRATIONAL_REAL_NUMBERS,
+      CONSTRUCTIBLE_REAL_NUMBERS,
+      RATIONAL_REAL_NUMBERS,
+      TRANSCENDENTAL_REAL_NUMBERS,
+      INTEGERS,
+      WHOLE_NUMBERS,
+      IMAGINARY_NUMBERS,
+      NATURAL_NUMBERS,
+      PURE_IMAGINARY_NUMBERS,
+    ];
+
+    const numberSetNames = NUMBER_SETS.map((set) => set.name);
+    const expectedNumberSetNames = expectedNumberSets.map((set) => set.name);
+    expect(numberSetNames).toEqual(expectedNumberSetNames);
+  });
 });
 
 describe('getAllIncludedNumbers', () => {
@@ -220,7 +239,7 @@ describe('getAllIncludedNumbers', () => {
   ])(
     'should return all included numbers for %s',
     (numberSet, expectedNumbers) => {
-      const result = getAllIncludedNumbers(numberSet)
+      const result = Array.from(numberSet.getAllContainedNumbers())
         .map((num) => num.name)
         .sort();
       expect(result).toStrictEqual(

@@ -6,6 +6,22 @@ body {
   background-color: #f0f0f0;
 }
 
+.number-set-chooser > div {
+  flex: 0 1 auto;
+}
+
+.number-set-chooser {
+  background-color: #d3d3d3; /* Darker grey background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 100px; /* Adjust height to control the number of items per column */
+  gap: 10px;
+}
+
 .todo-list {
   max-width: 800px;
   margin: 20px;
