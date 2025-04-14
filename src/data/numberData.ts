@@ -1,3 +1,5 @@
+import { elementAt } from '../utils/collectionUtils';
+
 enum NumberCategory {
   Hypercomplex,
   Imaginary,
@@ -201,6 +203,8 @@ interface INumberSet {
   toFullDescription(): string;
   getContainedSets(): INumberSet[];
   getAllContainedNumbers(): Set<IRepresentativeNumber>;
+  compareTo(other: INumberSet): number;
+  nthChild(child: INumberSet): number;
 }
 
 const allNumberSets: INumberSet[] = [];
@@ -232,11 +236,142 @@ class NumberSet implements INumberSet {
     });
 
     this.getContainedSets().forEach((containedSet) => {
-      if (!containedSet.parents) {
-        containedSet.parents = [];
-      }
+      containedSet.parents ??= [];
       containedSet.parents.push(this);
     });
+  }
+
+  compareTo(other: NumberSet): number {
+    if (this === other) {
+      return 0;
+    }
+    if (this.isParentOf(other)) {
+      return -1;
+    }
+    if (other.isParentOf(this)) {
+      return 1;
+    }
+
+    // Helper to find the longest path from root to a node using memoization
+    function longestPathFromRoot(
+      node: NumberSet,
+      root: NumberSet,
+      memo: Map<NumberSet, NumberSet[]>,
+    ): NumberSet[] {
+      if (memo.has(node)) return memo.get(node) ?? [];
+      if (node === root) {
+        memo.set(node, [root]);
+        return [root];
+      }
+      if (!node.parents || node.parents.length === 0) {
+        memo.set(node, []);
+        return [];
+      }
+      let maxPath: NumberSet[] = [];
+      for (const parent of node.parents as NumberSet[]) {
+        const path = longestPathFromRoot(parent, root, memo);
+        if (path.length > maxPath.length) {
+          maxPath = path;
+        }
+      }
+      const result = [...maxPath, node];
+      memo.set(node, result);
+      return result;
+    }
+
+    // Use the exported ALL_NUMBERS singleton as root
+    const root = ALL_NUMBERS as NumberSet;
+    const memo = new Map<NumberSet, NumberSet[]>();
+    const pathThis = longestPathFromRoot(this, root, memo);
+    const pathOther = longestPathFromRoot(other, root, memo);
+
+    // Find the first common parent (lowest common ancestor) from root down
+    let commonParent: NumberSet | null = null;
+    let iterationIndex = 0;
+    while (
+      iterationIndex < pathThis.length &&
+      iterationIndex < pathOther.length &&
+      pathThis[iterationIndex] === pathOther[iterationIndex]
+    ) {
+      commonParent = pathThis[iterationIndex];
+      iterationIndex++;
+    }
+
+    if (!commonParent || iterationIndex === 0) {
+      throw new Error(
+        `No common parent found in compareTo between "${this.name}" and "${other.name}". This should never happen.`,
+      );
+    }
+
+    // The children of the common parent that differ
+    // pathThis[iterationIndex] and pathOther[iterationIndex] are the first nodes after the common ancestor
+    const p1 = pathThis[iterationIndex] ?? this;
+    const p2 = pathOther[iterationIndex] ?? other;
+
+    // Find their positions in the common parent
+    const pos1 = commonParent.nthChild(p1);
+    const pos2 = commonParent.nthChild(p2);
+
+    if (pos1 === -1 || pos2 === -1) {
+      throw new Error(
+        `Bug: One of the nodes is not a direct child of the common parent in compareTo between "${this.name}" and "${other.name}".`,
+      );
+    }
+    return pos1 - pos2;
+  }
+
+  /**
+   * Returns true if this set is a (transitive) parent of the given set.
+   * Traverses all parents recursively.
+   */
+  isParentOf(descendant: NumberSet): boolean {
+    const visited = new Set<NumberSet>();
+    const stack: NumberSet[] = [];
+    if (!descendant.parents) return false;
+    stack.push(...(descendant.parents as NumberSet[]));
+    while (stack.length > 0) {
+      // Use elementAt to safely get the last element before popping
+      const current = elementAt(stack, stack.length - 1);
+      stack.pop();
+      if (current === this) {
+        return true;
+      }
+      if (!visited.has(current)) {
+        visited.add(current);
+        if (current.parents) {
+          stack.push(...(current.parents as NumberSet[]));
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Returns an index  in the set (subsets first, then partitions).
+   * Returns -1 if the given set is not a direct child.
+   */
+  nthChild(child: INumberSet): number {
+    let index = 0;
+
+    /* the order is a hardcoded heuristics mostly to solve
+     * useful rendering order for the reals
+     */
+    for (const subset of this.containedSubSets) {
+      if (subset === child) {
+        return index;
+      }
+      index++;
+    }
+    for (const partition of this.containedPartitions) {
+      for (const partitionChild of partition) {
+        if (partitionChild === child) {
+          return index;
+        }
+        index++;
+      }
+    }
+
+    return -1;
   }
 
   toString(): string {
@@ -492,9 +627,9 @@ const REAL_NUMBERS = new NumberSetBuilder(
   'https://en.wikipedia.org/wiki/Real_number',
   AlgebraicStructure.OrderedFieldNthRoot,
 )
-  .addSubsetsAndElements([DEFINABLE_REAL_NUMBERS])
   .addPartition(ALGEBRAIC_REAL_NUMBERS, TRANSCENDENTAL_REAL_NUMBERS)
   .addPartition(RATIONAL_REAL_NUMBERS, IRRATIONAL_REAL_NUMBERS)
+  .addSubsetsAndElements([DEFINABLE_REAL_NUMBERS])
   .build();
 
 const PURE_IMAGINARY_NUMBERS = new NumberSetBuilder(
@@ -542,52 +677,19 @@ const ALL_NUMBERS = new NumberSetBuilder(
   .addPartition(COMPLEX_NUMBERS)
   .build();
 
-function assignSortKey(allNumberSets: INumberSet[]) {
-  allNumberSets.forEach((set, index) => {
-    set.sortKey =
-      set.getAllContainedNumbers().size.toString().padStart(3, '0') +
-      '-' +
-      index.toString().padStart(3, '0');
-  });
-}
-
-assignSortKey(allNumberSets);
-
-const NUMBER_SETS = allNumberSets.sort((a, b) =>
-  b.sortKey.localeCompare(a.sortKey),
-);
+const NUMBER_SETS = allNumberSets.slice().sort((a, b) => a.compareTo(b));
 
 // TODO
 // a set/partition can have default visibility
-// controls for set/partition visibility
-// all sets are added to a collection on construction
-// where possible, render partitions with same vertical height (unless it breaks containment)
 // mark subsets as constituting (their representative numbers must be rendered when rendering the parent) vs informative (only render their numbers when that set is rendered)
+// arrange representative numbers more smartly
 // rearrange sets: display as nested rectangle with layered title bars
 // 1st level: [algebraic, transcendent]
 // 2st level: [imaginary, real, imaginary]
 // 3nd level: [algebraic imaginaries, algebraic reals, transcendental reals, transcendental imaginaries]
-// arrange representative numbers more smartly
-// display whether totally and / or well ordered '<', '<<'
 // improve rendering proportions and symmetry
 // better font
 // hyperreals, infinitesimals, surreal, surcomplex, transfinite, hypercomplex
-// non-definable numbers
-// IEEE numbers
-// prime integers / composite numbers
-// Dyadic rational
-// Mersenne primes
-// Perfect numbers
-// Fibonacci numbers
-// Bernoulli numbers
-// https://en.wikipedia.org/wiki/Champernowne_constant
-// Liouville Numbers (transcendent but not absolutely normal)
-// ln 2
-// trigonometric numbers
-// normal numbers
-// Algebraic Integers
-// infinity, nullity
-// epsilon
 // Apery's constant, Catalan's constant, Euler-Mascheroni constant, Feigenbaum constants, Gelfond–Schneider constant, Khinchin's constant, plastic number, twin prime constant
 // configure sets in URL for sharing of specific images
 // enable configuring of drawing options

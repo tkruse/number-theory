@@ -63,20 +63,54 @@ describe('NUMBER_SETS sort order', () => {
       DEFINABLE_REAL_NUMBERS,
       COMPUTABLE_REAL_NUMBERS,
       ALGEBRAIC_REAL_NUMBERS,
-      IRRATIONAL_REAL_NUMBERS,
       CONSTRUCTIBLE_REAL_NUMBERS,
       RATIONAL_REAL_NUMBERS,
-      TRANSCENDENTAL_REAL_NUMBERS,
       INTEGERS,
       WHOLE_NUMBERS,
-      IMAGINARY_NUMBERS,
       NATURAL_NUMBERS,
+      IRRATIONAL_REAL_NUMBERS,
+      TRANSCENDENTAL_REAL_NUMBERS,
+      IMAGINARY_NUMBERS,
       PURE_IMAGINARY_NUMBERS,
     ];
 
     const numberSetNames = NUMBER_SETS.map((set) => set.name);
     const expectedNumberSetNames = expectedNumberSets.map((set) => set.name);
     expect(numberSetNames).toEqual(expectedNumberSetNames);
+  });
+});
+
+describe('compareTo', () => {
+  test('should return 0 when comparing a set to itself', () => {
+    expect(ALL_NUMBERS.compareTo(ALL_NUMBERS)).toBe(0);
+    expect(COMPLEX_NUMBERS.compareTo(COMPLEX_NUMBERS)).toBe(0);
+    expect(REAL_NUMBERS.compareTo(REAL_NUMBERS)).toBe(0);
+  });
+
+  test('should return < 0 when parent is compared to child', () => {
+    expect(ALL_NUMBERS.compareTo(COMPLEX_NUMBERS)).toBeLessThan(0);
+    expect(COMPLEX_NUMBERS.compareTo(REAL_NUMBERS)).toBeLessThan(0);
+    expect(REAL_NUMBERS.compareTo(DEFINABLE_REAL_NUMBERS)).toBeLessThan(0);
+  });
+
+  test('should return > 0 when child is compared to parent', () => {
+    expect(COMPLEX_NUMBERS.compareTo(ALL_NUMBERS)).toBeGreaterThan(0);
+    expect(REAL_NUMBERS.compareTo(COMPLEX_NUMBERS)).toBeGreaterThan(0);
+    expect(DEFINABLE_REAL_NUMBERS.compareTo(REAL_NUMBERS)).toBeGreaterThan(0);
+  });
+
+  test('should order siblings according to their position in the parent', () => {
+    // COMPLEX_NUMBERS partitions: [REAL_NUMBERS, IMAGINARY_NUMBERS]
+    expect(COMPLEX_NUMBERS.nthChild(REAL_NUMBERS)).toBeLessThan(
+      COMPLEX_NUMBERS.nthChild(IMAGINARY_NUMBERS),
+    );
+    expect(REAL_NUMBERS.nthChild(DEFINABLE_REAL_NUMBERS)).toEqual(0);
+    expect(REAL_NUMBERS.nthChild(ALGEBRAIC_REAL_NUMBERS)).toEqual(1);
+    expect(REAL_NUMBERS.nthChild(TRANSCENDENTAL_REAL_NUMBERS)).toEqual(2);
+    expect(REAL_NUMBERS.nthChild(RATIONAL_REAL_NUMBERS)).toEqual(3);
+    expect(REAL_NUMBERS.nthChild(IRRATIONAL_REAL_NUMBERS)).toEqual(4);
+    expect(REAL_NUMBERS.compareTo(IMAGINARY_NUMBERS)).toBeLessThan(0);
+    expect(IMAGINARY_NUMBERS.compareTo(REAL_NUMBERS)).toBeGreaterThan(0);
   });
 });
 

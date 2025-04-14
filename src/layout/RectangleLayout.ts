@@ -1,10 +1,10 @@
-import { NumberSet, INumberSet } from '../data/numberData';
+import { INumberSet } from '../data/numberData';
 import Grid from './Grid';
 import { elementAt } from '../utils/collectionUtils';
 import { Column } from './Column';
 
 export interface RenderInputs {
-  numberSet: NumberSet;
+  numberSet: INumberSet;
   render: boolean;
 }
 
@@ -20,6 +20,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
   // Map to track numbers that have been added and their columns
   const addedNumbers = new Map<string, number>();
 
+  // recursive traversal function to determine the start and end columns for each set
   const traverse = (set: INumberSet): { start: number; end: number } => {
     const existing = addedSets.get(set.name);
     if (existing) {
@@ -130,19 +131,24 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
     });
   };
 
-  const setsToRender = collectSetsToRender();
-  const includedSets = new Set<INumberSet>();
-  setsToRender.forEach((set) => {
-    collectIncludedSets(set, includedSets);
-  });
+  function setsToTraverse() {
+    const setsToRender = collectSetsToRender();
+    const includedSets = new Set<INumberSet>();
+    setsToRender.forEach((set) => {
+      collectIncludedSets(set, includedSets);
+    });
 
-  const finalSetsToTraverse = new Set<INumberSet>(
-    Array.from(setsToRender).filter((set) => !includedSets.has(set)),
-  );
+    return new Set<INumberSet>(
+      Array.from(setsToRender).filter((set) => !includedSets.has(set)),
+    );
+  }
+
+  const finalSetsToTraverse = setsToTraverse();
 
   finalSetsToTraverse.forEach((set) => {
     traverse(set);
   });
+
   return grid;
 }
 

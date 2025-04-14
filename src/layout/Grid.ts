@@ -22,14 +22,14 @@ class Grid {
     const column = this.columns[columnIndex];
     let maxWidth = 0;
 
-    column.endingSets.forEach((set) => {
+    column.getEndingSets().forEach((set) => {
       const setWidth = set.toString().length * options.textHeight * 0.45;
-      if (column.startingSets.includes(set)) {
+      if (column.getStartingSets().includes(set)) {
         maxWidth = Math.max(maxWidth, setWidth);
       } else {
         if (columnIndex > 0) {
           const previousColumn = this.columns[columnIndex - 1];
-          if (previousColumn.startingSets.includes(set)) {
+          if (previousColumn.getStartingSets().includes(set)) {
             const adjustedWidth =
               setWidth - options.numberCircleRadius * 2 - options.columnPadding;
             maxWidth = Math.max(maxWidth, adjustedWidth);
@@ -37,7 +37,7 @@ class Grid {
         }
         if (columnIndex > 1) {
           const twoColumnsBack = this.columns[columnIndex - 2];
-          if (twoColumnsBack.startingSets.includes(set)) {
+          if (twoColumnsBack.getStartingSets().includes(set)) {
             const adjustedWidth =
               setWidth -
               options.numberCircleRadius * 4 -
@@ -74,8 +74,7 @@ class Grid {
     const context: { set: INumberSet; isOpen: boolean }[] = [];
 
     this.columns.forEach((column) => {
-      // Open number sets
-      column.startingSets.forEach((set) => {
+      column.getStartingSets().forEach((set) => {
         callbacks.openNumberSet(set, context);
         const index = context.findIndex((entry) => entry.set === set);
         if (index === -1) {
@@ -91,7 +90,7 @@ class Grid {
       }
 
       // Close number sets
-      column.endingSets.forEach((set) => {
+      column.getEndingSets().forEach((set) => {
         callbacks.closeNumberSet(set, context);
         const index = context.findIndex((entry) => entry.set === set);
         if (index !== -1) {
@@ -146,11 +145,11 @@ class Grid {
     let extraPadding = 0;
 
     for (let i = 0; i <= columnIndex; i++) {
-      extraPadding += this.columns[i].startingSets.length;
+      extraPadding += this.columns[i].getStartingSets().length;
     }
 
     for (let i = 0; i < columnIndex; i++) {
-      extraPadding += this.columns[i].endingSets.length;
+      extraPadding += this.columns[i].getEndingSets().length;
     }
 
     return extraPadding;
@@ -168,10 +167,8 @@ class Grid {
 
     this.columns.forEach((column, index) => {
       if (index <= columnIndex) {
-        column.startingSets.forEach((set) => surroundingSets.add(set));
-      }
-      if (index >= columnIndex) {
-        column.endingSets.forEach((set) => surroundingSets.add(set));
+        column.getStartingSets().forEach((set) => surroundingSets.add(set));
+        column.getEndingSets().forEach((set) => surroundingSets.delete(set));
       }
     });
 
@@ -201,7 +198,7 @@ class Grid {
     this.iterateColumns({
       openNumberSet: (set, context) => {
         const column = this.columns.find((col) =>
-          col.startingSets.includes(set),
+          col.getStartingSets().includes(set),
         );
         if (column) {
           column.openNumberSet(set, context, lines);
@@ -216,7 +213,9 @@ class Grid {
         }
       },
       closeNumberSet: (set, context) => {
-        const column = this.columns.find((col) => col.endingSets.includes(set));
+        const column = this.columns.find((col) =>
+          col.getEndingSets().includes(set),
+        );
         if (column) {
           column.closeNumberSet(set, context, lines);
         }

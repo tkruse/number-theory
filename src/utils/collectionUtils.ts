@@ -29,6 +29,19 @@ export function getOrFallback<K, V>(
   return map.get(key) as V;
 }
 
+export function getOrCompute<K, V>(
+  map: Map<K, V>,
+  key: K,
+  fallback: () => V,
+): V {
+  if (!map.has(key)) {
+    const value = fallback();
+    map.set(key, value);
+    return value;
+  }
+  return map.get(key) as V;
+}
+
 export function safeGet<K, V>(map: Map<K, V>, key: K): V {
   if (!map.has(key)) {
     throw new Error(`Key ${String(key)} not found in map`);

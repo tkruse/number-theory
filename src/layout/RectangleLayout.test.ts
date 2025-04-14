@@ -28,9 +28,9 @@ describe('RectangleLayout', () => {
     expect(column.numbers).toEqual([ONE, TWO, THREE]);
 
     // Check starting and ending sets
-    expect(column.startingSets).toEqual([NATURAL_NUMBERS]);
+    expect(column.getStartingSets()).toEqual([NATURAL_NUMBERS]);
 
-    expect(column.endingSets).toEqual([NATURAL_NUMBERS]);
+    expect(column.getEndingSets()).toEqual([NATURAL_NUMBERS]);
     expect(grid.columns.length).toBe(1);
     expect(grid.columns[0].numbers).toEqual([ONE, TWO, THREE]);
   });
@@ -43,13 +43,13 @@ describe('RectangleLayout', () => {
 
     const column0 = grid.columns[0];
     expect(column0.numbers).toEqual([ONE, TWO, THREE]);
-    expect(column0.startingSets).toEqual([WHOLE_NUMBERS, NATURAL_NUMBERS]);
-    expect(column0.endingSets).toEqual([NATURAL_NUMBERS]);
+    expect(column0.getStartingSets()).toEqual([WHOLE_NUMBERS, NATURAL_NUMBERS]);
+    expect(column0.getEndingSets()).toEqual([NATURAL_NUMBERS]);
 
     const column1 = grid.columns[1];
     expect(column1.numbers).toEqual([ZERO]);
-    expect(column1.startingSets).toEqual([]);
-    expect(column1.endingSets).toEqual([WHOLE_NUMBERS]);
+    expect(column1.getStartingSets()).toEqual([]);
+    expect(column1.getEndingSets()).toEqual([WHOLE_NUMBERS]);
   });
 
   it('should create a layout for WHOLE_NUMBERS using grid.toString()', () => {
@@ -140,11 +140,11 @@ describe('RectangleLayout', () => {
 | | └─ Constructible
 | |   | ∛2
 | └─ Algebraic
-| ┌─ Transcendental
-| |   | e, π, L, ln2, C₁₀
-| |   | Ω, L?
-| |   | ?
-| └─ Transcendental
+|     | ┌─ Transcendental
+|     | | e, π, L, ln2, C₁₀
+|     | | Ω, L?
+|     | | ?
+|     | └─ Transcendental
 |     └─ Irrational
 └─ Real
 `.trim();
@@ -181,11 +181,11 @@ describe('RectangleLayout', () => {
 | | | └─ Constructible
 | | |   | ∛2
 | | └─ Algebraic
-| | ┌─ Transcendental
-| | |   | e, π, L, ln2, C₁₀
-| | |   | Ω, L?
-| | |   | ?
-| | └─ Transcendental
+| |     | ┌─ Transcendental
+| |     | | e, π, L, ln2, C₁₀
+| |     | | Ω, L?
+| |     | | ?
+| |     | └─ Transcendental
 | |     └─ Irrational
 | └─ Real
 | ┌─ Imaginary

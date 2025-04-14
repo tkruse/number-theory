@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { INumberSet, IRepresentativeNumber } from '../data/numberData';
-import { schemeCategory10 } from 'd3-scale-chromatic';
-
-import { NUMBER_SETS } from '../data/numberData';
 
 import createRectangleLayout, { RenderInputs } from '../layout/RectangleLayout';
 import { safeGet } from '../utils/collectionUtils';
@@ -33,7 +30,13 @@ function computeRectanglesToRender(
      * - Adds the rectangle to the rectangleMap.
      */
     openNumberSet: (set, _) => {
-      const rectangle = new NumberSetRectangle(set, options, grid);
+      const complementRectangle = set.partitionComplement
+        ? rectangleMap.get(set.partitionComplement)
+        : undefined;
+
+      const rectangle =
+        complementRectangle ?? new NumberSetRectangle(set, options, grid);
+
       const allContainedNumbers = Array.from(set.getAllContainedNumbers());
       const leftMostNumber = allContainedNumbers.reduce((min, num) => {
         const label = safeGet(numberLabelMap, num);
@@ -44,14 +47,15 @@ function computeRectanglesToRender(
           : min;
       }, allContainedNumbers[0]);
       const leftMostLabel = safeGet(numberLabelMap, leftMostNumber);
-      rectangle.setLeftMostLabel(leftMostLabel);
+      rectangle.setLeftMostLabel(set, leftMostLabel);
 
       grid.columns.forEach((column) => {
-        if (column.startingSets.includes(set)) {
-          const index = column.startingSets.indexOf(set);
+        if (column.getStartingSets().includes(set)) {
+          const index = column.getStartingSets().indexOf(set);
           const containedSubsetsAtStartColumn =
-            column.startingSets.length - index - 1;
+            column.getStartingSets().length - index - 1;
           rectangle.setContainedSubsetsAtStartColumn(
+            set,
             containedSubsetsAtStartColumn,
           );
         }
@@ -88,23 +92,32 @@ function computeRectanglesToRender(
       const rectangle = safeGet(rectangleMap, set);
 
       const allContainedNumbers = Array.from(set.getAllContainedNumbers());
+
       const rightMostNumber = allContainedNumbers.reduce((max, num) => {
         const label = safeGet(numberLabelMap, num);
         return label.x > safeGet(numberLabelMap, max).x ? num : max;
       }, allContainedNumbers[0]);
       const rightMostLabel = safeGet(numberLabelMap, rightMostNumber);
-      rectangle.setRightMostLabel(rightMostLabel);
+      rectangle.setRightMostLabel(set, rightMostLabel);
 
       const bottomMostNumber = allContainedNumbers.reduce((max, num) => {
         const label = safeGet(numberLabelMap, num);
         return label.y > safeGet(numberLabelMap, max).y ? num : max;
       }, allContainedNumbers[0]);
       const bottomMostLabel = safeGet(numberLabelMap, bottomMostNumber);
-      rectangle.setBottomMostLabel(bottomMostLabel);
+      rectangle.setBottomMostLabel(set, bottomMostLabel);
       grid.columns.forEach((column) => {
-        if (column.endingSets.includes(set)) {
-          const containedSubsetsAtEndColumn = column.endingSets.indexOf(set);
-          rectangle.setContainedSubsetsAtEndColumn(containedSubsetsAtEndColumn);
+        if (column.getEndingSets().includes(set)) {
+          const containedSubsetsAtEndColumn = column
+            .getEndingSets()
+            .indexOf(set);
+          console.log(
+            `name: ${set.name} contained: ${containedSubsetsAtEndColumn}`,
+          );
+          rectangle.setContainedSubsetsAtEndColumn(
+            set,
+            containedSubsetsAtEndColumn,
+          );
         }
       });
     },
@@ -123,11 +136,17 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({
   const calculateCanvasWidth = (
     rectangleMap: Map<INumberSet, NumberSetRectangle>,
   ): number => {
-    return (
-      Array.from(rectangleMap.values()).reduce((max, rect) => {
-        return Math.max(max, rect.x + rect.width);
-      }, 0) + 3
-    );
+    let maxX = 0;
+    Array.from(rectangleMap.values()).forEach((rect) => {
+      // Check all contained rectangles
+      const contained = rect.getContainedRectangles();
+      if (Array.isArray(contained)) {
+        contained.forEach((subRect) => {
+          maxX = Math.max(maxX, subRect.x + subRect.width);
+        });
+      }
+    });
+    return maxX + 3;
   };
 
   const calculateCanvasHeight = (
@@ -177,26 +196,13 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({
 
     const group = svg.append<SVGGElement | null>('g');
 
-    // Function to get fill color for a number set based on its index in NUMBER_SETS
-    function fillColorForNumberSet(set: INumberSet): string {
-      const index = NUMBER_SETS.indexOf(set);
-      return schemeCategory10[index % schemeCategory10.length];
-    }
-
-    // Phase 2: Render each NumberSetRectangle
-    rectangleMap.forEach((rectangle) => {
-      const fillColor = fillColorForNumberSet(rectangle.numberSets[0]);
-      const fillColorWithTransparency = d3.color(fillColor);
-      if (fillColorWithTransparency) {
-        fillColorWithTransparency.opacity = 0.5; // Set transparency level
-      }
-      renderNumberSetRectangle(
-        group,
-        rectangle,
-        options,
-        fillColorWithTransparency?.toString() ?? fillColor,
-      );
-    });
+    // Phase 2: Render each NumberSet
+    Array.from(rectangleMap.keys())
+      .sort((a, b) => a.compareTo(b))
+      .forEach((set) => {
+        const rectangle = safeGet(rectangleMap, set);
+        renderNumberSetRectangle(group, rectangle, set, options);
+      });
 
     // Phase 2: Render each RepresentativeNumberLabel
     numberLabelMap.forEach((label) => {

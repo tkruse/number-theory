@@ -28,7 +28,9 @@ const NumberSetChooser: React.FC<NumberSetChooserProps> = ({
             <input
               type="checkbox"
               checked={enabledNumberSets.get(set)}
-              onChange={() => handleCheckboxChange(set)}
+              onChange={() => {
+                handleCheckboxChange(set);
+              }}
             />
             {set.name}
           </label>

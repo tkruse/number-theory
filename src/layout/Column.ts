@@ -4,12 +4,13 @@ import { safeSlice } from '../utils/collectionUtils';
 class Column {
   numbers: IRepresentativeNumber[];
 
-  startingSets: INumberSet[];
-  endingSets: INumberSet[];
+  // These are private except for tests
+  private _startingSets: INumberSet[];
+  private _endingSets: INumberSet[];
 
   constructor() {
-    this.startingSets = [];
-    this.endingSets = [];
+    this._startingSets = [];
+    this._endingSets = [];
     this.numbers = [];
   }
 
@@ -18,11 +19,36 @@ class Column {
   }
 
   addStartingSet(set: INumberSet) {
-    this.startingSets.unshift(set);
+    this._startingSets.unshift(set);
   }
 
   addEndingSet(set: INumberSet) {
-    this.endingSets.push(set);
+    this._endingSets.push(set);
+  }
+
+  getStartingSets(): INumberSet[] {
+    return this._startingSets;
+  }
+
+  setStartingSets(sets: INumberSet[]): void {
+    this._startingSets = [...sets];
+  }
+
+  getEndingSets(): INumberSet[] {
+    return this._endingSets;
+  }
+
+  setEndingSets(sets: INumberSet[]): void {
+    this._endingSets = [...sets];
+  }
+
+  // For test access only
+  _getRawStartingSets(): INumberSet[] {
+    return this._startingSets;
+  }
+
+  _getRawEndingSets(): INumberSet[] {
+    return this._endingSets;
   }
 
   addNumber(number: IRepresentativeNumber) {
@@ -38,7 +64,15 @@ class Column {
     context: { set: INumberSet; isOpen: boolean }[],
     lines: string[],
   ) {
-    lines.push(`${Column.getPrefix(context)}┌─ ${set.name}`);
+    const endIndex = context.findIndex((entry) => entry.set === set);
+    if (endIndex !== -1) {
+      const startPrefix = safeSlice(context, 0, endIndex)
+        .map(({ isOpen }) => (isOpen ? '| ' : '  '))
+        .join('');
+      lines.push(`${startPrefix}┌─ ${set.name}`);
+    } else {
+      lines.push(`${Column.getPrefix(context)}┌─ ${set.name}`);
+    }
   }
 
   processElements(

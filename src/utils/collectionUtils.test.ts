@@ -3,6 +3,7 @@ import {
   elementAt,
   elementAtOrFallback,
   getOrFallback,
+  getOrCompute,
   safeSlice,
   safeGet,
 } from './collectionUtils';
@@ -120,5 +121,39 @@ describe('safeSlice', () => {
     expect(() => safeSlice(array, 0, 4)).toThrow(
       'Invalid slice indices: start 0, end 4, for array of length 3',
     );
+  });
+});
+
+describe('getOrCompute', () => {
+  it('should return the correct value for an existing key', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    expect(getOrCompute(map, 'a', () => 99)).toBe(1);
+    // Should not overwrite the value
+    expect(map.get('a')).toBe(1);
+  });
+
+  it('should compute, set, and return the value for a non-existing key', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    const result = getOrCompute(map, 'c', () => 99);
+    expect(result).toBe(99);
+    expect(map.get('c')).toBe(99);
+  });
+
+  it('should call the fallback function only when the key is not found', () => {
+    const map = new Map<string, number>([
+      ['a', 1],
+      ['b', 2],
+    ]);
+    const fallback = vi.fn(() => 99);
+    getOrCompute(map, 'a', fallback);
+    expect(fallback).not.toHaveBeenCalled();
+    getOrCompute(map, 'c', fallback);
+    expect(fallback).toHaveBeenCalledTimes(1);
   });
 });
