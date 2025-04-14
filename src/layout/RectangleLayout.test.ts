@@ -141,8 +141,8 @@ describe('RectangleLayout', () => {
 | |   | ∛2
 | └─ Algebraic
 |     | ┌─ Transcendental
-|     | | e, π
-|     | | Ω
+|     | | e, π, L, ln2, C₁₀
+|     | | Ω, L?
 |     | | ?
 |     | └─ Transcendental
 |     └─ Irrational
@@ -182,8 +182,8 @@ describe('RectangleLayout', () => {
 | | |   | ∛2
 | | └─ Algebraic
 | |     | ┌─ Transcendental
-| |     | | e, π
-| |     | | Ω
+| |     | | e, π, L, ln2, C₁₀
+| |     | | Ω, L?
 | |     | | ?
 | |     | └─ Transcendental
 | |     └─ Irrational

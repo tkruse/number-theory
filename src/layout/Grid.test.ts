@@ -7,6 +7,7 @@ const createSet = (name: string): INumberSet => ({
   name,
   unicodeSymbol: '',
   cardinality: '',
+  lebesgueMeasure: '',
   description: '',
   webLink: '',
   containedElements: [],

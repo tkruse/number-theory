@@ -17,7 +17,9 @@ Also see my inspirations:
 
 ## Installation
 
-The result is rendered dynamically as an SVG image using D3.js. The project is built with TypeScript and uses Vite for development and build processes.
+The result is rendered dynamically as an SVG image using D3.js.
+The project is built with pnpm, TypeScript, React and uses Vite for development and build processes.
+Coding was done in large parts using Aider using gpt-4o.
 
 To set up the project locally, follow these steps:
 

@@ -1,7 +1,14 @@
+enum NumberCategory {
+  Hypercomplex,
+  Imaginary,
+  Real,
+}
+
 interface IRepresentativeNumber {
   name: string;
   wikipediaLink: string;
   description: string;
+  category: NumberCategory;
   toString(): string;
 }
 
@@ -10,6 +17,7 @@ class RepresentativeNumber implements IRepresentativeNumber {
     public name: string,
     public wikipediaLink: string,
     public description: string,
+    public category: NumberCategory = NumberCategory.Real,
   ) {}
 
   toString(): string {
@@ -91,22 +99,28 @@ const E = new RepresentativeNumber(
   "Euler's number, approximately 2.71828. The base of the natural logarithm, an irrational number.",
 );
 
-const IMAGINARY_UNIT = new RepresentativeNumber(
-  'i',
-  'https://en.wikipedia.org/wiki/Imaginary_unit',
-  'The imaginary unit, which satisfies i² = -1.',
+const LOGARITHM_TWO = new RepresentativeNumber(
+  'ln2',
+  'https://en.wikipedia.org/wiki/Natural_logarithm_of_2',
+  'The natural logarithm of 2, an important constant in mathematics, approximately equal to 0.693147. According to the Lindemann–Weierstrass theorem, all logarithms of integers greater than 1 are transcendental.',
 );
 
-const E_TIMES_I = new RepresentativeNumber(
-  'e*i',
-  'https://en.wikipedia.org/wiki/Imaginary_unit#Exponential_form',
-  'A complex number representing the product of e and the imaginary unit i.',
+const CHAMPERNOWNE_CONSTANT = new RepresentativeNumber(
+  'C₁₀',
+  'https://en.wikipedia.org/wiki/Champernowne_constant',
+  "Champernowne's constant, constructed by concatenating the decimal representations of consecutive natural numbers (e.g., 0.123456789101112...). It is a normal number in base 10. Similar numbers exist using prime numbers, square numbers and so on.",
 );
 
-const I_PLUS_PI = new RepresentativeNumber(
-  'i+π',
-  '',
-  'A complex number representing the sum of the imaginary unit i and π.',
+const LIOUVILLE_CONSTANT = new RepresentativeNumber(
+  'L',
+  'https://en.wikipedia.org/wiki/Liouville_number',
+  'The Liouville constant, constructed by placing a 1 in the decimal places corresponding to factorials (e.g., 0.110001000000000000000001...). It was the first known transcendental number.',
+);
+
+const UNCOMPUTABLE_LIOUVILLE_NUMBERS = new RepresentativeNumber(
+    'L?',
+    'https://en.wikipedia.org/wiki/Liouville_number',
+    'Many uncomputable numbers are Liouville numbers, but none is specifically known',
 );
 
 const GOLDEN_RATIO = new RepresentativeNumber(
@@ -124,7 +138,28 @@ const CHAITINS_CONSTANT = new RepresentativeNumber(
 const UNDEFINABLE_NUMBER = new RepresentativeNumber(
   '?',
   '',
-  'In Maths, no undefinable number can be defined, though most reals are undefinable. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
+  'In Maths, no undefinable number can be defined, though most reals are undefinable. Intuitively, those are all numbers with infinite digits that do not follow any pattern or rule. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
+);
+
+const IMAGINARY_UNIT = new RepresentativeNumber(
+    'i',
+    'https://en.wikipedia.org/wiki/Imaginary_unit',
+    'The imaginary unit, which satisfies i² = -1.',
+    NumberCategory.Imaginary,
+);
+
+const E_TIMES_I = new RepresentativeNumber(
+    'e*i',
+    'https://en.wikipedia.org/wiki/Imaginary_unit#Exponential_form',
+    'A complex number representing the product of e and the imaginary unit i. Similar examples are 2*i, 0.5*i, etc.',
+    NumberCategory.Imaginary,
+);
+
+const I_PLUS_PI = new RepresentativeNumber(
+    'i+π',
+    '',
+    'A complex number representing the sum of the imaginary unit i and π.  Similar examples are 2+i, 0.5*3i, e+π*i etc.',
+    NumberCategory.Imaginary,
 );
 
 enum AlgebraicStructure {
@@ -140,7 +175,10 @@ enum AlgebraicStructure {
 interface INumberSet {
   name: string;
   unicodeSymbol: string;
+  // relative size of infinite sets according to Cantor
   cardinality: string;
+  // size of the infinite set according to lebesgue
+  lebesgueMeasure: string;
   description: string;
   webLink: string;
   // Elements directly contained in this set, not part of any subpartition
@@ -159,6 +197,7 @@ class NumberSet implements INumberSet {
     public name: string,
     public unicodeSymbol: string,
     public cardinality: string,
+    public lebesgueMeasure: string,
     public description: string,
     public webLink: string,
     public algebraicStructure?: AlgebraicStructure,
@@ -189,6 +228,7 @@ const NATURAL_NUMBERS = new NumberSet(
   'Natural',
   'ℕ',
   'ℵ₀',
+  '0',
   'The set of all positive integers.',
   'https://en.wikipedia.org/wiki/Natural_number',
   AlgebraicStructure.WellOrderedSemiRing,
@@ -200,6 +240,7 @@ const WHOLE_NUMBERS = new NumberSet(
   'Whole',
   'ℕ₀',
   'ℵ₀',
+  '0',
   'The set of all non-negative integers, including zero.',
   'https://en.wikipedia.org/wiki/Whole_number',
   AlgebraicStructure.OrderedSemiRing,
@@ -211,6 +252,7 @@ const INTEGERS = new NumberSet(
   'Integers',
   'ℤ',
   'ℵ₀',
+  '0',
   'The set of positive and negative integer numbers and zero.',
   'https://en.wikipedia.org/wiki/Integer',
   AlgebraicStructure.OrderedRing,
@@ -222,6 +264,7 @@ const RATIONAL_REAL_NUMBERS = new NumberSet(
   'Rational',
   'ℚ',
   'ℵ₀',
+  '0',
   'Real numbers that can be expressed as a fraction of two integers.',
   'https://en.wikipedia.org/wiki/Rational_number',
   AlgebraicStructure.OrderedField,
@@ -233,6 +276,7 @@ const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSet(
   'Constructible',
   'C',
   'ℵ₀',
+  '0',
   'Real numbers that can be constructed using a finite number of additions, subtractions, multiplications, divisions, and square root extractions of integers. These correspond to line segments constructible with a straightedge and compass.',
   'https://en.wikipedia.org/wiki/Constructible_number',
   AlgebraicStructure.OrderedField,
@@ -244,6 +288,7 @@ const ALGEBRAIC_REAL_NUMBERS = new NumberSet(
   'Algebraic',
   'ℚ̅',
   'ℵ₀',
+  '0',
   'Real Numbers that are roots of non-zero polynomial equations with rational coefficients.',
   'https://en.wikipedia.org/wiki/Algebraic_number',
   AlgebraicStructure.OrderedField,
@@ -255,10 +300,11 @@ const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
   'Transcendental',
   'ℝ \\ ℚ̅',
   'ℵ₁',
+  '1',
   'The Complement of algebraic real numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
   'https://en.wikipedia.org/wiki/Transcendental_number',
   AlgebraicStructure.Ordered,
-  [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER],
+  [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER, LIOUVILLE_CONSTANT, UNCOMPUTABLE_LIOUVILLE_NUMBERS, LOGARITHM_TWO, CHAMPERNOWNE_CONSTANT],
   [],
 );
 
@@ -266,6 +312,7 @@ const IRRATIONAL_REAL_NUMBERS = new NumberSet(
   'Irrational',
   'ℝ \\ ℚ',
   'ℵ₁',
+  '1',
   'The complement of rational real numbers. Numbers that cannot be expressed as a fraction of two integers. Most real numbers are Irrational, only some are rational.',
   'https://en.wikipedia.org/wiki/Irrational_number',
   AlgebraicStructure.Ordered,
@@ -277,10 +324,11 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSet(
   'Computable',
   'REC',
   'ℵ₀',
+  '0',
   'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
   AlgebraicStructure.OrderedField,
-  [E, GOLDEN_RATIO, PI],
+  [E, GOLDEN_RATIO, PI, LIOUVILLE_CONSTANT, LOGARITHM_TWO, CHAMPERNOWNE_CONSTANT],
   [[ALGEBRAIC_REAL_NUMBERS]],
 );
 
@@ -288,10 +336,11 @@ const DEFINABLE_REAL_NUMBERS = new NumberSet(
   'Definable',
   'D',
   'ℵ₀',
+  '0',
   'Informally, a definable real number is a real number that can be uniquely specified by any finite mathematical description identifying it precisely.',
   'https://en.wikipedia.org/wiki/Definable_real_number',
   AlgebraicStructure.OrderedField,
-  [CHAITINS_CONSTANT],
+  [CHAITINS_CONSTANT, UNCOMPUTABLE_LIOUVILLE_NUMBERS],
   [[COMPUTABLE_REAL_NUMBERS]],
 );
 
@@ -299,6 +348,7 @@ const REAL_NUMBERS = new NumberSet(
   'Real',
   'ℝ',
   'ℵ₁',
+  'infinite',
   'The set of all rational and irrational numbers.',
   'https://en.wikipedia.org/wiki/Real_number',
   AlgebraicStructure.OrderedField,
@@ -314,6 +364,7 @@ const PURE_IMAGINARY_NUMBERS = new NumberSet(
   'Pure Imaginary',
   'ℑ₀',
   'ℵ₁',
+  '0',
   'Complex Numbers that are purely imaginary a * i, having no real part.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
   undefined,
@@ -324,6 +375,7 @@ const IMAGINARY_NUMBERS = new NumberSet(
   'Imaginary',
   'ℑ',
   'ℵ₁',
+  '0',
   'Numbers that can be expressed in the form a + bi, where a ≠ 0, b ≠ 0, where i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Imaginary_number',
   undefined,
@@ -335,6 +387,7 @@ const COMPLEX_NUMBERS = new NumberSet(
   'Complex',
   'ℂ',
   'ℵ₁',
+  'infinite',
   'The set of all numbers that can be expressed in the form a + bi, where a and b are real numbers and i is the imaginary unit.',
   'https://en.wikipedia.org/wiki/Complex_number',
   AlgebraicStructure.Field,
@@ -365,10 +418,12 @@ const COMPLEX_NUMBERS = new NumberSet(
 // Perfect numbers
 // Fibonacci numbers
 // Bernoulli numbers
+// https://en.wikipedia.org/wiki/Champernowne_constant
+// Liouville Numbers (transcendent but not absolutely normal)
+// ln 2
 // trigonometric numbers
 // normal numbers
 // Algebraic Integers
-// Liouville Numbers
 // infinity, nullity
 // epsilon
 // Apery's constant, Catalan's constant, Euler-Mascheroni constant, Feigenbaum constants, Gelfond–Schneider constant, Khinchin's constant, plastic number, twin prime constant
@@ -406,6 +461,10 @@ export {
   CONSTRUCTIBLE_REAL_NUMBERS,
   IMAGINARY_NUMBERS,
   PURE_IMAGINARY_NUMBERS,
+  CHAMPERNOWNE_CONSTANT,
+  LIOUVILLE_CONSTANT,
+  UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+  LOGARITHM_TWO,
   GOLDEN_RATIO,
   RepresentativeNumber,
   NumberSet,

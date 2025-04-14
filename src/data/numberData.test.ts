@@ -30,7 +30,7 @@ import {
   ZERO_POINT_ONE,
   INumberSet,
   IRepresentativeNumber,
-  UNDEFINABLE_NUMBER,
+  UNDEFINABLE_NUMBER, CHAMPERNOWNE_CONSTANT, LIOUVILLE_CONSTANT, UNCOMPUTABLE_LIOUVILLE_NUMBERS, LOGARITHM_TWO,
 } from './numberData';
 
 function getAllIncludedNumbers(set: INumberSet): IRepresentativeNumber[] {
@@ -80,6 +80,10 @@ describe('getAllIncludedNumbers', () => {
       IRRATIONAL_REAL_NUMBERS,
       [
         UNDEFINABLE_NUMBER,
+        CHAMPERNOWNE_CONSTANT,
+        LIOUVILLE_CONSTANT,
+        UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+        LOGARITHM_TWO,
         SQRT_TWO,
         PI,
         E,
@@ -90,7 +94,10 @@ describe('getAllIncludedNumbers', () => {
     ],
     [
       TRANSCENDENTAL_REAL_NUMBERS,
-      [UNDEFINABLE_NUMBER, PI, E, CHAITINS_CONSTANT],
+      [UNDEFINABLE_NUMBER, PI, E, CHAITINS_CONSTANT, CHAMPERNOWNE_CONSTANT,
+        LIOUVILLE_CONSTANT,
+        UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+        LOGARITHM_TWO,],
     ],
     [
       ALGEBRAIC_REAL_NUMBERS,
@@ -126,6 +133,9 @@ describe('getAllIncludedNumbers', () => {
         MINUS_TWO,
         MINUS_THREE,
         ZERO_POINT_ONE,
+        CHAMPERNOWNE_CONSTANT,
+        LIOUVILLE_CONSTANT,
+        LOGARITHM_TWO,
       ],
     ],
     [
@@ -163,6 +173,10 @@ describe('getAllIncludedNumbers', () => {
         MINUS_TWO,
         MINUS_THREE,
         ZERO_POINT_ONE,
+        CHAMPERNOWNE_CONSTANT,
+        LIOUVILLE_CONSTANT,
+        UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+        LOGARITHM_TWO,
       ],
     ],
     [
@@ -187,6 +201,10 @@ describe('getAllIncludedNumbers', () => {
         MINUS_TWO,
         MINUS_THREE,
         ZERO_POINT_ONE,
+        CHAMPERNOWNE_CONSTANT,
+        LIOUVILLE_CONSTANT,
+        UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+        LOGARITHM_TWO,
       ],
     ],
   ])(
