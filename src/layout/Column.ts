@@ -7,7 +7,10 @@ class Column {
   startingSets: INumberSet[];
   endingSets: INumberSet[];
 
+  startingPartitionSplits: [INumberSet, INumberSet][];
+
   constructor() {
+    this.startingPartitionSplits = [];
     this.startingSets = [];
     this.endingSets = [];
     this.numbers = [];
@@ -25,6 +28,10 @@ class Column {
     this.endingSets.push(set);
   }
 
+  addStartingPartitionSplit(split: [INumberSet, INumberSet]) {
+    this.startingPartitionSplits.push(split);
+  }
+
   addNumber(number: IRepresentativeNumber) {
     this.numbers.push(number);
   }
@@ -38,7 +45,15 @@ class Column {
     context: { set: INumberSet; isOpen: boolean }[],
     lines: string[],
   ) {
-    lines.push(`${Column.getPrefix(context)}┌─ ${set.name}`);
+    const endIndex = context.findIndex((entry) => entry.set === set);
+    if (endIndex !== -1) {
+      const startPrefix = safeSlice(context, 0, endIndex)
+        .map(({ isOpen }) => (isOpen ? '| ' : '  '))
+        .join('');
+      lines.push(`${startPrefix}┌─ ${set.name}`);
+    } else {
+      lines.push(`${Column.getPrefix(context)}┌─ ${set.name}`);
+    }
   }
 
   processElements(

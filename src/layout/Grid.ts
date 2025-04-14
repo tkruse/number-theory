@@ -24,12 +24,22 @@ class Grid {
 
     column.endingSets.forEach((set) => {
       const setWidth = set.toString().length * options.textHeight * 0.45;
-      if (column.startingSets.includes(set)) {
+      if (
+        column.startingSets.includes(set) ||
+        column.startingPartitionSplits.some(
+          ([_, startingSet]) => startingSet === set,
+        )
+      ) {
         maxWidth = Math.max(maxWidth, setWidth);
       } else {
         if (columnIndex > 0) {
           const previousColumn = this.columns[columnIndex - 1];
-          if (previousColumn.startingSets.includes(set)) {
+          if (
+            previousColumn.startingSets.includes(set) ||
+            previousColumn.startingPartitionSplits.some(
+              ([_, startingSet]) => startingSet === set,
+            )
+          ) {
             const adjustedWidth =
               setWidth - options.numberCircleRadius * 2 - options.columnPadding;
             maxWidth = Math.max(maxWidth, adjustedWidth);
@@ -37,7 +47,12 @@ class Grid {
         }
         if (columnIndex > 1) {
           const twoColumnsBack = this.columns[columnIndex - 2];
-          if (twoColumnsBack.startingSets.includes(set)) {
+          if (
+            twoColumnsBack.startingSets.includes(set) ||
+            twoColumnsBack.startingPartitionSplits.some(
+              ([_, startingSet]) => startingSet === set,
+            )
+          ) {
             const adjustedWidth =
               setWidth -
               options.numberCircleRadius * 4 -
@@ -74,7 +89,36 @@ class Grid {
     const context: { set: INumberSet; isOpen: boolean }[] = [];
 
     this.columns.forEach((column) => {
-      // Open number sets
+      // Handle starting partition splits
+      column.startingPartitionSplits.forEach(
+        ([endingSet, startingSet]: [INumberSet, INumberSet]) => {
+          // Close the ending set
+          callbacks.closeNumberSet(endingSet, context);
+          const index = context.findIndex((entry) => entry.set === endingSet);
+          if (index !== -1) {
+            context[index].isOpen = false;
+          }
+
+          // Clean up closed sets from the context
+          while (context.length > 0 && !context[context.length - 1].isOpen) {
+            context.pop();
+          }
+
+          // replace context element at `index` with new open set
+          context[index] = {
+            set: startingSet,
+            isOpen: false,
+          };
+          // Open the starting set
+          callbacks.openNumberSet(startingSet, context);
+          // replace context element at `index` with new open set
+          context[index] = {
+            set: startingSet,
+            isOpen: true,
+          };
+        },
+      );
+
       column.startingSets.forEach((set) => {
         callbacks.openNumberSet(set, context);
         const index = context.findIndex((entry) => entry.set === set);
@@ -147,6 +191,7 @@ class Grid {
 
     for (let i = 0; i <= columnIndex; i++) {
       extraPadding += this.columns[i].startingSets.length;
+      extraPadding += this.columns[i].startingPartitionSplits.length;
     }
 
     for (let i = 0; i < columnIndex; i++) {
@@ -169,9 +214,11 @@ class Grid {
     this.columns.forEach((column, index) => {
       if (index <= columnIndex) {
         column.startingSets.forEach((set) => surroundingSets.add(set));
-      }
-      if (index >= columnIndex) {
-        column.endingSets.forEach((set) => surroundingSets.add(set));
+        column.startingPartitionSplits.forEach(([endingSet, startingSet]) => {
+          surroundingSets.add(startingSet);
+          surroundingSets.delete(endingSet);
+        });
+        column.endingSets.forEach((set) => surroundingSets.delete(set));
       }
     });
 
@@ -200,8 +247,12 @@ class Grid {
 
     this.iterateColumns({
       openNumberSet: (set, context) => {
-        const column = this.columns.find((col) =>
-          col.startingSets.includes(set),
+        const column = this.columns.find(
+          (col) =>
+            col.startingSets.includes(set) ||
+            col.startingPartitionSplits.some(
+              ([_, startingSet]) => startingSet === set,
+            ),
         );
         if (column) {
           column.openNumberSet(set, context, lines);
@@ -216,7 +267,13 @@ class Grid {
         }
       },
       closeNumberSet: (set, context) => {
-        const column = this.columns.find((col) => col.endingSets.includes(set));
+        const column = this.columns.find(
+          (col) =>
+            col.endingSets.includes(set) ||
+            col.startingPartitionSplits.some(
+              ([endingSet, _]) => endingSet === set,
+            ),
+        );
         if (column) {
           column.closeNumberSet(set, context, lines);
         }

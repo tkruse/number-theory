@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { INumberSet, IRepresentativeNumber } from '../data/numberData';
-import { schemeCategory10 } from 'd3-scale-chromatic';
-
-import { NUMBER_SETS } from '../data/numberData';
 
 import createRectangleLayout, { RenderInputs } from '../layout/RectangleLayout';
 import { safeGet } from '../utils/collectionUtils';
@@ -33,7 +30,13 @@ function computeRectanglesToRender(
      * - Adds the rectangle to the rectangleMap.
      */
     openNumberSet: (set, _) => {
-      const rectangle = new NumberSetRectangle(set, options, grid);
+      const complementRectangle = set.partitionComplement
+        ? rectangleMap.get(set.partitionComplement)
+        : undefined;
+
+      const rectangle =
+        complementRectangle ?? new NumberSetRectangle(set, options, grid);
+
       const allContainedNumbers = Array.from(set.getAllContainedNumbers());
       const leftMostNumber = allContainedNumbers.reduce((min, num) => {
         const label = safeGet(numberLabelMap, num);
@@ -44,7 +47,7 @@ function computeRectanglesToRender(
           : min;
       }, allContainedNumbers[0]);
       const leftMostLabel = safeGet(numberLabelMap, leftMostNumber);
-      rectangle.setLeftMostLabel(leftMostLabel);
+      rectangle.setLeftMostLabel(set, leftMostLabel);
 
       grid.columns.forEach((column) => {
         if (column.startingSets.includes(set)) {
@@ -88,19 +91,20 @@ function computeRectanglesToRender(
       const rectangle = safeGet(rectangleMap, set);
 
       const allContainedNumbers = Array.from(set.getAllContainedNumbers());
+
       const rightMostNumber = allContainedNumbers.reduce((max, num) => {
         const label = safeGet(numberLabelMap, num);
         return label.x > safeGet(numberLabelMap, max).x ? num : max;
       }, allContainedNumbers[0]);
       const rightMostLabel = safeGet(numberLabelMap, rightMostNumber);
-      rectangle.setRightMostLabel(rightMostLabel);
+      rectangle.setRightMostLabel(set, rightMostLabel);
 
       const bottomMostNumber = allContainedNumbers.reduce((max, num) => {
         const label = safeGet(numberLabelMap, num);
         return label.y > safeGet(numberLabelMap, max).y ? num : max;
       }, allContainedNumbers[0]);
       const bottomMostLabel = safeGet(numberLabelMap, bottomMostNumber);
-      rectangle.setBottomMostLabel(bottomMostLabel);
+      rectangle.setBottomMostLabel(set, bottomMostLabel);
       grid.columns.forEach((column) => {
         if (column.endingSets.includes(set)) {
           const containedSubsetsAtEndColumn = column.endingSets.indexOf(set);
@@ -177,25 +181,9 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({
 
     const group = svg.append<SVGGElement | null>('g');
 
-    // Function to get fill color for a number set based on its index in NUMBER_SETS
-    function fillColorForNumberSet(set: INumberSet): string {
-      const index = NUMBER_SETS.indexOf(set);
-      return schemeCategory10[index % schemeCategory10.length];
-    }
-
     // Phase 2: Render each NumberSetRectangle
     rectangleMap.forEach((rectangle) => {
-      const fillColor = fillColorForNumberSet(rectangle.numberSets[0]);
-      const fillColorWithTransparency = d3.color(fillColor);
-      if (fillColorWithTransparency) {
-        fillColorWithTransparency.opacity = 0.5; // Set transparency level
-      }
-      renderNumberSetRectangle(
-        group,
-        rectangle,
-        options,
-        fillColorWithTransparency?.toString() ?? fillColor,
-      );
+      renderNumberSetRectangle(group, rectangle, options);
     });
 
     // Phase 2: Render each RepresentativeNumberLabel

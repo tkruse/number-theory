@@ -20,6 +20,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
   // Map to track numbers that have been added and their columns
   const addedNumbers = new Map<string, number>();
 
+  // recursive traversal function to determine the start and end columns for each set
   const traverse = (set: INumberSet): { start: number; end: number } => {
     const existing = addedSets.get(set.name);
     if (existing) {
@@ -143,6 +144,35 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
   finalSetsToTraverse.forEach((set) => {
     traverse(set);
   });
+
+  // Iterate over neighboring column pairs, and merge end and starts of partitions into partition splits
+  for (let i = 0; i < grid.columns.length - 1; i++) {
+    const currentColumn = grid.columns[i];
+    const nextColumn = grid.columns[i + 1];
+
+    // Collect sets ending at the current column
+    const endingSets = new Set(currentColumn.endingSets);
+
+    // Iterate over sets starting at the next column
+    nextColumn.startingSets.forEach((startingSet) => {
+      // Check if any starting set is a complement of an ending set
+      endingSets.forEach((endingSet) => {
+        if (endingSet.partitionComplement === startingSet) {
+          // Remove the ending and starting sets
+          currentColumn.endingSets = currentColumn.endingSets.filter(
+            (set) => set !== endingSet,
+          );
+          nextColumn.startingSets = nextColumn.startingSets.filter(
+            (set) => set !== startingSet,
+          );
+
+          // Add a starting partition split relationship
+          nextColumn.addStartingPartitionSplit([endingSet, startingSet]);
+        }
+      });
+    });
+  }
+
   return grid;
 }
 

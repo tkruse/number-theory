@@ -2,34 +2,90 @@ import { INumberSet } from '../../data/numberData';
 import DrawingOptions from '../DrawingOptions';
 import RepresentativeNumberLabel from './RepresentativeNumberLabel';
 import Grid from '../../layout/Grid';
+import { safeGet } from '../../utils/collectionUtils';
 
+/**
+ * Represent a rectangle, which might be a single numberset or a partition of those.
+ */
 class NumberSetRectangle {
-  public numberSet: INumberSet;
+  private numberSetLabels: Map<
+    INumberSet,
+    {
+      leftMostLabel: RepresentativeNumberLabel | null;
+      rightMostLabel: RepresentativeNumberLabel | null;
+      bottomMostLabel: RepresentativeNumberLabel | null;
+    }
+  >;
   private readonly options: DrawingOptions;
   private readonly grid: Grid;
-  private leftMostLabel: RepresentativeNumberLabel | null = null;
-  private rightMostLabel: RepresentativeNumberLabel | null = null;
-  private bottomMostLabel: RepresentativeNumberLabel | null = null;
   private maxContainedSets = 0;
   private containedSubsetsAtStartColumn = 0;
   private containedSubsetsAtEndColumn = 0;
 
   constructor(numberSet: INumberSet, options: DrawingOptions, grid: Grid) {
-    this.numberSet = numberSet;
+    this.numberSetLabels = new Map();
+    this.numberSetLabels.set(numberSet, {
+      leftMostLabel: null,
+      rightMostLabel: null,
+      bottomMostLabel: null,
+    });
     this.options = options;
     this.grid = grid;
   }
 
-  setLeftMostLabel(label: RepresentativeNumberLabel) {
-    this.leftMostLabel = label;
+  getContainedRectangles(): {
+    set: INumberSet;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }[] {
+    return Array.from(this.numberSetLabels.keys()).map((set) => ({
+      set,
+      x: this.getSetX(set),
+      y: this.getSetY(set),
+      width: this.getSetWidth(set),
+      height: this.getSetHeight(set),
+    }));
   }
 
-  setRightMostLabel(label: RepresentativeNumberLabel) {
-    this.rightMostLabel = label;
+  setLeftMostLabel(set: INumberSet, label: RepresentativeNumberLabel) {
+    const labels = this.numberSetLabels.get(set);
+    if (labels) {
+      labels.leftMostLabel = label;
+    } else {
+      this.numberSetLabels.set(set, {
+        leftMostLabel: label,
+        rightMostLabel: null,
+        bottomMostLabel: null,
+      });
+    }
   }
 
-  setBottomMostLabel(label: RepresentativeNumberLabel) {
-    this.bottomMostLabel = label;
+  setRightMostLabel(set: INumberSet, label: RepresentativeNumberLabel) {
+    const labels = this.numberSetLabels.get(set);
+    if (labels) {
+      labels.rightMostLabel = label;
+    } else {
+      this.numberSetLabels.set(set, {
+        leftMostLabel: null,
+        rightMostLabel: label,
+        bottomMostLabel: null,
+      });
+    }
+  }
+
+  setBottomMostLabel(set: INumberSet, label: RepresentativeNumberLabel) {
+    const labels = this.numberSetLabels.get(set);
+    if (labels) {
+      labels.bottomMostLabel = label;
+    } else {
+      this.numberSetLabels.set(set, {
+        leftMostLabel: null,
+        rightMostLabel: null,
+        bottomMostLabel: label,
+      });
+    }
   }
 
   updateMaxContainedSets(count: number) {
@@ -39,53 +95,54 @@ class NumberSetRectangle {
   }
 
   setContainedSubsetsAtStartColumn(count: number) {
-    this.containedSubsetsAtStartColumn = count;
+    if (count > this.containedSubsetsAtStartColumn) {
+      this.containedSubsetsAtStartColumn = count;
+    }
   }
 
   setContainedSubsetsAtEndColumn(count: number) {
-    this.containedSubsetsAtEndColumn = count;
+    if (count > this.containedSubsetsAtEndColumn) {
+      this.containedSubsetsAtEndColumn = count;
+    }
   }
 
-  get x(): number {
+  private getSetX(set: INumberSet): number {
     const { numberCircleRadius, overlapPadding, numberCirclePadding } =
       this.options;
-    if (!this.leftMostLabel) {
-      throw new Error('Left-most label is not set');
-    }
+
     return (
-      this.leftMostLabel.x -
+      (safeGet(this.numberSetLabels, set).leftMostLabel?.x ?? 0) -
       numberCircleRadius -
       numberCirclePadding -
       this.containedSubsetsAtStartColumn * overlapPadding
     );
   }
 
-  get y(): number {
+  private getSetY(set: INumberSet): number {
     const {
       numberCircleRadius,
       overlapPadding,
       textHeight,
       numberCirclePadding,
     } = this.options;
-    if (!this.leftMostLabel) {
-      throw new Error('Left-most label is not set');
-    }
+
     return (
-      this.leftMostLabel.y -
+      (safeGet(this.numberSetLabels, set).leftMostLabel?.y ?? 0) -
       numberCircleRadius -
       numberCirclePadding -
       (this.maxContainedSets + 1) * (textHeight + overlapPadding)
     );
   }
 
-  get width(): number {
+  private getSetWidth(set: INumberSet): number {
     const { numberCircleRadius, overlapPadding, numberCirclePadding } =
       this.options;
-    if (!this.rightMostLabel) {
-      throw new Error('Right-most label is not set');
+    const rightMostLabel = safeGet(this.numberSetLabels, set).rightMostLabel;
+    if (!rightMostLabel) {
+      throw new Error(`Right-most label is not set for set ${set}`);
     }
     const column = this.grid.findColumnContainingNumber(
-      this.rightMostLabel.repNumber,
+      rightMostLabel.repNumber,
     );
     const extraWidth = column
       ? this.grid.calculateExtraWidth(
@@ -95,27 +152,74 @@ class NumberSetRectangle {
       : 0;
 
     return (
-      this.rightMostLabel.x +
+      rightMostLabel.x +
       numberCircleRadius +
       numberCirclePadding +
       this.containedSubsetsAtEndColumn * overlapPadding +
       extraWidth -
-      this.x
+      this.getSetX(set)
     );
   }
 
-  get height(): number {
+  private getBottomMostLabel() {
+    const bottomMostLabel = Array.from(
+      this.numberSetLabels.values(),
+    ).reduce<RepresentativeNumberLabel | null>((maxLabel, labels) => {
+      if (labels.bottomMostLabel) {
+        return !maxLabel || labels.bottomMostLabel.y > maxLabel.y
+          ? labels.bottomMostLabel
+          : maxLabel;
+      }
+      return maxLabel;
+    }, null);
+    if (!bottomMostLabel) {
+      throw new Error(
+        `Bottom-most label is not set in ${JSON.stringify(Array.from(this.numberSetLabels.entries()))}`,
+      );
+    }
+    return bottomMostLabel;
+  }
+
+  private getSetHeight(set: INumberSet): number {
     const { numberCircleRadius, overlapPadding, numberCirclePadding } =
       this.options;
-    if (!this.bottomMostLabel) {
-      throw new Error('Bottom-most label is not set');
-    }
+    const bottomMostLabel = this.getBottomMostLabel();
     return (
-      this.bottomMostLabel.y +
+      bottomMostLabel.y +
       numberCircleRadius +
       numberCirclePadding +
       this.maxContainedSets * overlapPadding -
-      this.y
+      this.getSetY(set)
+    );
+  }
+
+  get x(): number {
+    return Math.min(
+      ...Array.from(this.numberSetLabels.keys()).map((set) =>
+        this.getSetX(set),
+      ),
+    );
+  }
+
+  get y(): number {
+    return Math.min(
+      ...Array.from(this.numberSetLabels.keys()).map((set) =>
+        this.getSetY(set),
+      ),
+    );
+  }
+
+  get width(): number {
+    return Array.from(this.numberSetLabels.keys()).reduce((totalWidth, set) => {
+      return totalWidth + this.getSetWidth(set);
+    }, 0);
+  }
+
+  get height(): number {
+    return Math.max(
+      ...Array.from(this.numberSetLabels.keys()).map((set) =>
+        this.getSetHeight(set),
+      ),
     );
   }
 }
