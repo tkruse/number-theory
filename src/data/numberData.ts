@@ -79,7 +79,7 @@ const ZERO_POINT_ONE = new RepresentativeNumber(
 const SQRT_TWO = new RepresentativeNumber(
   '√2',
   'https://en.wikipedia.org/wiki/Square_root_of_2',
-  'The square root of 2, an irrational number. Approximately 1.41421.',
+  "Pythagoras' constant: The square root of 2, an irrational number. Approximately 1.41421.",
 );
 
 const CUBE_ROOT_TWO = new RepresentativeNumber(
@@ -91,7 +91,7 @@ const CUBE_ROOT_TWO = new RepresentativeNumber(
 const PI = new RepresentativeNumber(
   'π',
   'https://en.wikipedia.org/wiki/Pi',
-  "Pi, approximately 3.14159. The ratio of a circle's circumference to its diameter.",
+  "Pi (Archimedes' constant), approximately 3.14159. The ratio of a circle's circumference to its diameter.",
 );
 
 const E = new RepresentativeNumber(
@@ -115,7 +115,7 @@ const CHAMPERNOWNE_CONSTANT = new RepresentativeNumber(
 const LIOUVILLE_CONSTANT = new RepresentativeNumber(
   'L',
   'https://en.wikipedia.org/wiki/Liouville_number',
-  'The Liouville constant, constructed by placing a 1 in the decimal places corresponding to factorials (e.g., 0.110001000000000000000001...). It was the first known transcendental number.',
+  'The Liouville constant, constructed by placing a 1 in the decimal places corresponding to factorials (e.g., 0.110001000000000000000001...). It was the first number proven to be transcendental.',
 );
 
 const UNCOMPUTABLE_LIOUVILLE_NUMBERS = new RepresentativeNumber(
