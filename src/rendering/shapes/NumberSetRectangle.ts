@@ -1,10 +1,10 @@
-import { NumberSet } from '../../data/numberData';
+import { INumberSet } from '../../data/numberData';
 import DrawingOptions from '../DrawingOptions';
 import RepresentativeNumberLabel from './RepresentativeNumberLabel';
 import Grid from '../../layout/Grid';
 
 class NumberSetRectangle {
-  public numberSet: NumberSet;
+  public numberSet: INumberSet;
   private readonly options: DrawingOptions;
   private readonly grid: Grid;
   private leftMostLabel: RepresentativeNumberLabel | null = null;
@@ -14,7 +14,7 @@ class NumberSetRectangle {
   private containedSubsetsAtStartColumn = 0;
   private containedSubsetsAtEndColumn = 0;
 
-  constructor(numberSet: NumberSet, options: DrawingOptions, grid: Grid) {
+  constructor(numberSet: INumberSet, options: DrawingOptions, grid: Grid) {
     this.numberSet = numberSet;
     this.options = options;
     this.grid = grid;

@@ -1,13 +1,17 @@
+import { useState } from 'react';
 import DiagramComponent from './components/DiagramComponent';
-import { COMPLEX_NUMBERS, REAL_NUMBERS } from './data/numberData';
+import { INumberSet, NUMBER_SETS } from './data/numberData';
+import NumberSetChooser from './components/NumberSetChooser';
 import { RenderInputs } from './layout/RectangleLayout';
 
 function App() {
-  const renderInputs: RenderInputs[] = [
-    { numberSet: COMPLEX_NUMBERS, render: true },
-    { numberSet: REAL_NUMBERS, render: true },
-    // Add more sets as needed
-  ];
+  const [enabledNumberSets, setEnabledNumberSets] = useState<
+    Map<INumberSet, boolean>
+  >(new Map(NUMBER_SETS.map((set) => [set, true])));
+
+  const renderInputs: RenderInputs[] = Array.from(
+    enabledNumberSets.entries(),
+  ).map(([numberSet, render]) => ({ numberSet, render }));
   return (
     <div className="app-container">
       <div className="title-legend-container">
@@ -21,6 +25,10 @@ function App() {
           ordered, and &lt; means it is well-ordered, having a minimum.
         </p>
       </div>
+      <NumberSetChooser
+        enabledNumberSets={enabledNumberSets}
+        setEnabledNumberSets={setEnabledNumberSets}
+      />
       <div className="diagram-container">
         <DiagramComponent renderInputs={renderInputs} />
       </div>

@@ -1,20 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { Column } from './Column';
-import { INumberSet, IRepresentativeNumber, ONE } from '../data/numberData';
+import {
+  INumberSet,
+  IRepresentativeNumber,
+  NumberSet,
+  ONE,
+} from '../data/numberData';
 
-const createSet = (name: string): INumberSet => ({
-  name,
-  unicodeSymbol: '',
-  cardinality: '',
-  lebesgueMeasure: '',
-  description: '',
-  webLink: '',
-  containedElements: [],
-  containedPartitions: [],
-  toString: () => name,
-  toFullDescription: () => '',
-  getAllContainedNumbers: () => new Set<IRepresentativeNumber>(),
-});
+const createSet = (name: string): INumberSet =>
+  new NumberSet(name, '', '', '', '', '', undefined, [], []);
 
 const SET_A = createSet('Set A');
 const SET_B = createSet('Set B');

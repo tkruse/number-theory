@@ -29,7 +29,7 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
       (control) => control.numberSet.name === set.name,
     ) ?? { numberSet: set, render: true };
 
-    if (set.containedPartitions.length === 0) {
+    if (set.getContainedSets().length === 0) {
       // Leaf node: determine the range of columns that contain elements of the set
       let start = Infinity;
       let end = -Infinity;
@@ -69,13 +69,12 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
       // Non-leaf node: traverse each partition to determine start and end columns
       let start = Infinity;
       let end = -Infinity;
-      set.containedPartitions.forEach((partition) => {
-        partition.forEach((subset) => {
-          const { start: subsetStart, end: subsetEnd } = traverse(subset);
-          start = Math.min(start, subsetStart);
-          end = Math.max(end, subsetEnd);
-        });
+      set.getContainedSets().forEach((subset) => {
+        const { start: subsetStart, end: subsetEnd } = traverse(subset);
+        start = Math.min(start, subsetStart);
+        end = Math.max(end, subsetEnd);
       });
+
       // Adjust start and end to include columns of already rendered elements
       set.containedElements.forEach((element) => {
         const previousInsertionColumnIndex = addedNumbers.get(element.name);
@@ -123,13 +122,11 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
     set: INumberSet,
     includedSets: Set<INumberSet>,
   ) => {
-    set.containedPartitions.forEach((partition) => {
-      partition.forEach((subset) => {
-        if (!includedSets.has(subset)) {
-          includedSets.add(subset);
-          collectIncludedSets(subset, includedSets);
-        }
-      });
+    set.getContainedSets().forEach((subset) => {
+      if (!includedSets.has(subset)) {
+        includedSets.add(subset);
+        collectIncludedSets(subset, includedSets);
+      }
     });
   };
 

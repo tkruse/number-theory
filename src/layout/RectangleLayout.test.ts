@@ -140,11 +140,11 @@ describe('RectangleLayout', () => {
 | | └─ Constructible
 | |   | ∛2
 | └─ Algebraic
-|     | ┌─ Transcendental
-|     | | e, π, L, ln2, C₁₀
-|     | | Ω, L?
-|     | | ?
-|     | └─ Transcendental
+| ┌─ Transcendental
+| |   | e, π, L, ln2, C₁₀
+| |   | Ω, L?
+| |   | ?
+| └─ Transcendental
 |     └─ Irrational
 └─ Real
 `.trim();
@@ -181,11 +181,11 @@ describe('RectangleLayout', () => {
 | | | └─ Constructible
 | | |   | ∛2
 | | └─ Algebraic
-| |     | ┌─ Transcendental
-| |     | | e, π, L, ln2, C₁₀
-| |     | | Ω, L?
-| |     | | ?
-| |     | └─ Transcendental
+| | ┌─ Transcendental
+| | |   | e, π, L, ln2, C₁₀
+| | |   | Ω, L?
+| | |   | ?
+| | └─ Transcendental
 | |     └─ Irrational
 | └─ Real
 | ┌─ Imaginary
