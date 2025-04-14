@@ -35,7 +35,7 @@ function App() {
       </footer>
       <section className="todo-list">
         <h2>Future Additions</h2>
-        Number Set candidates
+        <h3>Number Set Candidates</h3>
         <ul>
           <li>
             <a
@@ -210,7 +210,7 @@ function App() {
             </ul>
           </li>
         </ul>
-        Specific Numbers candidates
+        <h3>Specific Numbers Candidates</h3>
         <ul>
           <li>Infinity</li>
           <li>Nullity</li>
@@ -221,6 +221,7 @@ function App() {
           <li>Feigenbaum Constants</li>
           <li>Gelfond–Schneider Constant</li>
           <li>Khinchin's Constant</li>
+          <li>Twin Prime Constant</li>
           <li>
             Ratios, similar to the Golden Ratio
             <ul>
@@ -230,8 +231,7 @@ function App() {
               <li>Supersilver Ratio</li>
             </ul>
           </li>
-          <li>Twin Prime Constant</li>
-          <li>(Liouville Numbers)</li>
+
         </ul>
       </section>
     </div>

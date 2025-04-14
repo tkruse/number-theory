@@ -188,11 +188,20 @@ const DiagramComponent: React.FC<DiagramComponentProps> = ({
   return (
     <div>
       <svg
+        role="img"
+        aria-describedby="diagram-description"
         ref={ref}
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
         style={{ width: '100%', height: 'auto' }}
-      />
+      >
+        <title id="diagram-title">Number Sets Diagram</title>
+        <desc id="diagram-description">
+          This SVG diagram represents various mathematical number sets and their relationships as a Venn diagram.
+          Each set is shown as a rectangle, and circles with numbers like pi or square-root of two are shown inside the rectangles.
+          The sets shown are: Complex numbers, Imaginary numbers and Real numbers, Definable numbers, Computable numbers, Algebraic real numbers and Transcendental numbers, Constructible numbers, Rational and irrational numbers, Integers, Natural numbers, and Whole numbers.
+        </desc>
+      </svg>
     </div>
   );
 };
