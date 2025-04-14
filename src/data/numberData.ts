@@ -2,6 +2,7 @@ enum NumberCategory {
   Hypercomplex,
   Imaginary,
   Real,
+  Normal,
 }
 
 interface IRepresentativeNumber {
@@ -118,9 +119,9 @@ const LIOUVILLE_CONSTANT = new RepresentativeNumber(
 );
 
 const UNCOMPUTABLE_LIOUVILLE_NUMBERS = new RepresentativeNumber(
-    'L?',
-    'https://en.wikipedia.org/wiki/Liouville_number',
-    'Many uncomputable numbers are Liouville numbers, but none is specifically known',
+  'L?',
+  'https://en.wikipedia.org/wiki/Liouville_number',
+  'Many uncomputable numbers are Liouville numbers, but none is specifically known',
 );
 
 const GOLDEN_RATIO = new RepresentativeNumber(
@@ -142,24 +143,24 @@ const UNDEFINABLE_NUMBER = new RepresentativeNumber(
 );
 
 const IMAGINARY_UNIT = new RepresentativeNumber(
-    'i',
-    'https://en.wikipedia.org/wiki/Imaginary_unit',
-    'The imaginary unit, which satisfies i² = -1.',
-    NumberCategory.Imaginary,
+  'i',
+  'https://en.wikipedia.org/wiki/Imaginary_unit',
+  'The imaginary unit, which satisfies i² = -1.',
+  NumberCategory.Imaginary,
 );
 
 const E_TIMES_I = new RepresentativeNumber(
-    'e*i',
-    'https://en.wikipedia.org/wiki/Imaginary_unit#Exponential_form',
-    'A complex number representing the product of e and the imaginary unit i. Similar examples are 2*i, 0.5*i, etc.',
-    NumberCategory.Imaginary,
+  'e*i',
+  'https://en.wikipedia.org/wiki/Imaginary_unit#Exponential_form',
+  'A complex number representing the product of e and the imaginary unit i. Similar examples are 2*i, 0.5*i, etc.',
+  NumberCategory.Imaginary,
 );
 
 const I_PLUS_PI = new RepresentativeNumber(
-    'i+π',
-    '',
-    'A complex number representing the sum of the imaginary unit i and π.  Similar examples are 2+i, 0.5*3i, e+π*i etc.',
-    NumberCategory.Imaginary,
+  'i+π',
+  '',
+  'A complex number representing the sum of the imaginary unit i and π.  Similar examples are 2+i, 0.5*3i, e+π*i etc.',
+  NumberCategory.Imaginary,
 );
 
 enum AlgebraicStructure {
@@ -306,7 +307,16 @@ const TRANSCENDENTAL_REAL_NUMBERS = new NumberSet(
   'The Complement of algebraic real numbers. Numbers that are not roots of any non-zero polynomial equation with rational coefficients. Most real numbers are transcendental',
   'https://en.wikipedia.org/wiki/Transcendental_number',
   AlgebraicStructure.Ordered,
-  [PI, E, CHAITINS_CONSTANT, UNDEFINABLE_NUMBER, LIOUVILLE_CONSTANT, UNCOMPUTABLE_LIOUVILLE_NUMBERS, LOGARITHM_TWO, CHAMPERNOWNE_CONSTANT],
+  [
+    PI,
+    E,
+    CHAITINS_CONSTANT,
+    UNDEFINABLE_NUMBER,
+    LIOUVILLE_CONSTANT,
+    UNCOMPUTABLE_LIOUVILLE_NUMBERS,
+    LOGARITHM_TWO,
+    CHAMPERNOWNE_CONSTANT,
+  ],
   [],
 );
 
@@ -330,7 +340,14 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSet(
   'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
   AlgebraicStructure.OrderedFieldNthRoot,
-  [E, GOLDEN_RATIO, PI, LIOUVILLE_CONSTANT, LOGARITHM_TWO, CHAMPERNOWNE_CONSTANT],
+  [
+    E,
+    GOLDEN_RATIO,
+    PI,
+    LIOUVILLE_CONSTANT,
+    LOGARITHM_TWO,
+    CHAMPERNOWNE_CONSTANT,
+  ],
   [[ALGEBRAIC_REAL_NUMBERS]],
 );
 
