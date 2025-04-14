@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import NumberSetRectangle from '../rendering/shapes/NumberSetRectangle';
 import DrawingOptions from '../rendering/DrawingOptions';
 
-const NumberSetRectangleRenderer = (
+const renderNumberSetRectangle = (
   svg: d3.Selection<SVGGElement | null, unknown, null, undefined>,
   rectangle: NumberSetRectangle,
   options: DrawingOptions,
@@ -53,4 +53,4 @@ const NumberSetRectangleRenderer = (
   }
 };
 
-export default NumberSetRectangleRenderer;
+export default renderNumberSetRectangle;

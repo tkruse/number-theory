@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import RepresentativeNumberLabel from '../rendering/shapes/RepresentativeNumberLabel';
 import DrawingOptions from '../rendering/DrawingOptions';
 
-const RepresentativeNumberRenderer = (
+const renderRepresentativeNumber = (
   svg: d3.Selection<SVGGElement | null, unknown, null, undefined>,
   label: RepresentativeNumberLabel,
   options: DrawingOptions,
@@ -50,4 +50,4 @@ const RepresentativeNumberRenderer = (
   }
 };
 
-export default RepresentativeNumberRenderer;
+export default renderRepresentativeNumber;
