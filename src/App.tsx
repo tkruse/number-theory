@@ -14,8 +14,20 @@ function parseEnabledSetsFromUrl(): Map<INumberSet, boolean> {
   const params = new URLSearchParams(window.location.search);
   const setsParam = params.get('sets');
   if (!setsParam) {
-    // Default: all enabled
-    return new Map(NUMBER_SETS.map((set) => [set, true]));
+    // Default: enable only selected sets
+    const enabledSetNames = new Set([
+      'Complex',
+      'Real',
+      'Algebraic',
+      'Transcendental',
+      'Rational',
+      'Irrational',
+      'Integers',
+      'Imaginary',
+    ]);
+    return new Map(
+      NUMBER_SETS.map((set) => [set, enabledSetNames.has(set.name)]),
+    );
   }
   const enabledKeys = new Set(setsParam.split(','));
   return new Map(
