@@ -446,6 +446,12 @@ const COMPLEX_NUMBERS = new NumberSet(
 // infinity, nullity
 // epsilon
 // Apery's constant, Catalan's constant, Euler-Mascheroni constant, Feigenbaum constants, Gelfond–Schneider constant, Khinchin's constant, plastic number, twin prime constant
+// configure sets in URL for sharing of specific images
+// enable configuring of drawing options
+// select all, select none
+// fallback SVG content when none is selected.
+// Make all controls hidden in menu icon
+// fix partition containment lower border
 
 export {
   ZERO,
