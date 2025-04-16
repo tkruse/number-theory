@@ -30,7 +30,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src="./github-mark.svg" alt="GitHub" className="github-icon" />
+          <img src="/github-mark.svg" alt="GitHub" className="github-icon" />
         </a>
       </footer>
       <section className="todo-list">
