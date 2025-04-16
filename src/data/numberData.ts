@@ -696,7 +696,6 @@ const NUMBER_SETS = allNumberSets.slice().sort((a, b) => a.compareTo(b));
 // select all, select none
 // fallback SVG content when none is selected.
 // Make all controls hidden in menu icon
-// fix partition containment lower border
 
 export {
   ZERO,

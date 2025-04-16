@@ -1,13 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DiagramComponent from './components/DiagramComponent';
 import { INumberSet, NUMBER_SETS } from './data/numberData';
 import NumberSetChooser from './components/NumberSetChooser';
 import { RenderInputs } from './layout/RectangleLayout';
 
+// Helper to get a unique key for each set (use name, or unicodeSymbol if more robust)
+function getSetKey(set: INumberSet): string {
+  return set.name;
+}
+
+// Parse enabled sets from URL
+function parseEnabledSetsFromUrl(): Map<INumberSet, boolean> {
+  const params = new URLSearchParams(window.location.search);
+  const setsParam = params.get('sets');
+  if (!setsParam) {
+    // Default: all enabled
+    return new Map(NUMBER_SETS.map((set) => [set, true]));
+  }
+  const enabledKeys = new Set(setsParam.split(','));
+  return new Map(
+    NUMBER_SETS.map((set) => [set, enabledKeys.has(getSetKey(set))]),
+  );
+}
+
+// Encode enabled sets to URL
+function encodeEnabledSetsToUrl(enabledNumberSets: Map<INumberSet, boolean>) {
+  const enabledKeys = Array.from(enabledNumberSets.entries())
+    .filter(([_, enabled]) => enabled)
+    .map(([set]) => getSetKey(set));
+  const params = new URLSearchParams(window.location.search);
+  params.set('sets', enabledKeys.join(','));
+  const newUrl =
+    window.location.pathname +
+    (params.toString() ? '?' + params.toString() : '');
+  window.history.replaceState({}, '', newUrl);
+}
+
 function App() {
   const [enabledNumberSets, setEnabledNumberSets] = useState<
     Map<INumberSet, boolean>
-  >(new Map(NUMBER_SETS.map((set) => [set, true])));
+  >(() => parseEnabledSetsFromUrl());
+
+  // Update URL when enabledNumberSets changes
+  useEffect(() => {
+    encodeEnabledSetsToUrl(enabledNumberSets);
+  }, [enabledNumberSets]);
+
+  // Listen for URL changes (e.g., back/forward navigation)
+  useEffect(() => {
+    const onPopState = () => {
+      setEnabledNumberSets(parseEnabledSetsFromUrl());
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, []);
 
   const renderInputs: RenderInputs[] = Array.from(
     enabledNumberSets.entries(),
