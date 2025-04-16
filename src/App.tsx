@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import DiagramComponent from './components/DiagramComponent';
-import { INumberSet, NUMBER_SETS } from './data/numberData';
+import {
+  INumberSet,
+  NUMBER_SETS,
+  COMPLEX_NUMBERS,
+  HYPERREAL_NUMBERS,
+  HYPERCOMPLEX_NUMBERS,
+} from './data/numberData';
 import NumberSetChooser from './components/NumberSetChooser';
 import { RenderInputs } from './layout/RectangleLayout';
 
@@ -52,6 +58,20 @@ function App() {
   const [enabledNumberSets, setEnabledNumberSets] = useState<
     Map<INumberSet, boolean>
   >(() => parseEnabledSetsFromUrl());
+
+  // Ensure HYPERREAL_NUMBERS is disabled if COMPLEX_NUMBERS is enabled
+  useEffect(() => {
+    if (
+      (enabledNumberSets.get(COMPLEX_NUMBERS) ||
+        enabledNumberSets.get(HYPERCOMPLEX_NUMBERS)) &&
+      enabledNumberSets.get(HYPERREAL_NUMBERS)
+    ) {
+      const newMap = new Map(enabledNumberSets);
+      newMap.set(HYPERREAL_NUMBERS, false);
+      setEnabledNumberSets(newMap);
+    }
+    // Only run when enabledNumberSets changes
+  }, [enabledNumberSets]);
 
   // Update URL when enabledNumberSets changes
   useEffect(() => {
@@ -119,18 +139,6 @@ function App() {
           </li>
           <li>
             <a
-              href="https://en.wikipedia.org/wiki/Infinitesimal"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Infinitesimal Numbers
-            </a>
-            : Numbers that are greater than zero but smaller than any positive
-            real number, used in non-standard analysis to rigorously define
-            concepts like derivatives and integrals.
-          </li>
-          <li>
-            <a
               href="https://en.wikipedia.org/wiki/Surreal_number"
               target="_blank"
               rel="noopener noreferrer"
@@ -153,83 +161,6 @@ function App() {
             infinite numbers, used to provide a rigorous foundation for calculus
             and analysis.
           </li>
-          <li>
-            <a
-              href="https://en.wikipedia.org/wiki/Hypercomplex_number"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Hypercomplex Numbers
-            </a>
-            : A generalization of complex numbers, expressed in the form a · x +
-            b · y + ..., where a, b, ... are real numbers and x, y, ... are
-            basis elements that extend beyond the real and imaginary units.
-          </li>
-          <ul>
-            <li>
-              <a
-                href="https://en.wikipedia.org/wiki/Split-complex_number"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Split-complex Numbers
-              </a>{' '}
-              (hyperbolic numbers): Also known as hyperbolic numbers, these
-              extend complex numbers by using a different multiplication rule,
-              where the square of the imaginary unit is +1 instead of -1. They
-              are used in various applications, including special relativity.
-            </li>
-            <li>
-              <a
-                href="https://en.wikipedia.org/wiki/Quaternion"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Quaternion
-              </a>{' '}
-              (4 elements)
-            </li>
-            <li>
-              <a
-                href="https://en.wikipedia.org/wiki/Biquaternion"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Biquaternion
-              </a>{' '}
-              (8 elements)
-            </li>
-            <li>
-              <a
-                href="https://en.wikipedia.org/wiki/Octonion"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Octonion
-              </a>{' '}
-              (8 elements)
-            </li>
-            <li>
-              <a
-                href="https://en.wikipedia.org/wiki/Sedenion"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Sedenion
-              </a>{' '}
-              (16 elements)
-            </li>
-            <li>
-              <a
-                href="https://en.wikipedia.org/wiki/Trigintaduonion"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Trigintaduonion
-              </a>{' '}
-              (32 elements)
-            </li>
-          </ul>
           <li>
             <a
               href="https://en.wikipedia.org/wiki/Normal_number"

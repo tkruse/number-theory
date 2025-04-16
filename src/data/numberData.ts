@@ -15,6 +15,7 @@ interface IRepresentativeNumber {
   wikipediaLink: string;
   description: string;
   category: NumberCategory;
+  essentialForSubetsOfParents?: INumberSet[];
   toString(): string;
 }
 
@@ -24,6 +25,7 @@ class RepresentativeNumber implements IRepresentativeNumber {
     public wikipediaLink: string,
     public description: string,
     public category: NumberCategory = NumberCategory.Real,
+    public essentialForSubetsOfParents = [],
   ) {}
 
   toString(): string {
@@ -168,6 +170,27 @@ const I_PLUS_PI = new RepresentativeNumber(
   NumberCategory.Imaginary,
 );
 
+const HYPER_COMPLEX = new RepresentativeNumber(
+  'hc',
+  'https://en.wikipedia.org/wiki/Hypercomplex_number',
+  'a · i + b · j + c · k + ...An example of a hypercomplex number. Hypercomplex numbers generalize complex numbers and include systems such as the complex numbers, split-complex numbers, Quaternions, Octonions, Biquaternion, Sedenion, Trigintaduonion and more. These systems extend the real numbers in various ways, often with additional dimensions and different multiplication rules.',
+  NumberCategory.Hypercomplex,
+);
+
+const INFINITESIMAL = new RepresentativeNumber(
+  'ε',
+  'https://en.wikipedia.org/wiki/Infinitesimal',
+  'In mathematics, an infinitesimal number is a non-zero quantity that is closer to 0 than any non-zero real number is. It;s limit is usually taken as ε → 0.',
+  NumberCategory.Real,
+);
+
+const OMEGA = new RepresentativeNumber(
+  'ω',
+  'https://en.wikipedia.org/wiki/Hyperreal_number',
+  'An infinite hyperreal number (hyperinteger), often denoted ω. In non-standard analysis, ω is greater than any standard natural number and is used to represent an infinite quantity. 1/ω is an example of a positive infinitesimal.',
+  NumberCategory.Hypercomplex,
+);
+
 enum AlgebraicStructure {
   Ordered = '<',
   WellOrderedSemiRing = '+*<<',
@@ -198,7 +221,6 @@ interface INumberSet {
   containedSubSets: INumberSet[];
   partitionComplement?: INumberSet;
   parents?: INumberSet[];
-  sortKey: string;
   toString(): string;
   toFullDescription(): string;
   getContainedSets(): INumberSet[];
@@ -221,7 +243,7 @@ class NumberSet implements INumberSet {
     public containedElements: IRepresentativeNumber[] = [],
     public containedPartitions: INumberSet[][] = [],
     public containedSubSets: INumberSet[] = [],
-    public sortKey = '',
+    public neededNumbers: IRepresentativeNumber[] = [],
     public partitionComplement?: INumberSet,
     public parents?: INumberSet[],
   ) {
@@ -238,6 +260,10 @@ class NumberSet implements INumberSet {
     this.getContainedSets().forEach((containedSet) => {
       containedSet.parents ??= [];
       containedSet.parents.push(this);
+    });
+
+    neededNumbers.forEach((number) => {
+      number.essentialForSubetsOfParents?.push(this);
     });
   }
 
@@ -415,6 +441,7 @@ class NumberSetBuilder {
   public containedPartitions: INumberSet[][] = [];
   public containedSubSets: INumberSet[] = [];
   public containedElements: IRepresentativeNumber[] = [];
+  public neededNumbers: IRepresentativeNumber[] = [];
 
   constructor(
     name: string,
@@ -439,6 +466,16 @@ class NumberSetBuilder {
     return this;
   }
 
+  needsNumbers(...numbers: IRepresentativeNumber[]) {
+    this.neededNumbers.push(...numbers);
+    return this;
+  }
+
+  needsNumbersOf(numberSet: INumberSet) {
+    this.needsNumbers(...Array.from(numberSet.getAllContainedNumbers()));
+    return this;
+  }
+
   addSubsetsAndElements(
     subsets: INumberSet[],
     ...elements: IRepresentativeNumber[]
@@ -460,6 +497,7 @@ class NumberSetBuilder {
       this.containedElements,
       this.containedPartitions,
       this.containedSubSets,
+      this.neededNumbers,
     );
   }
 }
@@ -486,6 +524,7 @@ const WHOLE_NUMBERS = new NumberSetBuilder(
   AlgebraicStructure.WellOrderedSemiRing,
 )
   .addSubsetsAndElements([NATURAL_NUMBERS], ZERO)
+  .needsNumbersOf(NATURAL_NUMBERS)
   .build();
 
 const INTEGERS = new NumberSetBuilder(
@@ -505,6 +544,7 @@ const INTEGERS = new NumberSetBuilder(
     MINUS_TWO,
     MINUS_THREE,
   )
+  .needsNumbersOf(WHOLE_NUMBERS)
   .build();
 
 const RATIONAL_REAL_NUMBERS = new NumberSetBuilder(
@@ -517,6 +557,7 @@ const RATIONAL_REAL_NUMBERS = new NumberSetBuilder(
   AlgebraicStructure.OrderedField,
 )
   .addSubsetsAndElements([INTEGERS], HALF, ZERO_POINT_ONE)
+  .needsNumbersOf(INTEGERS)
   .build();
 
 const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSetBuilder(
@@ -529,6 +570,7 @@ const CONSTRUCTIBLE_REAL_NUMBERS = new NumberSetBuilder(
   AlgebraicStructure.OrderedFieldSquareRoot,
 )
   .addSubsetsAndElements([RATIONAL_REAL_NUMBERS], SQRT_TWO, GOLDEN_RATIO)
+  .needsNumbersOf(RATIONAL_REAL_NUMBERS)
   .build();
 
 const ALGEBRAIC_REAL_NUMBERS = new NumberSetBuilder(
@@ -541,6 +583,7 @@ const ALGEBRAIC_REAL_NUMBERS = new NumberSetBuilder(
   AlgebraicStructure.OrderedFieldNthRoot,
 )
   .addSubsetsAndElements([CONSTRUCTIBLE_REAL_NUMBERS], CUBE_ROOT_TWO)
+  .needsNumbersOf(CONSTRUCTIBLE_REAL_NUMBERS)
   .build();
 
 const TRANSCENDENTAL_REAL_NUMBERS = new NumberSetBuilder(
@@ -580,6 +623,7 @@ const IRRATIONAL_REAL_NUMBERS = new NumberSetBuilder(
     GOLDEN_RATIO,
     CUBE_ROOT_TWO,
   )
+  .needsNumbersOf(TRANSCENDENTAL_REAL_NUMBERS)
   .build();
 
 const COMPUTABLE_REAL_NUMBERS = new NumberSetBuilder(
@@ -600,6 +644,7 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSetBuilder(
     LOGARITHM_TWO,
     CHAMPERNOWNE_CONSTANT,
   )
+  .needsNumbersOf(ALGEBRAIC_REAL_NUMBERS)
   .build();
 
 const DEFINABLE_REAL_NUMBERS = new NumberSetBuilder(
@@ -616,6 +661,7 @@ const DEFINABLE_REAL_NUMBERS = new NumberSetBuilder(
     CHAITINS_CONSTANT,
     UNCOMPUTABLE_LIOUVILLE_NUMBERS,
   )
+  .needsNumbersOf(COMPUTABLE_REAL_NUMBERS)
   .build();
 
 const REAL_NUMBERS = new NumberSetBuilder(
@@ -630,6 +676,7 @@ const REAL_NUMBERS = new NumberSetBuilder(
   .addPartition(ALGEBRAIC_REAL_NUMBERS, TRANSCENDENTAL_REAL_NUMBERS)
   .addPartition(RATIONAL_REAL_NUMBERS, IRRATIONAL_REAL_NUMBERS)
   .addSubsetsAndElements([DEFINABLE_REAL_NUMBERS])
+  .needsNumbersOf(RATIONAL_REAL_NUMBERS)
   .build();
 
 const PURE_IMAGINARY_NUMBERS = new NumberSetBuilder(
@@ -652,6 +699,7 @@ const IMAGINARY_NUMBERS = new NumberSetBuilder(
   'https://en.wikipedia.org/wiki/Imaginary_number',
 )
   .addSubsetsAndElements([PURE_IMAGINARY_NUMBERS], I_PLUS_PI)
+  .needsNumbersOf(PURE_IMAGINARY_NUMBERS)
   .build();
 
 const COMPLEX_NUMBERS = new NumberSetBuilder(
@@ -664,6 +712,32 @@ const COMPLEX_NUMBERS = new NumberSetBuilder(
   AlgebraicStructure.FieldNthRoot,
 )
   .addPartition(REAL_NUMBERS, IMAGINARY_NUMBERS)
+  .needsNumbersOf(REAL_NUMBERS)
+  .needsNumbersOf(IMAGINARY_NUMBERS)
+  .build();
+
+const HYPERCOMPLEX_NUMBERS = new NumberSetBuilder(
+  'Hypercomplex',
+  '𝕳',
+  '',
+  '',
+  'The set of all hypercomplex numbers, which generalize complex numbers and include systems such as the complex numbers, split-complex numbers, quaternions, octonions, and more. These systems extend the real numbers in various ways, often with additional dimensions and different multiplication rules.',
+  'https://en.wikipedia.org/wiki/Hypercomplex_number',
+  undefined,
+)
+  .addSubsetsAndElements([COMPLEX_NUMBERS], HYPER_COMPLEX)
+  .build();
+
+const HYPERREAL_NUMBERS = new NumberSetBuilder(
+  'Hyperreal',
+  'ℝ*',
+  '',
+  '',
+  'The set of all hyperreal numbers, which extend the real numbers to include infinitesimal and infinite quantities. Hyperreal numbers are used in non-standard analysis and include all real numbers as well as numbers greater than any real (infinite) and less than any positive real (infinitesimal).',
+  'https://en.wikipedia.org/wiki/Hyperreal_number',
+  undefined,
+)
+  .addSubsetsAndElements([REAL_NUMBERS], INFINITESIMAL, OMEGA)
   .build();
 
 const ALL_NUMBERS = new NumberSetBuilder(
@@ -674,7 +748,9 @@ const ALL_NUMBERS = new NumberSetBuilder(
   'A set containing all number sets in this application.',
   '',
 )
-  .addPartition(COMPLEX_NUMBERS)
+  .addSubsetsAndElements([HYPERREAL_NUMBERS, HYPERCOMPLEX_NUMBERS])
+  .needsNumbersOf(REAL_NUMBERS)
+  .needsNumbersOf(COMPLEX_NUMBERS)
   .build();
 
 const NUMBER_SETS = allNumberSets.slice().sort((a, b) => a.compareTo(b));
@@ -716,6 +792,9 @@ export {
   I_PLUS_PI,
   CHAITINS_CONSTANT,
   UNDEFINABLE_NUMBER,
+  HYPER_COMPLEX,
+  INFINITESIMAL,
+  OMEGA,
   NATURAL_NUMBERS,
   WHOLE_NUMBERS,
   INTEGERS,
@@ -727,6 +806,8 @@ export {
   DEFINABLE_REAL_NUMBERS,
   REAL_NUMBERS,
   COMPLEX_NUMBERS,
+  HYPERCOMPLEX_NUMBERS,
+  HYPERREAL_NUMBERS,
   CONSTRUCTIBLE_REAL_NUMBERS,
   IMAGINARY_NUMBERS,
   PURE_IMAGINARY_NUMBERS,

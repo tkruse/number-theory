@@ -37,7 +37,9 @@ function computeRectanglesToRender(
       const rectangle =
         complementRectangle ?? new NumberSetRectangle(set, options, grid);
 
-      const allContainedNumbers = Array.from(set.getAllContainedNumbers());
+      const allContainedNumbers = Array.from(
+        set.getAllContainedNumbers(),
+      ).filter((num) => numberLabelMap.has(num));
       const leftMostNumber = allContainedNumbers.reduce((min, num) => {
         const label = safeGet(numberLabelMap, num);
         const minLabel = safeGet(numberLabelMap, min);
@@ -91,7 +93,9 @@ function computeRectanglesToRender(
     closeNumberSet: (set, _) => {
       const rectangle = safeGet(rectangleMap, set);
 
-      const allContainedNumbers = Array.from(set.getAllContainedNumbers());
+      const allContainedNumbers = Array.from(
+        set.getAllContainedNumbers(),
+      ).filter((num) => numberLabelMap.has(num));
 
       const rightMostNumber = allContainedNumbers.reduce((max, num) => {
         const label = safeGet(numberLabelMap, num);
@@ -111,9 +115,6 @@ function computeRectanglesToRender(
           const containedSubsetsAtEndColumn = column
             .getEndingSets()
             .indexOf(set);
-          console.log(
-            `name: ${set.name} contained: ${containedSubsetsAtEndColumn}`,
-          );
           rectangle.setContainedSubsetsAtEndColumn(
             set,
             containedSubsetsAtEndColumn,

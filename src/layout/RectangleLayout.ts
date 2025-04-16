@@ -1,4 +1,4 @@
-import { INumberSet } from '../data/numberData';
+import { INumberSet, IRepresentativeNumber } from '../data/numberData';
 import Grid from './Grid';
 import { elementAt } from '../utils/collectionUtils';
 import { Column } from './Column';
@@ -19,6 +19,48 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
   const addedSets = new Map<string, { start: number; end: number }>();
   // Map to track numbers that have been added and their columns
   const addedNumbers = new Map<string, number>();
+
+  // try rendering numbers even when their direct set is not rendered, if they are essential for some other parent
+  function mustRenderForParent(
+    set: INumberSet,
+    elements: IRepresentativeNumber[],
+  ): boolean {
+    const essentialSets = new Set(
+      elements.flatMap((e) => e.essentialForSubetsOfParents ?? []),
+    );
+    if (essentialSets.size === 0) return false;
+    // Create an array of parents to check
+    const parentsToCheck: INumberSet[] = [];
+    const seenParents = new Set<INumberSet>();
+    if (set.parents) {
+      set.parents.forEach((parent: INumberSet) => {
+        parentsToCheck.push(parent);
+        seenParents.add(parent);
+      });
+    }
+    // Traverse parents
+    while (parentsToCheck.length > 0) {
+      const parent = parentsToCheck.shift();
+      if (!parent) continue;
+      // Check if parent is to be rendered
+      const parentRender = renderInputs.find(
+        (r) => r.numberSet === parent,
+      )?.render;
+      if (parentRender && essentialSets.has(parent)) {
+        return true;
+      }
+      // Add parent's parents to the list, but only if not already seen
+      if (parent.parents) {
+        parent.parents.forEach((grandparent: INumberSet) => {
+          if (!seenParents.has(grandparent)) {
+            parentsToCheck.push(grandparent);
+            seenParents.add(grandparent);
+          }
+        });
+      }
+    }
+    return false;
+  }
 
   // recursive traversal function to determine the start and end columns for each set
   const traverse = (set: INumberSet): { start: number; end: number } => {
@@ -47,7 +89,11 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
       const newElements = set.containedElements.filter(
         (element) => !addedNumbers.has(element.name),
       );
-      if (newElements.length > 0) {
+
+      if (
+        newElements.length > 0 &&
+        (renderControl.render || mustRenderForParent(set, newElements))
+      ) {
         const column = new Column();
         grid.addColumn(column);
         const newColumnIndex = grid.columns.length - 1;
@@ -63,7 +109,10 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         elementAt(grid.columns, start).addStartingSet(set);
         elementAt(grid.columns, end).addEndingSet(set);
       }
-      const range = { start, end };
+      // Clamp start and end to valid column indices
+      const clampedStart = Math.max(0, start);
+      const clampedEnd = Math.min(grid.columns.length - 1, end);
+      const range = { start: clampedStart, end: clampedEnd };
       addedSets.set(set.name, range);
       return range;
     } else {
@@ -89,8 +138,15 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
       const newElements = set.containedElements.filter(
         (element) => !addedNumbers.has(element.name),
       );
-      if (newElements.length > 0) {
+      if (
+        newElements.length > 0 &&
+        (renderControl.render || mustRenderForParent(set, newElements))
+      ) {
         const column = new Column();
+        /*
+         * typically, appending a new column to the right yields a correct
+         * set representation due to the order in which they are nested
+         */
         grid.addColumn(column);
         const newColumnIndex = grid.columns.length - 1;
         newElements.forEach((element) => {
@@ -103,7 +159,10 @@ function createRectangleLayout(renderInputs: RenderInputs[] = []): Grid {
         elementAt(grid.columns, start).addStartingSet(set);
         elementAt(grid.columns, end).addEndingSet(set);
       }
-      const range = { start, end };
+      // Clamp start and end to valid column indices
+      const clampedStart = Math.max(0, start);
+      const clampedEnd = Math.min(grid.columns.length - 1, end);
+      const range = { start: clampedStart, end: clampedEnd };
       addedSets.set(set.name, range);
       return range;
     }

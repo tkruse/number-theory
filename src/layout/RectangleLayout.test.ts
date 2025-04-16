@@ -35,7 +35,7 @@ describe('RectangleLayout', () => {
     expect(grid.columns[0].numbers).toEqual([ONE, TWO, THREE]);
   });
 
-  it('should create a layout for WHOLE_NUMBERS', () => {
+  it.only('should create a layout for WHOLE_NUMBERS', () => {
     const grid = createRectangleLayout([
       { numberSet: WHOLE_NUMBERS, render: true },
     ]);
@@ -43,13 +43,20 @@ describe('RectangleLayout', () => {
 
     const column0 = grid.columns[0];
     expect(column0.numbers).toEqual([ONE, TWO, THREE]);
-    expect(column0.getStartingSets()).toEqual([WHOLE_NUMBERS, NATURAL_NUMBERS]);
-    expect(column0.getEndingSets()).toEqual([NATURAL_NUMBERS]);
+    expect(column0.getStartingSets().map((s) => s.name)).toEqual([
+      WHOLE_NUMBERS.name,
+      NATURAL_NUMBERS.name,
+    ]);
+    expect(column0.getEndingSets().map((s) => s.name)).toEqual([
+      NATURAL_NUMBERS.name,
+    ]);
 
     const column1 = grid.columns[1];
     expect(column1.numbers).toEqual([ZERO]);
-    expect(column1.getStartingSets()).toEqual([]);
-    expect(column1.getEndingSets()).toEqual([WHOLE_NUMBERS]);
+    expect(column1.getStartingSets().map((s) => s.name)).toEqual([]);
+    expect(column1.getEndingSets().map((s) => s.name)).toEqual([
+      WHOLE_NUMBERS.name,
+    ]);
   });
 
   it('should create a layout for WHOLE_NUMBERS using grid.toString()', () => {

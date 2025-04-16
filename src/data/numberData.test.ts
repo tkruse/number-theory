@@ -38,6 +38,8 @@ import {
   DEFINABLE_REAL_NUMBERS,
   IMAGINARY_NUMBERS,
   PURE_IMAGINARY_NUMBERS,
+  HYPERCOMPLEX_NUMBERS,
+  HYPERREAL_NUMBERS,
 } from './numberData';
 
 import { describe, expect, test } from 'vitest';
@@ -58,6 +60,8 @@ describe('NUMBER_SETS sort order', () => {
   test('should contain the expected number sets in order', () => {
     const expectedNumberSets = [
       ALL_NUMBERS,
+      HYPERREAL_NUMBERS,
+      HYPERCOMPLEX_NUMBERS,
       COMPLEX_NUMBERS,
       REAL_NUMBERS,
       DEFINABLE_REAL_NUMBERS,

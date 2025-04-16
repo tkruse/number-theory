@@ -1,14 +1,14 @@
-import { RepresentativeNumber } from '../../data/numberData';
+import { IRepresentativeNumber } from '../../data/numberData';
 import DrawingOptions from '../DrawingOptions';
 import Grid from '../../layout/Grid';
 
 class RepresentativeNumberLabel {
-  public repNumber: RepresentativeNumber;
+  public repNumber: IRepresentativeNumber;
   public grid: Grid;
   private readonly options: DrawingOptions;
 
   constructor(
-    repNumber: RepresentativeNumber,
+    repNumber: IRepresentativeNumber,
     grid: Grid,
     options: DrawingOptions,
   ) {
