@@ -101,8 +101,7 @@ function App() {
       <div className="title-legend-container">
         <h1>Numbers Chart</h1>
         <p>
-          This diagram illustrates various number sets. Each area is empty
-          unless the diagram shows any representative number. You can click on a
+          This diagram illustrates various number sets. You can click on a
           label to open its Wikipedia page, and hover over elements to see
           descriptions. The symbols +, -, *, / represent whether the set is
           closed under these operations, the symbol &lt; means the set is
@@ -115,6 +114,17 @@ function App() {
       />
       <div className="diagram-container">
         <DiagramComponent renderInputs={renderInputs} />
+      </div>
+      <div className="todo-list">
+        <h1>Notes</h1>
+
+        <ul>
+          <li>This is not strictly a Venn diagram, each area is empty unless the diagram shows any representative number inside of it</li>
+          <li>The diagram only shows algebraic and transcendental <b>real</b> numbers, not the complex ones</li>
+          <li>It's not currently possible to select hyperreal and complex numbers both just because the rendering algorithm is not smart enough to do so correctly</li>
+          <li>Currently it's not easily possible to add arbitrary other number sets with correct rendering, the algorithm does not support that</li>
+          <li>The number 0 is sometimes also considered part of the imaginary numbers as 0i</li>
+        </ul>
       </div>
       <footer className="footer">
         <a

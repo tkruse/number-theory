@@ -36,7 +36,7 @@ class RepresentativeNumber implements IRepresentativeNumber {
 const ZERO = new RepresentativeNumber(
   '0',
   'https://en.wikipedia.org/wiki/0',
-  'The integer zero.',
+  'The integer zero. Division by zero is undefined in mathematics, and zero is the only real number that is neither positive nor negative. As a number, zero was first used in India around 500 CE. Sometimes it is considered an imaginary number as 0 * i.',
 );
 
 const HALF = new RepresentativeNumber(
@@ -48,7 +48,7 @@ const HALF = new RepresentativeNumber(
 const ONE = new RepresentativeNumber(
   '1',
   'https://en.wikipedia.org/wiki/1',
-  'The integer one.',
+  'The integer one. It is typically considered neither a prime nor a composite number, but a unit.',
 );
 
 const TWO = new RepresentativeNumber(
