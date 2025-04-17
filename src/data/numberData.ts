@@ -755,24 +755,6 @@ const ALL_NUMBERS = new NumberSetBuilder(
 
 const NUMBER_SETS = allNumberSets.slice().sort((a, b) => a.compareTo(b));
 
-// TODO
-// a set/partition can have default visibility
-// mark subsets as constituting (their representative numbers must be rendered when rendering the parent) vs informative (only render their numbers when that set is rendered)
-// arrange representative numbers more smartly
-// rearrange sets: display as nested rectangle with layered title bars
-// 1st level: [algebraic, transcendent]
-// 2st level: [imaginary, real, imaginary]
-// 3nd level: [algebraic imaginaries, algebraic reals, transcendental reals, transcendental imaginaries]
-// improve rendering proportions and symmetry
-// better font
-// hyperreals, infinitesimals, surreal, surcomplex, transfinite, hypercomplex
-// Apery's constant, Catalan's constant, Euler-Mascheroni constant, Feigenbaum constants, Gelfond–Schneider constant, Khinchin's constant, plastic number, twin prime constant
-// configure sets in URL for sharing of specific images
-// enable configuring of drawing options
-// select all, select none
-// fallback SVG content when none is selected.
-// Make all controls hidden in menu icon
-
 export {
   ZERO,
   ONE,
