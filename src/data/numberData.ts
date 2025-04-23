@@ -704,8 +704,9 @@ const REAL_NUMBERS = new NumberSetBuilder(
 )
   .addPartition(ALGEBRAIC_REAL_NUMBERS, TRANSCENDENTAL_REAL_NUMBERS)
   .addPartition(RATIONAL_REAL_NUMBERS, IRRATIONAL_REAL_NUMBERS)
-  .addSubsetsAndElements([DEFINABLE_REAL_NUMBERS])
+  .addSubsetsAndElements([DEFINABLE_REAL_NUMBERS], UNDEFINABLE_NUMBER)
   .needsNumbersOf(RATIONAL_REAL_NUMBERS)
+  .needsNumbers(UNDEFINABLE_NUMBER)
   .build();
 
 const PURE_IMAGINARY_NUMBERS = new NumberSetBuilder(
