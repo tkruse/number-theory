@@ -23,7 +23,7 @@ class Grid {
     let maxWidth = 0;
 
     column.getEndingSets().forEach((set) => {
-      const setWidth = set.toString().length * options.textHeight * 0.45;
+      const setWidth = set.toString().length * options.textHeight * 0.58;
       if (column.getStartingSets().includes(set)) {
         maxWidth = Math.max(maxWidth, setWidth);
       } else {

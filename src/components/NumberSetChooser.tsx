@@ -23,7 +23,9 @@ const NumberSetChooser: React.FC<NumberSetChooserProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <button
         className="number-set-chooser-toggle"
         onClick={() => setExpanded((prev) => !prev)}

@@ -4,7 +4,6 @@ import { safeSlice } from '../utils/collectionUtils';
 class Column {
   numbers: IRepresentativeNumber[];
 
-  // These are private except for tests
   private _startingSets: INumberSet[];
   private _endingSets: INumberSet[];
 

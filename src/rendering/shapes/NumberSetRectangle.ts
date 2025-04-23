@@ -13,34 +13,32 @@ class NumberSetRectangle {
     {
       leftMostLabel: RepresentativeNumberLabel | null;
       rightMostLabel: RepresentativeNumberLabel | null;
-      bottomMostLabel: RepresentativeNumberLabel | null;
+      bottomMostLabels: [RepresentativeNumberLabel, number][];
       containedSubsetsAtStartColumn: number;
       containedSubsetsAtEndColumn: number;
+      maxContainedSets: number;
     }
   >;
   private readonly options: DrawingOptions;
   private readonly grid: Grid;
-  private maxContainedSets = 0;
 
   private static createDefaultSubRectangeStructure() {
     return {
       leftMostLabel: null,
       rightMostLabel: null,
-      bottomMostLabel: null,
+      bottomMostLabels: [],
       containedSubsetsAtStartColumn: 0,
       containedSubsetsAtEndColumn: 0,
+      maxContainedSets: 0,
     };
   }
 
   constructor(numberSet: INumberSet, options: DrawingOptions, grid: Grid) {
     this.numberSetLabels = new Map();
-    this.numberSetLabels.set(numberSet, {
-      leftMostLabel: null,
-      rightMostLabel: null,
-      bottomMostLabel: null,
-      containedSubsetsAtStartColumn: 0,
-      containedSubsetsAtEndColumn: 0,
-    });
+    this.numberSetLabels.set(
+      numberSet,
+      NumberSetRectangle.createDefaultSubRectangeStructure(),
+    );
     this.options = options;
     this.grid = grid;
   }
@@ -57,7 +55,7 @@ class NumberSetRectangle {
       x: this.getSetX(set),
       y: this.getSetY(set),
       width: this.getSetWidth(set),
-      height: this.getSetHeight(set),
+      height: this.getSetsHeight(),
     }));
   }
 
@@ -73,16 +71,33 @@ class NumberSetRectangle {
     ).rightMostLabel = label;
   }
 
-  setBottomMostLabel(set: INumberSet, label: RepresentativeNumberLabel) {
+  addBottomMostLabel(
+    set: INumberSet,
+    label: RepresentativeNumberLabel,
+    containedSubsets: number,
+  ) {
     getOrCompute(this.numberSetLabels, set, () =>
       NumberSetRectangle.createDefaultSubRectangeStructure(),
-    ).bottomMostLabel = label;
+    ).bottomMostLabels.push([label, containedSubsets]);
   }
 
-  updateMaxContainedSets(count: number) {
-    if (count > this.maxContainedSets) {
-      this.maxContainedSets = count;
+  updateMaxContainedSets(set: INumberSet, count: number) {
+    const rectangleStructure = getOrCompute(this.numberSetLabels, set, () =>
+      NumberSetRectangle.createDefaultSubRectangeStructure(),
+    );
+    if (count > rectangleStructure.maxContainedSets) {
+      rectangleStructure.maxContainedSets = count;
     }
+  }
+
+  /**
+   * get the maximum of contained sets within all this.numberSetLabels
+   */
+  getMaxContainedSets(): number {
+    return Array.from(this.numberSetLabels.values()).reduce(
+      (max, label) => Math.max(max, label.maxContainedSets),
+      0,
+    );
   }
 
   setContainedSubsetsAtStartColumn(set: INumberSet, count: number) {
@@ -131,7 +146,7 @@ class NumberSetRectangle {
       (safeGet(this.numberSetLabels, set).leftMostLabel?.y ?? 0) -
       numberCircleRadius -
       numberCirclePadding -
-      (this.maxContainedSets + 1) * (textHeight + overlapPadding)
+      (this.getMaxContainedSets() + 1) * (textHeight + overlapPadding)
     );
   }
 
@@ -165,35 +180,29 @@ class NumberSetRectangle {
     );
   }
 
-  private getBottomMostLabel() {
-    const bottomMostLabel = Array.from(
-      this.numberSetLabels.values(),
-    ).reduce<RepresentativeNumberLabel | null>((maxLabel, labels) => {
-      if (labels.bottomMostLabel) {
-        return !maxLabel || labels.bottomMostLabel.y > maxLabel.y
-          ? labels.bottomMostLabel
-          : maxLabel;
-      }
-      return maxLabel;
-    }, null);
-    if (!bottomMostLabel) {
-      throw new Error(
-        `Bottom-most label is not set in ${JSON.stringify(Array.from(this.numberSetLabels.entries()))}`,
-      );
-    }
-    return bottomMostLabel;
-  }
-
   private getSetHeight(set: INumberSet): number {
     const { numberCircleRadius, overlapPadding, numberCirclePadding } =
       this.options;
-    const bottomMostLabel = this.getBottomMostLabel();
+    /*
+     * to find the height of the column, filter the grid columns by those spanning this set
+     * find the bottom most label in the column, and the contained sets for that column
+     */
+    const bottomY = safeGet(this.numberSetLabels, set).bottomMostLabels.reduce(
+      (max, [label, contained]) =>
+        Math.max(max, label.y + contained * overlapPadding),
+      0,
+    );
     return (
-      bottomMostLabel.y +
-      numberCircleRadius +
-      numberCirclePadding +
-      this.maxContainedSets * overlapPadding -
-      this.getSetY(set)
+      bottomY + numberCircleRadius + numberCirclePadding - this.getSetY(set)
+    );
+  }
+
+  private getSetsHeight(): number {
+    // return the maximum result of getSetHeight(set) for all sets in this.numberSetLabels
+    return Math.max(
+      ...Array.from(this.numberSetLabels.keys()).map((set) =>
+        this.getSetHeight(set),
+      ),
     );
   }
 

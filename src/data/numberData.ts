@@ -128,7 +128,7 @@ const LIOUVILLE_CONSTANT = new RepresentativeNumber(
 const UNCOMPUTABLE_LIOUVILLE_NUMBERS = new RepresentativeNumber(
   'L?',
   'https://en.wikipedia.org/wiki/Liouville_number',
-  'Many uncomputable numbers are Liouville numbers, but none is specifically known',
+  'Liouville numbers are a subset of transcendental numbers that can be approximated more rapidly with rational numbers than irrational algebraic numbers. They are uncountable, so more than definable numbers. Many uncomputable numbers are Liouville numbers, but none is specifically known',
 );
 
 const GOLDEN_RATIO = new RepresentativeNumber(
@@ -143,10 +143,16 @@ const CHAITINS_CONSTANT = new RepresentativeNumber(
   'A real number representing the halting probability of a universal Chaitin (self-delimiting Turing) machine. It has a definition but is not computable.',
 );
 
+const APERYS_CONSTANT = new RepresentativeNumber(
+  'ζ(3)',
+  'https://en.wikipedia.org/wiki/Ap%C3%A9ry%27s_constant',
+  "Apéry's constant, a real number that is the value of the Riemann zeta function at 3, the infinite sum of the reciprocals of the positive integers, cubed. Approximately equal to 1.2020569...",
+);
+
 const UNDEFINABLE_NUMBER = new RepresentativeNumber(
   '?',
   '',
-  'In Maths, no undefinable number can be defined, though most reals are undefinable. Intuitively, those are all numbers with infinite digits that do not follow any pattern or rule. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
+  'In Maths, no undefinable number can be defined mathematically with a finite description, though most reals are undefinable. Intuitively, those are all numbers with infinite digits that do not follow any pattern or rule. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
 );
 
 const IMAGINARY_UNIT = new RepresentativeNumber(
@@ -180,7 +186,7 @@ const HYPER_COMPLEX = new RepresentativeNumber(
 const INFINITESIMAL = new RepresentativeNumber(
   'ε',
   'https://en.wikipedia.org/wiki/Infinitesimal',
-  'In mathematics, an infinitesimal number is a non-zero quantity that is closer to 0 than any non-zero real number is. It;s limit is usually taken as ε → 0.',
+  "In mathematics, an infinitesimal number is a non-zero quantity that is closer to 0 than any non-zero real number is. It's limit is usually taken as ε → 0.",
   NumberCategory.Real,
 );
 
@@ -198,6 +204,7 @@ enum AlgebraicStructure {
   OrderedField = '+*-/<',
   OrderedFieldSquareRoot = '+*-/√<',
   OrderedFieldNthRoot = '+*-/∛<',
+  OrderedFieldNthRootExp = '+*-/∛^ln<',
   Ring = '+*-',
   Field = '+*-/',
   FieldNthRoot = '+*-/∛',
@@ -626,6 +633,37 @@ const IRRATIONAL_REAL_NUMBERS = new NumberSetBuilder(
   .needsNumbersOf(TRANSCENDENTAL_REAL_NUMBERS)
   .build();
 
+const PERIOD_REAL_NUMBERS = new NumberSetBuilder(
+  'Period',
+  'P',
+  'ℵ₀',
+  '0',
+  'A real number that can be expressed as an integral of an algebraic function over an algebraic domain.',
+  'https://en.wikipedia.org/wiki/Period_(algebraic_geometry)',
+  AlgebraicStructure.Ring,
+)
+  .addSubsetsAndElements(
+    [ALGEBRAIC_REAL_NUMBERS],
+    PI,
+    LIOUVILLE_CONSTANT,
+    LOGARITHM_TWO,
+  )
+  .needsNumbersOf(ALGEBRAIC_REAL_NUMBERS)
+  .build();
+
+const EXPONENTIAL_PERIOD_REAL_NUMBERS = new NumberSetBuilder(
+  'Exp. Period',
+  'EP',
+  'ℵ₀',
+  '0',
+  'A real number that can be expressed as an integral of an algebraic function over the exponentials of the algebraic domain.',
+  'https://en.wikipedia.org/wiki/Period_(algebraic_geometry)',
+  AlgebraicStructure.Ring,
+)
+  .addSubsetsAndElements([PERIOD_REAL_NUMBERS], E, APERYS_CONSTANT)
+  .needsNumbersOf(PERIOD_REAL_NUMBERS)
+  .build();
+
 const COMPUTABLE_REAL_NUMBERS = new NumberSetBuilder(
   'Computable',
   'REC',
@@ -633,18 +671,13 @@ const COMPUTABLE_REAL_NUMBERS = new NumberSetBuilder(
   '0',
   'Real numbers that can be computed to arbitrary precision by a finite, terminating algorithm. Also called recursive numbers.',
   'https://en.wikipedia.org/wiki/Computable_number',
-  AlgebraicStructure.OrderedFieldNthRoot,
+  AlgebraicStructure.OrderedFieldNthRootExp,
 )
   .addSubsetsAndElements(
-    [ALGEBRAIC_REAL_NUMBERS],
-    E,
-    GOLDEN_RATIO,
-    PI,
-    LIOUVILLE_CONSTANT,
-    LOGARITHM_TWO,
+    [EXPONENTIAL_PERIOD_REAL_NUMBERS],
     CHAMPERNOWNE_CONSTANT,
   )
-  .needsNumbersOf(ALGEBRAIC_REAL_NUMBERS)
+  .needsNumbersOf(EXPONENTIAL_PERIOD_REAL_NUMBERS)
   .build();
 
 const DEFINABLE_REAL_NUMBERS = new NumberSetBuilder(
@@ -656,11 +689,7 @@ const DEFINABLE_REAL_NUMBERS = new NumberSetBuilder(
   'https://en.wikipedia.org/wiki/Definable_real_number',
   AlgebraicStructure.OrderedFieldNthRoot,
 )
-  .addSubsetsAndElements(
-    [COMPUTABLE_REAL_NUMBERS],
-    CHAITINS_CONSTANT,
-    UNCOMPUTABLE_LIOUVILLE_NUMBERS,
-  )
+  .addSubsetsAndElements([COMPUTABLE_REAL_NUMBERS], CHAITINS_CONSTANT)
   .needsNumbersOf(COMPUTABLE_REAL_NUMBERS)
   .build();
 
@@ -773,6 +802,7 @@ export {
   E_TIMES_I,
   I_PLUS_PI,
   CHAITINS_CONSTANT,
+  APERYS_CONSTANT,
   UNDEFINABLE_NUMBER,
   HYPER_COMPLEX,
   INFINITESIMAL,
@@ -784,6 +814,8 @@ export {
   IRRATIONAL_REAL_NUMBERS,
   TRANSCENDENTAL_REAL_NUMBERS,
   ALGEBRAIC_REAL_NUMBERS,
+  PERIOD_REAL_NUMBERS,
+  EXPONENTIAL_PERIOD_REAL_NUMBERS,
   COMPUTABLE_REAL_NUMBERS,
   DEFINABLE_REAL_NUMBERS,
   REAL_NUMBERS,

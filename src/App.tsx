@@ -101,8 +101,8 @@ function App() {
       <div className="title-legend-container">
         <h1>Numbers Chart</h1>
         <p>
-          This diagram illustrates various number sets. You can click on a
-          label to open its Wikipedia page, and hover over elements to see
+          This diagram illustrates various number sets. You can click on a label
+          to open its Wikipedia page, and hover over elements to see
           descriptions. The symbols +, -, *, / represent whether the set is
           closed under these operations, the symbol &lt; means the set is
           ordered, and &lt; means it is well-ordered, having a minimum.
@@ -119,11 +119,27 @@ function App() {
         <h1>Notes</h1>
 
         <ul>
-          <li>This is not strictly a Venn diagram, each area is empty unless the diagram shows any representative number inside of it</li>
-          <li>The diagram only shows algebraic and transcendental <b>real</b> numbers, not the complex ones</li>
-          <li>It's not currently possible to select hyperreal and complex numbers both just because the rendering algorithm is not smart enough to do so correctly</li>
-          <li>Currently it's not easily possible to add arbitrary other number sets with correct rendering, the algorithm does not support that</li>
-          <li>The number 0 is sometimes also considered part of the imaginary numbers as 0i</li>
+          <li>
+            This is not strictly a Venn diagram, each area is empty unless the
+            diagram shows any representative number inside of it
+          </li>
+          <li>
+            The diagram only shows algebraic and transcendental <b>real</b>{' '}
+            numbers, not the complex ones
+          </li>
+          <li>
+            It's not currently possible to select hyperreal and complex numbers
+            both just because the rendering algorithm is not smart enough to do
+            so correctly
+          </li>
+          <li>
+            Currently it's not easily possible to add arbitrary other number
+            sets with correct rendering, the algorithm does not support that
+          </li>
+          <li>
+            The number 0 is sometimes also considered part of the imaginary
+            numbers as 0i
+          </li>
         </ul>
       </div>
       <footer className="footer">
@@ -168,6 +184,20 @@ function App() {
           </li>
           <li>
             <a
+              href="https://en.wikipedia.org/wiki/Elementary_number"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Elementary Numbers
+            </a>
+            : The elementary numbers form an algebraically closed field
+            containing the roots of arbitrary expressions using field
+            operations, exponentiation, and logarithms. The set of the
+            elementary numbers is subdivided into the explicit elementary
+            numbers and the implicit elementary numbers.
+          </li>
+          <li>
+            <a
               href="https://en.wikipedia.org/wiki/Liouville_number"
               target="_blank"
               rel="noopener noreferrer"
@@ -191,17 +221,6 @@ function App() {
           </li>
           <li>
             <a
-              href="https://en.wikipedia.org/wiki/Dyadic_rational"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Dyadic Rationals
-            </a>
-            : Rational numbers whose denominator is a power of two, important in
-            computer science and binary arithmetic.
-          </li>
-          <li>
-            <a
               href="https://en.wikipedia.org/wiki/Bernoulli_number"
               target="_blank"
               rel="noopener noreferrer"
@@ -222,6 +241,45 @@ function App() {
             </a>
             : An alternative number system for expressing numbers, useful in
             number theory and algebraic geometry.
+          </li>
+          <li>
+            Special Rational Fractions
+            <ul>
+              <li>
+                <a
+                  href="https://en.wikipedia.org/wiki/Repeating_decimal"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Repeating vs terminating decimals
+                </a>
+                : Every rational number is either a terminating or repeating
+                decimal, and every repeating or terminal decimal is a rational
+                number.
+              </li>
+              <li>
+                <a
+                  href="https://en.wikipedia.org/wiki/Dyadic_rational"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Dyadic Rationals
+                </a>
+                : Rational numbers whose denominator is a power of two,
+                important in computer science and binary arithmetic.
+              </li>
+              <li>
+                <a
+                  href="https://en.wikipedia.org/wiki/Cyclic_number"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Cyclic Numbers
+                </a>
+                : Numbers that are cyclic permutations of each other when
+                multiplied.
+              </li>
+            </ul>
           </li>
           <li>
             Special Integer Sets

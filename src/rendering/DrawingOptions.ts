@@ -13,11 +13,11 @@ class DrawingOptions {
   textHeight;
 
   constructor(
-    columnWidth = 100,
-    columnPadding = 10,
+    columnWidth = 55,
+    columnPadding = 20,
     overlapPadding = 10,
     numberCircleRadius = 20,
-    numberCirclePadding = 5,
+    numberCirclePadding = 10,
     textHeight = 20,
   ) {
     this.columnWidth = columnWidth;

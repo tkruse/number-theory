@@ -72,7 +72,7 @@ function computeRectanglesToRender(
      * - Updates the maxContainedSets for each rectangle based on the number of sets
      *   that come after the current set in the context.
      */
-    processElements: (_, context) => {
+    processElements: (elements: IRepresentativeNumber[], context) => {
       context.forEach((entry) => {
         const rectangle = safeGet(rectangleMap, entry.set);
 
@@ -80,7 +80,26 @@ function computeRectanglesToRender(
           (ctxEntry) => ctxEntry.set === entry.set,
         );
         const containedSetsCount = context.slice(currentIndex + 1).length;
-        rectangle.updateMaxContainedSets(containedSetsCount);
+        rectangle.updateMaxContainedSets(entry.set, containedSetsCount);
+        const allContainedNumbers = Array.from(
+          entry.set.getAllContainedNumbers(),
+        ).filter((num) => numberLabelMap.has(num));
+        const bottomMostNumber = allContainedNumbers
+          .filter((num) => elements.indexOf(num) !== -1)
+          .reduce((max, num) => {
+            const label = safeGet(numberLabelMap, num);
+            return label.y > safeGet(numberLabelMap, max).y ? num : max;
+          }, allContainedNumbers[0]);
+        const bottomMostLabel = safeGet(numberLabelMap, bottomMostNumber);
+        const containedSubSets =
+          context
+            .slice(context.findIndex((ctxEntry) => ctxEntry.set === entry.set))
+            .filter((ctxEntry) => ctxEntry.isOpen).length - 1;
+        rectangle.addBottomMostLabel(
+          entry.set,
+          bottomMostLabel,
+          containedSubSets,
+        );
       });
     },
     /**
@@ -104,12 +123,6 @@ function computeRectanglesToRender(
       const rightMostLabel = safeGet(numberLabelMap, rightMostNumber);
       rectangle.setRightMostLabel(set, rightMostLabel);
 
-      const bottomMostNumber = allContainedNumbers.reduce((max, num) => {
-        const label = safeGet(numberLabelMap, num);
-        return label.y > safeGet(numberLabelMap, max).y ? num : max;
-      }, allContainedNumbers[0]);
-      const bottomMostLabel = safeGet(numberLabelMap, bottomMostNumber);
-      rectangle.setBottomMostLabel(set, bottomMostLabel);
       grid.columns.forEach((column) => {
         if (column.getEndingSets().includes(set)) {
           const containedSubsetsAtEndColumn = column

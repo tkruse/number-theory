@@ -51,7 +51,7 @@ Key rendering problems are:
 
 ```
 |                               Complex                             |
-|    Imaginary   |         Real                 |      Imaginary    |
+|  Imaginary     |         Real                 |      Imaginary    |
 |  Algebraic                 |     |     Transcendental             |
 |                |  Rational |  Irrational      |                   |
 ---------------------------------------------------------------------
@@ -61,6 +61,12 @@ Key rendering problems are:
 This splits the Imaginaries into two columns, sadly.
 
 The alternative is to have horizontal splits
+
+## Future algorithm-less setup
+
+* Instead of dynamically adding numbers to an abstract grid, hardcode number position in maximum resolution "grid". Then depending on rendered set, unify cells.
+* Use a nice tabular DSL, e.g. a CSV table
+* this cannot lead to a correct representation of arbitrary subsets combinations, but might be sufficient still
 
 ## Future algorithm steps
 
