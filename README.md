@@ -14,6 +14,7 @@ Also see my inspirations:
 * [Math StackExchange post](https://math.stackexchange.com/questions/4042219)
 * [Reddit post with similar image](https://www.reddit.com/r/mathpics/comments/15s1dfo/complete_number_chart/)
 * [Science4All Article on Numbers and Constructibility](https://www.science4all.org/article/numbers-and-constructibility/)
+* [Wikipedia on number systems](https://en.wikipedia.org/wiki/Number)
 
 ## Installation
 

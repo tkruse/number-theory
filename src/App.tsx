@@ -125,7 +125,7 @@ function App() {
           </li>
           <li>
             The diagram only shows algebraic and transcendental <b>real</b>{' '}
-            numbers, not the complex ones
+            numbers, not the complex ones. Same for Periods.
           </li>
           <li>
             It's not currently possible to select hyperreal and complex numbers
@@ -420,17 +420,6 @@ function App() {
         </ul>
         <h3>Specific Numbers Candidates</h3>
         <ul>
-          <li>
-            <a
-              href="https://en.wikipedia.org/wiki/Ap%C3%A9ry%27s_constant"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Apery's Constant
-            </a>
-            : The value ζ(3), an irrational number that appears in number theory
-            and mathematical analysis.
-          </li>
           <li>
             <a
               href="https://en.wikipedia.org/wiki/Catalan%27s_constant"

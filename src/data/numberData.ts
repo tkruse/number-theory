@@ -128,7 +128,7 @@ const LIOUVILLE_CONSTANT = new RepresentativeNumber(
 const UNCOMPUTABLE_LIOUVILLE_NUMBERS = new RepresentativeNumber(
   'L?',
   'https://en.wikipedia.org/wiki/Liouville_number',
-  'Liouville numbers are a subset of transcendental numbers that can be approximated more rapidly with rational numbers than irrational algebraic numbers. They are uncountable, so more than definable numbers. Many uncomputable numbers are Liouville numbers, but none is specifically known',
+  'Liouville numbers are a subset of transcendental numbers that can be approximated more rapidly with rational numbers than irrational algebraic numbers. They are uncountably infinite, so extend beyond definable numbers.',
 );
 
 const GOLDEN_RATIO = new RepresentativeNumber(
