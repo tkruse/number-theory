@@ -28,7 +28,9 @@ const NumberSetChooser: React.FC<NumberSetChooserProps> = ({
     >
       <button
         className="number-set-chooser-toggle"
-        onClick={() => setExpanded((prev) => !prev)}
+        onClick={() => {
+          setExpanded((prev) => !prev);
+        }}
         aria-expanded={expanded}
         aria-controls="number-set-chooser-list"
         style={{

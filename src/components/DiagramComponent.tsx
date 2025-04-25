@@ -85,7 +85,7 @@ function computeRectanglesToRender(
           entry.set.getAllContainedNumbers(),
         ).filter((num) => numberLabelMap.has(num));
         const bottomMostNumber = allContainedNumbers
-          .filter((num) => elements.indexOf(num) !== -1)
+          .filter((num) => elements.includes(num))
           .reduce((max, num) => {
             const label = safeGet(numberLabelMap, num);
             return label.y > safeGet(numberLabelMap, max).y ? num : max;

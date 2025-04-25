@@ -40,6 +40,9 @@ import {
   PURE_IMAGINARY_NUMBERS,
   HYPERCOMPLEX_NUMBERS,
   HYPERREAL_NUMBERS,
+  EXPONENTIAL_PERIOD_REAL_NUMBERS,
+  PERIOD_REAL_NUMBERS,
+  APERYS_CONSTANT,
 } from './numberData';
 
 import { describe, expect, test } from 'vitest';
@@ -66,6 +69,8 @@ describe('NUMBER_SETS sort order', () => {
       REAL_NUMBERS,
       DEFINABLE_REAL_NUMBERS,
       COMPUTABLE_REAL_NUMBERS,
+      EXPONENTIAL_PERIOD_REAL_NUMBERS,
+      PERIOD_REAL_NUMBERS,
       ALGEBRAIC_REAL_NUMBERS,
       CONSTRUCTIBLE_REAL_NUMBERS,
       RATIONAL_REAL_NUMBERS,
@@ -203,6 +208,7 @@ describe('getAllIncludedNumbers', () => {
         CHAMPERNOWNE_CONSTANT,
         LIOUVILLE_CONSTANT,
         LOGARITHM_TWO,
+        APERYS_CONSTANT,
       ],
     ],
     [
@@ -244,6 +250,7 @@ describe('getAllIncludedNumbers', () => {
         LIOUVILLE_CONSTANT,
         UNCOMPUTABLE_LIOUVILLE_NUMBERS,
         LOGARITHM_TWO,
+        APERYS_CONSTANT,
       ],
     ],
     [
@@ -272,6 +279,7 @@ describe('getAllIncludedNumbers', () => {
         LIOUVILLE_CONSTANT,
         UNCOMPUTABLE_LIOUVILLE_NUMBERS,
         LOGARITHM_TWO,
+        APERYS_CONSTANT,
       ],
     ],
   ])(

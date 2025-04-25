@@ -152,7 +152,7 @@ const APERYS_CONSTANT = new RepresentativeNumber(
 const UNDEFINABLE_NUMBER = new RepresentativeNumber(
   '?',
   '',
-  'In Maths, no undefinable number can be defined mathematically with a finite description, though most reals are undefinable. Intuitively, those are all numbers with infinite digits that do not follow any pattern or rule. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
+  'In Maths, no undefinable number can be defined mathematically with a finite description, though most reals are undefinable. One might imagine numbers containing infinitely many random digits, preventing any finite description to define all these digits. Physical measurements would likely all be undefinable, if they could be measured at infinite precision.',
 );
 
 const IMAGINARY_UNIT = new RepresentativeNumber(
@@ -652,7 +652,7 @@ const PERIOD_REAL_NUMBERS = new NumberSetBuilder(
   .build();
 
 const EXPONENTIAL_PERIOD_REAL_NUMBERS = new NumberSetBuilder(
-  'Exp. Period',
+  'Expon. Period',
   'EP',
   'ℵ₀',
   '0',

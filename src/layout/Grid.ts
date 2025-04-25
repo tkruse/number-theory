@@ -10,7 +10,7 @@ class Grid {
   }
 
   /**
-   * Calculates the extra width required for a given column.
+   * Calculates the extra width required for a given column beyond the elements in that column.
    * This is determined by the maximum width of any set that is both in the starting
    * and ending sets of the column, taking into account the set's name and the text height.
    *
@@ -31,7 +31,10 @@ class Grid {
           const previousColumn = this.columns[columnIndex - 1];
           if (previousColumn.getStartingSets().includes(set)) {
             const adjustedWidth =
-              setWidth - options.numberCircleRadius * 2 - options.columnPadding;
+              setWidth -
+              options.numberCircleRadius * 2 -
+              options.columnPadding -
+              this.calculateExtraWidth(columnIndex - 1, options);
             maxWidth = Math.max(maxWidth, adjustedWidth);
           }
         }
